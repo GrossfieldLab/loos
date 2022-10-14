@@ -9,10 +9,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -26,8 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LOOS
-   &#160;<span id="projectnumber">v3.3</span>
+   &#160;<span id="projectnumber">4.0</span>
    </div>
+   <div id="projectbrief">The Lightweight Object Oriented Structural analysis library/toolkit</div>
   </td>
  </tr>
  </tbody>
@@ -51,22 +48,6 @@ $(function() {
 /* @license-end */</script>
 <div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('functions_b.html',''); initResizable(); });
-/* @license-end */
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -85,56 +66,136 @@ $(document).ready(function(){initNavTree('functions_b.html',''); initResizable()
 <div class="textblock">Here is a list of all documented class members with links to the class documentation for each member:</div>
 
 <h3><a id="index_b"></a>- b -</h3><ul>
+<li>b()
+: <a class="el" href="classloos_1_1loos_1_1UnitCell.html#a4db2ddb40c3d13df621cb241f959e012">loos.loos.UnitCell</a>
+, <a class="el" href="classloos_1_1UnitCell.html#a41d4986a26c2f9952670c3a7410d21a8">loos.UnitCell</a>
+, <a class="el" href="classpyloos_1_1UnitCell.html#aec2e363caed8390c61e531a302efb48c">pyloos.UnitCell</a>
+</li>
+<li>back()
+: <a class="el" href="classloos_1_1AtomicGroupVector.html#aefc061fdd8a4d4c23b65b9035f04cca2">loos.AtomicGroupVector</a>
+, <a class="el" href="classloos_1_1DoubleVector.html#ae84e4884e59566231d4bd42173ddf173">loos.DoubleVector</a>
+, <a class="el" href="classloos_1_1DoubleVectorMatrix.html#ad844b42172d7969a5e65a38384a84118">loos.DoubleVectorMatrix</a>
+, <a class="el" href="classloos_1_1GCoordVector.html#a441c9398534602245f261db1680faedc">loos.GCoordVector</a>
+, <a class="el" href="classloos_1_1IntPairVector.html#aea393e04e7caf600bd07b0ac13b7b102">loos.IntPairVector</a>
+, <a class="el" href="classloos_1_1IntVector.html#a2d978f69da0f6c14d33e7991d8a899e2">loos.IntVector</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroupVector.html#a40c080fcf02b4d844573c3b34f94c22f">loos.loos.AtomicGroupVector</a>
+, <a class="el" href="classloos_1_1loos_1_1DoubleVector.html#a80cb5d4e5e95c33e3021b11f4905e207">loos.loos.DoubleVector</a>
+, <a class="el" href="classloos_1_1loos_1_1DoubleVectorMatrix.html#a372e170a821f2e0fb30f49cc4231572b">loos.loos.DoubleVectorMatrix</a>
+, <a class="el" href="classloos_1_1loos_1_1GCoordVector.html#a43d717706079b475a9d1d8777159f56d">loos.loos.GCoordVector</a>
+, <a class="el" href="classloos_1_1loos_1_1IntPairVector.html#a707fb37d77bb5f44aac9c52715d0f05e">loos.loos.IntPairVector</a>
+, <a class="el" href="classloos_1_1loos_1_1IntVector.html#a1a3963a4f4f3711e8f8eba48dfced0d9">loos.loos.IntVector</a>
+, <a class="el" href="classloos_1_1loos_1_1StringVector.html#a9e9016976327fcf1a7d32d3eed75b3b1">loos.loos.StringVector</a>
+, <a class="el" href="classloos_1_1loos_1_1UIntVector.html#a1ffe74c3674f7caa12d9ac2d995fdc95">loos.loos.UIntVector</a>
+, <a class="el" href="classloos_1_1loos_1_1XFormVector.html#a1e7fdfc14b4aa7eb40ee8762821f7ec4">loos.loos.XFormVector</a>
+, <a class="el" href="classloos_1_1StringVector.html#a5ae15f61d5340da8632e7966265a2ee9">loos.StringVector</a>
+, <a class="el" href="classloos_1_1UIntVector.html#a939edc2338f61d1306e1c90075580216">loos.UIntVector</a>
+, <a class="el" href="classloos_1_1XFormVector.html#ad2f4af4a7296d55571c0a7f197acab8c">loos.XFormVector</a>
+, <a class="el" href="classpyloos_1_1AtomicGroupVector.html#a16dbd0075b69b8f8ba8ed469cfcf696d">pyloos.AtomicGroupVector</a>
+, <a class="el" href="classpyloos_1_1DoubleVector.html#abc648a5197edeb1bea43777059189c34">pyloos.DoubleVector</a>
+, <a class="el" href="classpyloos_1_1DoubleVectorMatrix.html#aadb1c7b2189bfaacc6703d0f583bdb6c">pyloos.DoubleVectorMatrix</a>
+, <a class="el" href="classpyloos_1_1GCoordVector.html#aa3400522c75ac2c0151252db2ab4b2a8">pyloos.GCoordVector</a>
+, <a class="el" href="classpyloos_1_1IntVector.html#aef1c528015880a7f791cb109bdb92ba8">pyloos.IntVector</a>
+, <a class="el" href="classpyloos_1_1StringVector.html#a752864753a7b96a10e5cdcc53dc10b43">pyloos.StringVector</a>
+, <a class="el" href="classpyloos_1_1UIntVector.html#abba37d8ddd4e9f2eed52e5ec4786ee09">pyloos.UIntVector</a>
+, <a class="el" href="classpyloos_1_1XFormVector.html#a0333ef9d6213c70b5689d6ecee083c94">pyloos.XFormVector</a>
+</li>
 <li>begin()
-: <a class="el" href="classloos_1_1_density_tools_1_1_simple_meta.html#a6322337a6425918093e9c80ea847ddbb">loos::DensityTools::SimpleMeta</a>
+: <a class="el" href="classloos_1_1AtomicGroup.html#a63ac2390ffea78e930371af39b73e7ea">loos.AtomicGroup</a>
+, <a class="el" href="classloos_1_1AtomicGroupMap.html#a6438276da534876981c9352cbf994398">loos.AtomicGroupMap</a>
+, <a class="el" href="classloos_1_1AtomicGroupVector.html#a28c1536ee2bda9f6453637430cb5ce77">loos.AtomicGroupVector</a>
+, <a class="el" href="classloos_1_1DoubleVector.html#a1134bf912cf8785c8397edbdc6c9ef23">loos.DoubleVector</a>
+, <a class="el" href="classloos_1_1DoubleVectorMatrix.html#a5525f19f7ee8f3acd7eea157f1f8e9a1">loos.DoubleVectorMatrix</a>
+, <a class="el" href="classloos_1_1GCoordVector.html#aca4b8fa7df4ae1261869e4b87dbb996f">loos.GCoordVector</a>
+, <a class="el" href="classloos_1_1IntPairVector.html#afec234e4f5b65bd1644013c9323c4765">loos.IntPairVector</a>
+, <a class="el" href="classloos_1_1IntVector.html#a90727d014828d3f7a87d15cf1b948ad0">loos.IntVector</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroup.html#afb9bdd6b450dd4312548f7be47e417a2">loos.loos.AtomicGroup</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroupMap.html#a25071e1a4ad270aabcdab6386d62eb94">loos.loos.AtomicGroupMap</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroupVector.html#a92125e1d3561cf09bae98d4229e48c06">loos.loos.AtomicGroupVector</a>
+, <a class="el" href="classloos_1_1loos_1_1DoubleVector.html#a4d1bf4cf3c94eda7f752de5ac64a04eb">loos.loos.DoubleVector</a>
+, <a class="el" href="classloos_1_1loos_1_1DoubleVectorMatrix.html#a58ef24cffcce8b11b0e2c468539354c9">loos.loos.DoubleVectorMatrix</a>
+, <a class="el" href="classloos_1_1loos_1_1GCoordVector.html#a7ebc4c48f31de57b7726ca1bbacc1b3a">loos.loos.GCoordVector</a>
+, <a class="el" href="classloos_1_1loos_1_1IntPairVector.html#aa70fcb0491df8cc132b00a581c2719da">loos.loos.IntPairVector</a>
+, <a class="el" href="classloos_1_1loos_1_1IntVector.html#ae1c5cc397442ad65162f53c1d8f2d189">loos.loos.IntVector</a>
+, <a class="el" href="classloos_1_1loos_1_1StringVector.html#a821b827a7e5f32325f7cd38e1400eabb">loos.loos.StringVector</a>
+, <a class="el" href="classloos_1_1loos_1_1TimeSeriesDbl.html#a42923cc0d676eec6d6550fe701eca018">loos.loos.TimeSeriesDbl</a>
+, <a class="el" href="classloos_1_1loos_1_1UIntVector.html#ac630f0db7da9e78932e4feb128adf3f9">loos.loos.UIntVector</a>
+, <a class="el" href="classloos_1_1loos_1_1XFormVector.html#acc3f4359d7953573ad60939f23d3530b">loos.loos.XFormVector</a>
+, <a class="el" href="classloos_1_1StringVector.html#a8f4290090580d1b2c82bde1d2d6c8dc3">loos.StringVector</a>
+, <a class="el" href="classloos_1_1TimeSeriesDbl.html#a7b15df445043330b7a7f1861b765fdd6">loos.TimeSeriesDbl</a>
+, <a class="el" href="classloos_1_1UIntVector.html#a4f16ecb92c19b033f4d80ea606b72391">loos.UIntVector</a>
+, <a class="el" href="classloos_1_1XFormVector.html#af7eb1d779987d3511c08d4e022195f7a">loos.XFormVector</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1SimpleMeta.html#a6322337a6425918093e9c80ea847ddbb">loos::DensityTools::SimpleMeta</a>
+, <a class="el" href="classpyloos_1_1AtomicGroup.html#aed5fd71775f035a6d3e9acc1e7610760">pyloos.AtomicGroup</a>
+, <a class="el" href="classpyloos_1_1AtomicGroupMap.html#abccf370365f238f1a857c17f785ecf8b">pyloos.AtomicGroupMap</a>
+, <a class="el" href="classpyloos_1_1AtomicGroupVector.html#a25ac4e06b2350fc1b711980774f4f30b">pyloos.AtomicGroupVector</a>
+, <a class="el" href="classpyloos_1_1DoubleVector.html#adfe213451266b2fb45fbde251b852a04">pyloos.DoubleVector</a>
+, <a class="el" href="classpyloos_1_1DoubleVectorMatrix.html#a9768eb73a97048c0fc4033b02b5320a3">pyloos.DoubleVectorMatrix</a>
+, <a class="el" href="classpyloos_1_1GCoordVector.html#a5b1164c9c1f6a339a62e39f09e01169b">pyloos.GCoordVector</a>
+, <a class="el" href="classpyloos_1_1IntVector.html#a7a20c524693d39e0e520792bd64007ef">pyloos.IntVector</a>
+, <a class="el" href="classpyloos_1_1StringVector.html#a5c83f4ba2154e9bafab9e41c6bdf17c3">pyloos.StringVector</a>
+, <a class="el" href="classpyloos_1_1TimeSeriesDbl.html#a86f1a8c2166d639e067788fe8908f5b2">pyloos.TimeSeriesDbl</a>
+, <a class="el" href="classpyloos_1_1UIntVector.html#a8a14d3cb5ab573b864f3d252a2b4d232">pyloos.UIntVector</a>
+, <a class="el" href="classpyloos_1_1XFormVector.html#ace44576e69086aacbd804707560b03ad">pyloos.XFormVector</a>
+</li>
+<li>beta()
+: <a class="el" href="classloos_1_1loos_1_1UnitCell.html#aebcdea801dff99e2d5a624e3800c74af">loos.loos.UnitCell</a>
+, <a class="el" href="classloos_1_1UnitCell.html#ab23166b868250b8e17524e4f97f9cab0">loos.UnitCell</a>
+, <a class="el" href="classpyloos_1_1UnitCell.html#a8cc87d389301d02ffc0899568593fb24">pyloos.UnitCell</a>
+</li>
+<li>bfactor()
+: <a class="el" href="classloos_1_1Atom.html#abebb98b5b6703eed0d1c21d2f2572f42">loos.Atom</a>
+, <a class="el" href="classloos_1_1loos_1_1Atom.html#a94bb59a85f503be211686e3699a4f40e">loos.loos.Atom</a>
+, <a class="el" href="classpyloos_1_1Atom.html#a177c54f5a108e3fba4c34e7858ae9138">pyloos.Atom</a>
 </li>
 <li>binComp()
-: <a class="el" href="classloos_1_1internal_1_1_action.html#aea03184f9f1a94dc27d31388cdd27b06">loos::internal::Action</a>
+: <a class="el" href="classloos_1_1internal_1_1Action.html#aea03184f9f1a94dc27d31388cdd27b06">loos::internal::Action</a>
 </li>
 <li>bits
-: <a class="el" href="classloos_1_1_atom.html#a2a758660bf774fc372bd294a3fc92e53">loos::Atom</a>
+: <a class="el" href="classloos_1_1Atom.html#a2a758660bf774fc372bd294a3fc92e53">loos.Atom</a>
 </li>
 <li>block()
-: <a class="el" href="class_e_n_m_1_1_bound_super_block.html#a38a3ee9be7a26f987c742d54eb0e7d3f">ENM::BoundSuperBlock</a>
-, <a class="el" href="class_e_n_m_1_1_super_block.html#af193c9d326519372ad504b345265ec91">ENM::SuperBlock</a>
+: <a class="el" href="classENM_1_1BoundSuperBlock.html#a38a3ee9be7a26f987c742d54eb0e7d3f">ENM::BoundSuperBlock</a>
+, <a class="el" href="classENM_1_1SuperBlock.html#af193c9d326519372ad504b345265ec91">ENM::SuperBlock</a>
 </li>
 <li>block_type
-: <a class="el" href="classloos_1_1internal_1_1_x_d_r_reader.html#a6f85a341b09e7201b5f45a5996ba0f84">loos::internal::XDRReader</a>
-, <a class="el" href="classloos_1_1internal_1_1_x_d_r_writer.html#a9075c792be09a2aa8b8634fafdff17c8">loos::internal::XDRWriter</a>
+: <a class="el" href="classloos_1_1internal_1_1XDRReader.html#a6f85a341b09e7201b5f45a5996ba0f84">loos::internal::XDRReader</a>
+, <a class="el" href="classloos_1_1internal_1_1XDRWriter.html#a9075c792be09a2aa8b8634fafdff17c8">loos::internal::XDRWriter</a>
 </li>
 <li>block_var()
-: <a class="el" href="classloos_1_1_time_series.html#aa0835dd5af50f338bdc6b4d072685122">loos::TimeSeries&lt; T &gt;</a>
+: <a class="el" href="classloos_1_1loos_1_1TimeSeriesDbl.html#a97b6dfbc9a716c8e898efc732404158f">loos.loos.TimeSeriesDbl</a>
+, <a class="el" href="classloos_1_1TimeSeriesDbl.html#ac1547426c18acf6598c850c26e8bed17">loos.TimeSeriesDbl</a>
+, <a class="el" href="classloos_1_1TimeSeries.html#aa0835dd5af50f338bdc6b4d072685122">loos::TimeSeries&lt; T &gt;</a>
+, <a class="el" href="classpyloos_1_1TimeSeriesDbl.html#ae050efb883cbdce428fc38156c73eaa6">pyloos.TimeSeriesDbl</a>
 </li>
 <li>blockImpl()
-: <a class="el" href="class_e_n_m_1_1_super_block.html#a2d0a723e77ceb879bf3831ab8de52e89">ENM::SuperBlock</a>
+: <a class="el" href="classENM_1_1SuperBlock.html#a2d0a723e77ceb879bf3831ab8de52e89">ENM::SuperBlock</a>
 </li>
 <li>boundingBox()
-: <a class="el" href="classloos_1_1_atomic_group.html#a159dd8fcf36911e4a3f95f701bb9cf9d">loos::AtomicGroup</a>
-, <a class="el" href="classloos_1_1_density_tools_1_1_bulked_water_filter.html#a915445152bd1a3f2f70e0402bffd6283">loos::DensityTools::BulkedWaterFilter</a>
-, <a class="el" href="classloos_1_1_density_tools_1_1_water_filter_axis.html#af915eeef0b5f2aca2f165ea444181cdc">loos::DensityTools::WaterFilterAxis</a>
-, <a class="el" href="classloos_1_1_density_tools_1_1_water_filter_base.html#ac16cde9ce147f4f537d3bb427aee5646">loos::DensityTools::WaterFilterBase</a>
-, <a class="el" href="classloos_1_1_density_tools_1_1_water_filter_blob.html#aee4b8c0611f4f371662c79fb3d6dcc94">loos::DensityTools::WaterFilterBlob</a>
-, <a class="el" href="classloos_1_1_density_tools_1_1_water_filter_box.html#ae52563e198d467e1fec19cca2d9a065d">loos::DensityTools::WaterFilterBox</a>
-, <a class="el" href="classloos_1_1_density_tools_1_1_water_filter_contacts.html#a424d0800f8eb16a5b14049f58b97cbfe">loos::DensityTools::WaterFilterContacts</a>
-, <a class="el" href="classloos_1_1_density_tools_1_1_water_filter_core.html#a396c4f8f28741d8d7432c1a6dcf7de55">loos::DensityTools::WaterFilterCore</a>
-, <a class="el" href="classloos_1_1_density_tools_1_1_water_filter_decorator.html#afe71b7feed19e11276863f4dbf888157">loos::DensityTools::WaterFilterDecorator</a>
-, <a class="el" href="classloos_1_1_density_tools_1_1_water_filter_radius.html#a96b22c218952e1296692fb1e7c06792a">loos::DensityTools::WaterFilterRadius</a>
-, <a class="el" href="classloos_1_1_density_tools_1_1_z_clipped_water_filter.html#a67207a97c4559feb6b3f80047bb0980c">loos::DensityTools::ZClippedWaterFilter</a>
+: <a class="el" href="classloos_1_1AtomicGroup.html#a53cfcc23c1da0b954d61c2ecd6c2a2e9">loos.AtomicGroup</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroup.html#a9d394535be33eef7c793db16e6252c79">loos.loos.AtomicGroup</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1BulkedWaterFilter.html#a915445152bd1a3f2f70e0402bffd6283">loos::DensityTools::BulkedWaterFilter</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1WaterFilterAxis.html#af915eeef0b5f2aca2f165ea444181cdc">loos::DensityTools::WaterFilterAxis</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1WaterFilterBase.html#ac16cde9ce147f4f537d3bb427aee5646">loos::DensityTools::WaterFilterBase</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1WaterFilterBlob.html#aee4b8c0611f4f371662c79fb3d6dcc94">loos::DensityTools::WaterFilterBlob</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1WaterFilterBox.html#ae52563e198d467e1fec19cca2d9a065d">loos::DensityTools::WaterFilterBox</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1WaterFilterContacts.html#a424d0800f8eb16a5b14049f58b97cbfe">loos::DensityTools::WaterFilterContacts</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1WaterFilterCore.html#a396c4f8f28741d8d7432c1a6dcf7de55">loos::DensityTools::WaterFilterCore</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1WaterFilterDecorator.html#afe71b7feed19e11276863f4dbf888157">loos::DensityTools::WaterFilterDecorator</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1WaterFilterRadius.html#a96b22c218952e1296692fb1e7c06792a">loos::DensityTools::WaterFilterRadius</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1ZClippedWaterFilter.html#a67207a97c4559feb6b3f80047bb0980c">loos::DensityTools::ZClippedWaterFilter</a>
+, <a class="el" href="classpyloos_1_1AtomicGroup.html#af5d4f890a2fad72742118425c5c39fb4">pyloos.AtomicGroup</a>
 </li>
 <li>buildHessian()
-: <a class="el" href="class_e_n_m_1_1_elastic_network_model.html#acc7577f57ff9bd2fc8402242dc6e1f38">ENM::ElasticNetworkModel</a>
+: <a class="el" href="classENM_1_1ElasticNetworkModel.html#acc7577f57ff9bd2fc8402242dc6e1f38">ENM::ElasticNetworkModel</a>
 </li>
 <li>bulked_spec
-: <a class="el" href="classloos_1_1_options_framework_1_1_basic_water.html#a0b8af2e719711d45146ebc62417f5a7c">loos::OptionsFramework::BasicWater</a>
+: <a class="el" href="classloos_1_1OptionsFramework_1_1BasicWater.html#a0b8af2e719711d45146ebc62417f5a7c">loos::OptionsFramework::BasicWater</a>
 </li>
 </ul>
 </div><!-- contents -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+</small></address>
 </body>
 </html>

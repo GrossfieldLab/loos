@@ -9,10 +9,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -26,8 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LOOS
-   &#160;<span id="projectnumber">v3.3</span>
+   &#160;<span id="projectnumber">4.0</span>
    </div>
+   <div id="projectbrief">The Lightweight Object Oriented Structural analysis library/toolkit</div>
   </td>
  </tr>
  </tbody>
@@ -50,23 +47,6 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
-</div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('gro_8hpp_source.html',''); initResizable(); });
-/* @license-end */
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -81,6 +61,11 @@ $(document).ready(function(){initNavTree('gro_8hpp_source.html',''); initResizab
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+</div>
+</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">gro.hpp</div>  </div>
@@ -107,89 +92,81 @@ $(document).ready(function(){initNavTree('gro_8hpp_source.html',''); initResizab
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">  along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">*/</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#if !defined(LOOS_GRO_HPP)</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#define LOOS_GRO_HPP</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &lt;sstream&gt;</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &lt;fstream&gt;</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;stdexcept&gt;</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;loos_defs.hpp&gt;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;AtomicGroup.hpp&gt;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">namespace </span>loos {</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classloos_1_1_gromacs.html">   39</a></span>&#160;  <span class="keyword">class </span><a class="code" href="classloos_1_1_gromacs.html">Gromacs</a> : <span class="keyword">public</span> <a class="code" href="classloos_1_1_atomic_group.html">AtomicGroup</a> {</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#if !defined(LOOS_GRO_HPP)</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#define LOOS_GRO_HPP</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &lt;sstream&gt;</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &lt;fstream&gt;</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &lt;stdexcept&gt;</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;loos_defs.hpp&gt;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;AtomicGroup.hpp&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceloos.html">loos</a></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;{</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  <span class="keyword">class </span>Gromacs : <span class="keyword">public</span> AtomicGroup</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  {</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <a class="code" href="classloos_1_1_gromacs.html">Gromacs</a>() { }</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classloos_1_1_gromacs.html">Gromacs</a>(<span class="keyword">const</span> std::string&amp; fname) : _filename(fname), _max_index(0), _has_velocities(<span class="keyword">false</span>) {</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    Gromacs() {}</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="keyword">explicit</span> Gromacs(<span class="keyword">const</span> std::string &amp;fname) : _filename(fname), _max_index(0), _has_velocities(false)</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    {</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;      std::ifstream ifs(fname.c_str());</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;      <span class="keywordflow">if</span> (!ifs)</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">throw</span>(<a class="code" href="classloos_1_1_file_open_error.html">FileOpenError</a>(fname));</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keywordflow">throw</span>(FileOpenError(fname));</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;      read(ifs);</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    }</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classloos_1_1_gromacs.html">Gromacs</a>(std::istream&amp; ifs) : _filename(<span class="stringliteral">&quot;stream&quot;</span>), _max_index(0), _has_velocities(<span class="keyword">false</span>) { read(ifs); }</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">explicit</span> Gromacs(std::istream &amp;ifs) : _filename(<span class="stringliteral">&quot;stream&quot;</span>), _max_index(0), _has_velocities(false) { read(ifs); }</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keyword">static</span> pAtomicGroup create(<span class="keyword">const</span> std::string&amp; fname) {</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;      <span class="keywordflow">return</span>(pAtomicGroup(<span class="keyword">new</span> <a class="code" href="classloos_1_1_gromacs.html">Gromacs</a>(fname)));</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    }</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    <span class="keyword">static</span> pAtomicGroup <a class="code" href="classloos_1_1Gromacs.html#a4eb942841675573b775eeda3c063d2cc">create</a>(<span class="keyword">const</span> std::string &amp;fname)</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    {</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;      <span class="keywordflow">return</span> (pAtomicGroup(<span class="keyword">new</span> Gromacs(fname)));</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;    }</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordtype">bool</span> hasVelocities()<span class="keyword"> const </span>{ <span class="keywordflow">return</span>(_has_velocities); }</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classloos_1_1Gromacs.html#aae5b568ecbfa57049a4d354f45e0b745">hasVelocities</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span> (_has_velocities); }</div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;<span class="preprocessor">#if !defined(SWIG)</span></div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <span class="keyword">friend</span> std::ostream&amp; <a class="code" href="classloos_1_1_gromacs.html#a505997f3ddef95bf6719b46c5c37f80a">operator&lt;&lt;</a>(std::ostream&amp;, <span class="keyword">const</span> <a class="code" href="classloos_1_1_gromacs.html">Gromacs</a>&amp;);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    std::string title(<span class="keywordtype">void</span>)<span class="keyword"> const </span>{ <span class="keywordflow">return</span>(title_); }</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    std::string <a class="code" href="classloos_1_1Gromacs.html#a49bb7d40ecbd94f431b37655449f0aa8">asString</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keyword">friend</span> std::ostream &amp;<a class="code" href="classloos_1_1Gromacs.html#a505997f3ddef95bf6719b46c5c37f80a">operator&lt;&lt;</a>(std::ostream &amp;, <span class="keyword">const</span> Gromacs &amp;);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    std::string <a class="code" href="classloos_1_1Gromacs.html#adec3f405523653c1dbc0165c813c6821">title</a>(<span class="keywordtype">void</span>)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> (title_); }</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00067"></a><span class="lineno"><a class="line" href="classloos_1_1Gromacs.html#ac2f0b0accff859a6c04f0e5ee1221729">   67</a></span>&#160;    <span class="keyword">static</span> <a class="code" href="classloos_1_1Gromacs.html">Gromacs</a> <a class="code" href="classloos_1_1Gromacs.html#ac2f0b0accff859a6c04f0e5ee1221729">fromAtomicGroup</a>(<span class="keyword">const</span> <a class="code" href="classloos_1_1AtomicGroup.html">AtomicGroup</a> &amp;);</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    <span class="keyword">static</span> <a class="code" href="classloos_1_1_gromacs.html">Gromacs</a> <a class="code" href="classloos_1_1_gromacs.html#abf01a1543ce8149c81c1872c23ae6501">fromAtomicGroup</a>(<span class="keyword">const</span> <a class="code" href="classloos_1_1_atomic_group.html">AtomicGroup</a>&amp;);</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    std::string _filename;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    std::string title_;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    uint _max_index;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keywordtype">bool</span> _has_velocities;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    std::string _filename;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    std::string title_;</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    uint _max_index;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordtype">bool</span> _has_velocities;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keywordtype">void</span> read(std::istream &amp;ifs);</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordtype">void</span> read(std::istream&amp; ifs);</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="comment">// Convert an Atom to a string representation in PDB format...</span></div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    std::string atomAsString(<span class="keyword">const</span> pAtom p) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    <span class="comment">// Convert an Atom to a string representation in PDB format...</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    std::string atomAsString(<span class="keyword">const</span> pAtom p) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <a class="code" href="classloos_1_1Gromacs.html">Gromacs</a>(<span class="keyword">const</span> <a class="code" href="classloos_1_1AtomicGroup.html">AtomicGroup</a> &amp;grp) : <a class="code" href="classloos_1_1AtomicGroup.html">AtomicGroup</a>(grp) {}</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;  };</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <a class="code" href="classloos_1_1_gromacs.html">Gromacs</a>(<span class="keyword">const</span> <a class="code" href="classloos_1_1_atomic_group.html">AtomicGroup</a>&amp; grp) : <a class="code" href="classloos_1_1_atomic_group.html">AtomicGroup</a>(grp) { }</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  };</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;}</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclassloos_1_1_atomic_group_html"><div class="ttname"><a href="classloos_1_1_atomic_group.html">loos::AtomicGroup</a></div><div class="ttdoc">Class for handling groups of Atoms (pAtoms, actually)</div><div class="ttdef"><b>Definition:</b> <a href="_atomic_group_8hpp_source.html#l00112">AtomicGroup.hpp:112</a></div></div>
-<div class="ttc" id="aclassloos_1_1_file_open_error_html"><div class="ttname"><a href="classloos_1_1_file_open_error.html">loos::FileOpenError</a></div><div class="ttdoc">Error while opening a file.</div><div class="ttdef"><b>Definition:</b> <a href="exceptions_8hpp_source.html#l00170">exceptions.hpp:170</a></div></div>
-<div class="ttc" id="aclassloos_1_1_gromacs_html"><div class="ttname"><a href="classloos_1_1_gromacs.html">loos::Gromacs</a></div><div class="ttdoc">Implements a GROMACS model file (.gro)</div><div class="ttdef"><b>Definition:</b> <a href="gro_8hpp_source.html#l00039">gro.hpp:39</a></div></div>
-<div class="ttc" id="aclassloos_1_1_gromacs_html_a505997f3ddef95bf6719b46c5c37f80a"><div class="ttname"><a href="classloos_1_1_gromacs.html#a505997f3ddef95bf6719b46c5c37f80a">loos::Gromacs::operator&lt;&lt;</a></div><div class="ttdeci">friend std::ostream &amp; operator&lt;&lt;(std::ostream &amp;, const Gromacs &amp;)</div><div class="ttdoc">Output as a GRO.</div><div class="ttdef"><b>Definition:</b> <a href="gro_8cpp_source.html#l00141">gro.cpp:141</a></div></div>
-<div class="ttc" id="aclassloos_1_1_gromacs_html_abf01a1543ce8149c81c1872c23ae6501"><div class="ttname"><a href="classloos_1_1_gromacs.html#abf01a1543ce8149c81c1872c23ae6501">loos::Gromacs::fromAtomicGroup</a></div><div class="ttdeci">static Gromacs fromAtomicGroup(const AtomicGroup &amp;)</div><div class="ttdoc">Class method for creating a GRO from an AtomicGroup.</div><div class="ttdef"><b>Definition:</b> <a href="gro_8cpp_source.html#l00129">gro.cpp:129</a></div></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;}</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aclassloos_1_1AtomicGroup_html"><div class="ttname"><a href="classloos_1_1AtomicGroup.html">loos.AtomicGroup</a></div><div class="ttdoc">Class for handling groups of Atoms (pAtoms, actually)</div><div class="ttdef"><b>Definition:</b> loos.py:2288</div></div>
+<div class="ttc" id="aclassloos_1_1Gromacs_html"><div class="ttname"><a href="classloos_1_1Gromacs.html">loos.Gromacs</a></div><div class="ttdoc">Implements a GROMACS model file (.gro)</div><div class="ttdef"><b>Definition:</b> loos.py:4128</div></div>
+<div class="ttc" id="aclassloos_1_1Gromacs_html_a49bb7d40ecbd94f431b37655449f0aa8"><div class="ttname"><a href="classloos_1_1Gromacs.html#a49bb7d40ecbd94f431b37655449f0aa8">loos.Gromacs.asString</a></div><div class="ttdeci">&quot;std::string&quot; asString(self)</div><div class="ttdef"><b>Definition:</b> loos.py:4150</div></div>
+<div class="ttc" id="aclassloos_1_1Gromacs_html_a4eb942841675573b775eeda3c063d2cc"><div class="ttname"><a href="classloos_1_1Gromacs.html#a4eb942841675573b775eeda3c063d2cc">loos.Gromacs.create</a></div><div class="ttdeci">&quot;loos::pAtomicGroup&quot; create(&quot;std::string const &amp;&quot; fname)</div><div class="ttdef"><b>Definition:</b> loos.py:4142</div></div>
+<div class="ttc" id="aclassloos_1_1Gromacs_html_a505997f3ddef95bf6719b46c5c37f80a"><div class="ttname"><a href="classloos_1_1Gromacs.html#a505997f3ddef95bf6719b46c5c37f80a">loos.Gromacs::operator&lt;&lt;</a></div><div class="ttdeci">friend std::ostream &amp; operator&lt;&lt;(std::ostream &amp;, const Gromacs &amp;)</div><div class="ttdoc">Output as a GRO.</div><div class="ttdef"><b>Definition:</b> gro.cpp:144</div></div>
+<div class="ttc" id="aclassloos_1_1Gromacs_html_aae5b568ecbfa57049a4d354f45e0b745"><div class="ttname"><a href="classloos_1_1Gromacs.html#aae5b568ecbfa57049a4d354f45e0b745">loos.Gromacs.hasVelocities</a></div><div class="ttdeci">&quot;bool&quot; hasVelocities(self)</div><div class="ttdef"><b>Definition:</b> loos.py:4146</div></div>
+<div class="ttc" id="aclassloos_1_1Gromacs_html_ac2f0b0accff859a6c04f0e5ee1221729"><div class="ttname"><a href="classloos_1_1Gromacs.html#ac2f0b0accff859a6c04f0e5ee1221729">loos.Gromacs::fromAtomicGroup</a></div><div class="ttdeci">static Gromacs fromAtomicGroup(const AtomicGroup &amp;)</div><div class="ttdoc">Class method for creating a GRO from an AtomicGroup.</div></div>
+<div class="ttc" id="aclassloos_1_1Gromacs_html_adec3f405523653c1dbc0165c813c6821"><div class="ttname"><a href="classloos_1_1Gromacs.html#adec3f405523653c1dbc0165c813c6821">loos.Gromacs.title</a></div><div class="ttdeci">&quot;std::string&quot; title(self)</div><div class="ttdef"><b>Definition:</b> loos.py:4154</div></div>
+<div class="ttc" id="anamespaceloos_html"><div class="ttname"><a href="namespaceloos.html">loos</a></div><div class="ttdoc">Namespace for most things not already encapsulated within a class.</div><div class="ttdef"><b>Definition:</b> loos.py:1</div></div>
 </div><!-- fragment --></div><!-- contents -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><b>gro.hpp</b></li>
-    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+</small></address>
 </body>
 </html>

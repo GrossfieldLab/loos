@@ -9,10 +9,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -26,8 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LOOS
-   &#160;<span id="projectnumber">v3.3</span>
+   &#160;<span id="projectnumber">4.0</span>
    </div>
+   <div id="projectbrief">The Lightweight Object Oriented Structural analysis library/toolkit</div>
   </td>
  </tr>
  </tbody>
@@ -50,23 +47,6 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
-</div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('hcore_8hpp_source.html',''); initResizable(); });
-/* @license-end */
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -81,6 +61,11 @@ $(document).ready(function(){initNavTree('hcore_8hpp_source.html',''); initResiz
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_395bafe2adc24fcfed5d14b8ce406a4f.html">Packages</a></li><li class="navelem"><a class="el" href="dir_b507bc97439bad0de2ae8fa34b1a4a9c.html">HydrogenBonds</a></li>  </ul>
+</div>
+</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">hcore.hpp</div>  </div>
@@ -120,20 +105,20 @@ $(document).ready(function(){initNavTree('hcore_8hpp_source.html',''); initResiz
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;loos.hpp&gt;</span></div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">namespace </span>loos {</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceloos.html">loos</a> {</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  <span class="keyword">namespace </span>HBonds {</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">typedef</span> <a class="code" href="classloos_1_1_math_1_1_matrix.html">loos::Math::Matrix&lt;int, loos::Math::RowMajor&gt;</a>   BondMatrix;</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">typedef</span> <a class="code" href="classloos_1_1Math_1_1Matrix.html">loos::Math::Matrix&lt;int, loos::Math::RowMajor&gt;</a>   BondMatrix;</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="comment">// Our own exception so we can provide a little more helpful</span></div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="comment">// information when we throw-up...</span></div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="structloos_1_1_h_bonds_1_1_error_with_atom.html">   45</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structloos_1_1_h_bonds_1_1_error_with_atom.html">ErrorWithAtom</a> : <span class="keyword">public</span> std::exception {</div>
+<div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="structloos_1_1HBonds_1_1ErrorWithAtom.html">   45</a></span>&#160;    <span class="keyword">struct </span><a class="code" href="structloos_1_1HBonds_1_1ErrorWithAtom.html">ErrorWithAtom</a> : <span class="keyword">public</span> std::exception {</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;      std::string _msg;</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;      <a class="code" href="structloos_1_1_h_bonds_1_1_error_with_atom.html">ErrorWithAtom</a>(<span class="keyword">const</span> loos::pAtom&amp; a, <span class="keyword">const</span> std::string&amp; msg) {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;      <a class="code" href="structloos_1_1HBonds_1_1ErrorWithAtom.html">ErrorWithAtom</a>(<span class="keyword">const</span> loos::pAtom&amp; a, <span class="keyword">const</span> std::string&amp; msg) {</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        std::stringstream ss;</div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        ss &lt;&lt; msg &lt;&lt; std::endl &lt;&lt; *a &lt;&lt; std::endl;</div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;        _msg = ss.str();</div>
@@ -141,7 +126,7 @@ $(document).ready(function(){initNavTree('hcore_8hpp_source.html',''); initResiz
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;      <span class="keyword">const</span> <span class="keywordtype">char</span>* what() <span class="keyword">const</span> <span class="keywordflow">throw</span>() { <span class="keywordflow">return</span>(_msg.c_str()); }</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;      ~<a class="code" href="structloos_1_1_h_bonds_1_1_error_with_atom.html">ErrorWithAtom</a>() <span class="keywordflow">throw</span>() { }</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;      ~<a class="code" href="structloos_1_1HBonds_1_1ErrorWithAtom.html">ErrorWithAtom</a>() <span class="keywordflow">throw</span>() { }</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    };</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
 <div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
@@ -155,18 +140,18 @@ $(document).ready(function(){initNavTree('hcore_8hpp_source.html',''); initResiz
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="comment">// always have current periodic boundary info...</span></div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="classloos_1_1_h_bonds_1_1_simple_atom.html">   70</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classloos_1_1_h_bonds_1_1_simple_atom.html">SimpleAtom</a> {</div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="classloos_1_1HBonds_1_1SimpleAtom.html">   70</a></span>&#160;    <span class="keyword">class </span><a class="code" href="classloos_1_1HBonds_1_1SimpleAtom.html">SimpleAtom</a> {</div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;      <a class="code" href="classloos_1_1_h_bonds_1_1_simple_atom.html">SimpleAtom</a>(<span class="keyword">const</span> loos::pAtom&amp; a) : atom(a), isHydrogen(divineHydrogen(a-&gt;name())), usePeriodicity(<span class="keyword">false</span>) { }</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;      <a class="code" href="classloos_1_1_h_bonds_1_1_simple_atom.html">SimpleAtom</a>(<span class="keyword">const</span> loos::pAtom&amp; a, <span class="keyword">const</span> <a class="code" href="classloos_1_1_shared_periodic_box.html">loos::SharedPeriodicBox</a>&amp; b, <span class="keyword">const</span> <span class="keywordtype">bool</span> c = <span class="keyword">true</span>) : atom(a), isHydrogen(divineHydrogen(a-&gt;name())), usePeriodicity(c), sbox(b) { }</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;      <a class="code" href="classloos_1_1HBonds_1_1SimpleAtom.html">SimpleAtom</a>(<span class="keyword">const</span> loos::pAtom&amp; a) : atom(a), isHydrogen(divineHydrogen(a-&gt;name())), usePeriodicity(<span class="keyword">false</span>) { }</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;      <a class="code" href="classloos_1_1HBonds_1_1SimpleAtom.html">SimpleAtom</a>(<span class="keyword">const</span> loos::pAtom&amp; a, <span class="keyword">const</span> <a class="code" href="classloos_1_1SharedPeriodicBox.html">loos::SharedPeriodicBox</a>&amp; b, <span class="keyword">const</span> <span class="keywordtype">bool</span> c = <span class="keyword">true</span>) : atom(a), isHydrogen(divineHydrogen(a-&gt;name())), usePeriodicity(c), sbox(b) { }</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;      <span class="keywordtype">void</span> attach(<span class="keyword">const</span> loos::pAtom&amp;a) { attached_to = a; }</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;      loos::pAtom attachedTo()<span class="keyword"> const </span>{ <span class="keywordflow">return</span>(attached_to); }</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;      loos::pAtom rawAtom()<span class="keyword"> const </span>{ <span class="keywordflow">return</span>(atom); }</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;      <span class="keywordtype">double</span> distance2(<span class="keyword">const</span> <a class="code" href="classloos_1_1_h_bonds_1_1_simple_atom.html">SimpleAtom</a>&amp; s) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;      <span class="keywordtype">double</span> angle(<span class="keyword">const</span> <a class="code" href="classloos_1_1_h_bonds_1_1_simple_atom.html">SimpleAtom</a>&amp; s) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;      <span class="keywordtype">double</span> distance2(<span class="keyword">const</span> <a class="code" href="classloos_1_1HBonds_1_1SimpleAtom.html">SimpleAtom</a>&amp; s) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;      <span class="keywordtype">double</span> angle(<span class="keyword">const</span> <a class="code" href="classloos_1_1HBonds_1_1SimpleAtom.html">SimpleAtom</a>&amp; s) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;      <span class="keyword">static</span> <span class="keywordtype">bool</span> debuggingMode() { <span class="keywordflow">return</span>(debugging); }</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;      <span class="keyword">static</span> <span class="keywordtype">void</span> debuggingMode(<span class="keyword">const</span> <span class="keywordtype">bool</span> b) { debugging = b; }</div>
@@ -183,11 +168,11 @@ $(document).ready(function(){initNavTree('hcore_8hpp_source.html',''); initResiz
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;      <span class="comment">// Tests whether two SimpleAtoms have a potential hydrogen-bond</span></div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;      <span class="comment">// between them.</span></div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;      <span class="keywordtype">bool</span> hydrogenBond(<span class="keyword">const</span> <a class="code" href="classloos_1_1_h_bonds_1_1_simple_atom.html">SimpleAtom</a>&amp; other) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;      <span class="keywordtype">bool</span> hydrogenBond(<span class="keyword">const</span> <a class="code" href="classloos_1_1HBonds_1_1SimpleAtom.html">SimpleAtom</a>&amp; other) <span class="keyword">const</span>;</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;      <span class="comment">// Returns an AtomicGroup of all atoms that may have hydrogen-bonds</span></div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;      <span class="comment">// to the current SimpleAtom</span></div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;      <a class="code" href="classloos_1_1_atomic_group.html">loos::AtomicGroup</a> findHydrogenBonds(<span class="keyword">const</span> std::vector&lt;SimpleAtom&gt;&amp; group, <span class="keyword">const</span> <span class="keywordtype">bool</span> findFirstOnly = <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;      <a class="code" href="classloos_1_1loos_1_1AtomicGroup.html">loos::AtomicGroup</a> findHydrogenBonds(<span class="keyword">const</span> std::vector&lt;SimpleAtom&gt;&amp; group, <span class="keyword">const</span> <span class="keywordtype">bool</span> findFirstOnly = <span class="keyword">true</span>);</div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;      std::vector&lt;uint&gt; findHydrogenBondsVector(<span class="keyword">const</span> std::vector&lt;SimpleAtom&gt;&amp; group);</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  </div>
@@ -197,8 +182,8 @@ $(document).ready(function(){initNavTree('hcore_8hpp_source.html',''); initResiz
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;      <span class="comment">// otherwise.</span></div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;      <span class="comment">//</span></div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;      <span class="comment">// maxt determines the maximum time (frame #) that is considered.</span></div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;      <a class="code" href="classloos_1_1_math_1_1_matrix.html">BondMatrix</a> findHydrogenBondsMatrix(<span class="keyword">const</span> std::vector&lt;SimpleAtom&gt;&amp; group, loos::pTraj&amp; traj, <a class="code" href="classloos_1_1_atomic_group.html">loos::AtomicGroup</a>&amp; model, <span class="keyword">const</span> uint maxt) <span class="keyword">const</span>;</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;      <a class="code" href="classloos_1_1_math_1_1_matrix.html">BondMatrix</a> findHydrogenBondsMatrix(<span class="keyword">const</span> std::vector&lt;SimpleAtom&gt;&amp; group, loos::pTraj&amp; traj, <a class="code" href="classloos_1_1_atomic_group.html">loos::AtomicGroup</a>&amp; model)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;      <a class="code" href="classloos_1_1Math_1_1Matrix.html">BondMatrix</a> findHydrogenBondsMatrix(<span class="keyword">const</span> std::vector&lt;SimpleAtom&gt;&amp; group, loos::pTraj&amp; traj, <a class="code" href="classloos_1_1loos_1_1AtomicGroup.html">loos::AtomicGroup</a>&amp; model, <span class="keyword">const</span> uint maxt) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;      <a class="code" href="classloos_1_1Math_1_1Matrix.html">BondMatrix</a> findHydrogenBondsMatrix(<span class="keyword">const</span> std::vector&lt;SimpleAtom&gt;&amp; group, loos::pTraj&amp; traj, <a class="code" href="classloos_1_1loos_1_1AtomicGroup.html">loos::AtomicGroup</a>&amp; model)<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        <span class="keywordflow">return</span>(findHydrogenBondsMatrix(group, traj, model, traj-&gt;nframes()));</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;      }</div>
 <div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
@@ -208,9 +193,9 @@ $(document).ready(function(){initNavTree('hcore_8hpp_source.html',''); initResiz
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;      <span class="comment">// created SimpleAtoms...they also shared the PeriodicBox with the</span></div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;      <span class="comment">// passed AtomicGroup.</span></div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;      <span class="keyword">static</span> std::vector&lt;SimpleAtom&gt; processSelection(<span class="keyword">const</span> std::string&amp; selection, <span class="keyword">const</span> <a class="code" href="classloos_1_1_atomic_group.html">loos::AtomicGroup</a>&amp; system, <span class="keyword">const</span> <span class="keywordtype">bool</span> use_periodicity = <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;      <span class="keyword">static</span> std::vector&lt;SimpleAtom&gt; processSelection(<span class="keyword">const</span> std::string&amp; selection, <span class="keyword">const</span> <a class="code" href="classloos_1_1loos_1_1AtomicGroup.html">loos::AtomicGroup</a>&amp; system, <span class="keyword">const</span> <span class="keywordtype">bool</span> use_periodicity = <span class="keyword">false</span>);</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160; </div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;      <span class="keyword">friend</span> std::ostream&amp; operator&lt;&lt;(std::ostream&amp; os, <span class="keyword">const</span> <a class="code" href="classloos_1_1_h_bonds_1_1_simple_atom.html">SimpleAtom</a>&amp; s) {</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;      <span class="keyword">friend</span> std::ostream&amp; operator&lt;&lt;(std::ostream&amp; os, <span class="keyword">const</span> <a class="code" href="classloos_1_1HBonds_1_1SimpleAtom.html">SimpleAtom</a>&amp; s) {</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;        os &lt;&lt; <span class="stringliteral">&quot;&lt;SimpleAtom&gt;\n&quot;</span>;</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        os &lt;&lt; *(s.atom) &lt;&lt; std::endl;</div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        os &lt;&lt; <span class="stringliteral">&quot;&lt;isHydrogen &quot;</span> &lt;&lt; s.isHydrogen &lt;&lt; <span class="stringliteral">&quot;/&gt;\n&quot;</span>;</div>
@@ -240,7 +225,7 @@ $(document).ready(function(){initNavTree('hcore_8hpp_source.html',''); initResiz
 <div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;      <span class="keyword">static</span> <span class="keywordtype">double</span> inner, outer, deviation;</div>
 <div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;      <span class="keyword">static</span> <span class="keywordtype">bool</span> debugging;</div>
 <div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;      <a class="code" href="classloos_1_1_shared_periodic_box.html">loos::SharedPeriodicBox</a> sbox;</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;      <a class="code" href="classloos_1_1SharedPeriodicBox.html">loos::SharedPeriodicBox</a> sbox;</div>
 <div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;      loos::pAtom attached_to;</div>
 <div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160; </div>
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    };</div>
@@ -249,25 +234,22 @@ $(document).ready(function(){initNavTree('hcore_8hpp_source.html',''); initResiz
 <div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160; </div>
 <div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    <span class="comment">// Typedefs to make life easier in the tools...</span></div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160; </div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keyword">typedef</span> <a class="code" href="classloos_1_1_h_bonds_1_1_simple_atom.html">SimpleAtom</a>    <a class="code" href="classloos_1_1_h_bonds_1_1_simple_atom.html">SAtom</a>;</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keyword">typedef</span> <a class="code" href="classloos_1_1HBonds_1_1SimpleAtom.html">SimpleAtom</a>    <a class="code" href="classloos_1_1HBonds_1_1SimpleAtom.html">SAtom</a>;</div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;    <span class="keyword">typedef</span> std::vector&lt;SAtom&gt; SAGroup;</div>
 <div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160; </div>
 <div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;  }</div>
 <div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;}</div>
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclassloos_1_1_atomic_group_html"><div class="ttname"><a href="classloos_1_1_atomic_group.html">loos::AtomicGroup</a></div><div class="ttdoc">Class for handling groups of Atoms (pAtoms, actually)</div><div class="ttdef"><b>Definition:</b> <a href="_atomic_group_8hpp_source.html#l00112">AtomicGroup.hpp:112</a></div></div>
-<div class="ttc" id="aclassloos_1_1_h_bonds_1_1_simple_atom_html"><div class="ttname"><a href="classloos_1_1_h_bonds_1_1_simple_atom.html">loos::HBonds::SimpleAtom</a></div><div class="ttdef"><b>Definition:</b> <a href="hcore_8hpp_source.html#l00070">hcore.hpp:70</a></div></div>
-<div class="ttc" id="aclassloos_1_1_math_1_1_matrix_html"><div class="ttname"><a href="classloos_1_1_math_1_1_matrix.html">loos::Math::Matrix</a></div><div class="ttdoc">Simple matrix template class using policy classes to determine behavior.</div><div class="ttdef"><b>Definition:</b> <a href="_matrix_impl_8hpp_source.html#l00148">MatrixImpl.hpp:148</a></div></div>
-<div class="ttc" id="aclassloos_1_1_shared_periodic_box_html"><div class="ttname"><a href="classloos_1_1_shared_periodic_box.html">loos::SharedPeriodicBox</a></div><div class="ttdoc">This class manages a shared Periodicbox.</div><div class="ttdef"><b>Definition:</b> <a href="_periodic_box_8hpp_source.html#l00081">PeriodicBox.hpp:81</a></div></div>
-<div class="ttc" id="astructloos_1_1_h_bonds_1_1_error_with_atom_html"><div class="ttname"><a href="structloos_1_1_h_bonds_1_1_error_with_atom.html">loos::HBonds::ErrorWithAtom</a></div><div class="ttdef"><b>Definition:</b> <a href="hcore_8hpp_source.html#l00045">hcore.hpp:45</a></div></div>
+<div class="ttc" id="aclassloos_1_1HBonds_1_1SimpleAtom_html"><div class="ttname"><a href="classloos_1_1HBonds_1_1SimpleAtom.html">loos::HBonds::SimpleAtom</a></div><div class="ttdef"><b>Definition:</b> hcore.hpp:70</div></div>
+<div class="ttc" id="aclassloos_1_1Math_1_1Matrix_html"><div class="ttname"><a href="classloos_1_1Math_1_1Matrix.html">loos::Math::Matrix</a></div><div class="ttdoc">Simple matrix template class using policy classes to determine behavior.</div><div class="ttdef"><b>Definition:</b> MatrixImpl.hpp:148</div></div>
+<div class="ttc" id="aclassloos_1_1SharedPeriodicBox_html"><div class="ttname"><a href="classloos_1_1SharedPeriodicBox.html">loos::SharedPeriodicBox</a></div><div class="ttdoc">This class manages a shared Periodicbox.</div><div class="ttdef"><b>Definition:</b> PeriodicBox.hpp:81</div></div>
+<div class="ttc" id="aclassloos_1_1loos_1_1AtomicGroup_html"><div class="ttname"><a href="classloos_1_1loos_1_1AtomicGroup.html">loos.loos.AtomicGroup</a></div><div class="ttdef"><b>Definition:</b> loos.py:2288</div></div>
+<div class="ttc" id="anamespaceloos_html"><div class="ttname"><a href="namespaceloos.html">loos</a></div><div class="ttdoc">Namespace for most things not already encapsulated within a class.</div><div class="ttdef"><b>Definition:</b> loos.py:1</div></div>
+<div class="ttc" id="astructloos_1_1HBonds_1_1ErrorWithAtom_html"><div class="ttname"><a href="structloos_1_1HBonds_1_1ErrorWithAtom.html">loos::HBonds::ErrorWithAtom</a></div><div class="ttdef"><b>Definition:</b> hcore.hpp:45</div></div>
 </div><!-- fragment --></div><!-- contents -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="navelem"><a class="el" href="dir_395bafe2adc24fcfed5d14b8ce406a4f.html">Packages</a></li><li class="navelem"><a class="el" href="dir_b507bc97439bad0de2ae8fa34b1a4a9c.html">HydrogenBonds</a></li><li class="navelem"><b>hcore.hpp</b></li>
-    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+</small></address>
 </body>
 </html>

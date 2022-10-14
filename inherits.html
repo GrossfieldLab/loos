@@ -9,10 +9,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -26,8 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LOOS
-   &#160;<span id="projectnumber">v3.3</span>
+   &#160;<span id="projectnumber">4.0</span>
    </div>
+   <div id="projectbrief">The Lightweight Object Oriented Structural analysis library/toolkit</div>
   </td>
  </tr>
  </tbody>
@@ -51,22 +48,6 @@ $(function() {
 /* @license-end */</script>
 <div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('hierarchy.html',''); initResizable(); });
-/* @license-end */
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -89,712 +70,781 @@ $(document).ready(function(){initNavTree('hierarchy.html',''); initResizable(); 
 <div class="textblock">
 <p><a href="hierarchy.html">Go to the textual class hierarchy</a></p>
 </div><table border="0" cellspacing="10" cellpadding="0">
-<tr><td><img src="inherit_graph_0.png" border="0" usemap="#aall__stacking_8_full_help" alt=""/>
-<map name="aall__stacking_8_full_help" id="aall__stacking_8_full_help">
-<area shape="rect" title=" " alt="" coords="5,144,120,171"/>
-<area shape="rect" href="classall__stacking_1_1_full_help.html" title=" " alt="" coords="201,5,343,32"/>
-<area shape="rect" href="classhierarchical-cluster_1_1_full_help.html" title=" " alt="" coords="181,56,363,83"/>
-<area shape="rect" href="classloos_1_1pyloos_1_1options_1_1_full_helper.html" title=" " alt="" coords="193,107,351,149"/>
-<area shape="rect" href="classpacking__score__per__res_1_1_full_help.html" title=" " alt="" coords="168,173,376,200"/>
-<area shape="rect" href="classscattering_1_1_full_help.html" title=" " alt="" coords="207,224,337,251"/>
-<area shape="rect" href="classset__segids_1_1_full_help.html" title=" " alt="" coords="203,275,341,301"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_1.png" border="0" usemap="#a_calc_property_base" alt=""/>
-<map name="a_calc_property_base" id="a_calc_property_base">
-<area shape="rect" href="class_calc_property_base.html" title=" " alt="" coords="5,157,133,184"/>
-<area shape="rect" href="class_calc_property.html" title=" " alt="" coords="181,77,341,104"/>
-<area shape="rect" href="class_calc_property.html" title=" " alt="" coords="194,150,329,191"/>
-<area shape="rect" href="class_calc_property.html" title=" " alt="" coords="196,216,327,243"/>
-<area shape="rect" href="class_calc_density.html" title=" " alt="" coords="403,5,496,32"/>
-<area shape="rect" href="class_calc_height.html" title=" " alt="" coords="406,56,493,83"/>
-<area shape="rect" href="class_calc_mol_order.html" title=" " alt="" coords="399,107,500,133"/>
-<area shape="rect" href="class_calc_dipole.html" title=" " alt="" coords="407,157,492,184"/>
-<area shape="rect" href="class_calc_orient_vector.html" title=" " alt="" coords="389,208,509,235"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_2.png" border="0" usemap="#a_clustering_1_1_h_a_c" alt=""/>
-<map name="a_clustering_1_1_h_a_c" id="a_clustering_1_1_h_a_c">
-<area shape="rect" href="class_clustering_1_1_h_a_c.html" title=" " alt="" coords="5,5,121,32"/>
-<area shape="rect" href="class_clustering_1_1_average_linkage.html" title=" " alt="" coords="169,5,349,32"/>
-<area shape="rect" href="class_clustering_1_1_k_g_s.html" title=" " alt="" coords="397,5,513,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_3.png" border="0" usemap="#a_dual_worker" alt=""/>
-<map name="a_dual_worker" id="a_dual_worker">
-<area shape="rect" href="class_dual_worker.html" title=" " alt="" coords="5,5,96,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_4.png" border="0" usemap="#a_e_n_m_1_1_elastic_network_model" alt=""/>
-<map name="a_e_n_m_1_1_elastic_network_model" id="a_e_n_m_1_1_elastic_network_model">
-<area shape="rect" href="class_e_n_m_1_1_elastic_network_model.html" title="Interface for all ENMs." alt="" coords="5,31,189,57"/>
-<area shape="rect" href="class_e_n_m_1_1_a_n_m.html" title="Anisotropic network model." alt="" coords="237,5,328,32"/>
-<area shape="rect" href="class_e_n_m_1_1_v_s_a.html" title="Vibrational subsystem analysis ENM." alt="" coords="239,56,326,83"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_5.png" border="0" usemap="#a_e_n_m_1_1_spring_function" alt=""/>
-<map name="a_e_n_m_1_1_spring_function" id="a_e_n_m_1_1_spring_function">
-<area shape="rect" href="class_e_n_m_1_1_spring_function.html" title="Interface for ENM spring functions." alt="" coords="5,107,152,133"/>
-<area shape="rect" href="class_e_n_m_1_1_uniform_spring_function.html" title="Spring functions that are uniform in all directions (ie return a single value)" alt="" coords="200,107,393,133"/>
-<area shape="rect" href="class_e_n_m_1_1_const_bonded.html" title="Use a spring function that is a constant weight regardless of distance." alt="" coords="462,5,601,32"/>
-<area shape="rect" href="class_e_n_m_1_1_distance_cutoff.html" title="Basic distance cutoff for &quot;traditional&quot; ENM." alt="" coords="458,56,605,83"/>
-<area shape="rect" href="class_e_n_m_1_1_distance_weight.html" title="Distance weighting (i.e. )" alt="" coords="455,107,607,133"/>
-<area shape="rect" href="class_e_n_m_1_1_exponential_distance.html" title="Exponential distance weighting (i.e. )" alt="" coords="441,157,621,184"/>
-<area shape="rect" href="class_e_n_m_1_1_h_c_a.html" title="HCA method (bimodal distance&#45;based function)" alt="" coords="487,208,575,235"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_6.png" border="0" usemap="#a_e_n_m_1_1_super_block" alt=""/>
-<map name="a_e_n_m_1_1_super_block" id="a_e_n_m_1_1_super_block">
-<area shape="rect" href="class_e_n_m_1_1_super_block.html" title="This class creates superblocks in a hessian." alt="" coords="5,5,132,32"/>
-<area shape="rect" href="class_e_n_m_1_1_super_block_decorator.html" title="SuperBlock decorator base class." alt="" coords="180,5,364,32"/>
-<area shape="rect" href="class_e_n_m_1_1_bound_super_block.html" title="Decorator for switching spring functions based on a matrix of flags." alt="" coords="412,5,576,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_7.png" border="0" usemap="#a_header" alt=""/>
-<map name="a_header" id="a_header">
-<area shape="rect" href="struct_header.html" title=" " alt="" coords="5,5,69,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_8.png" border="0" usemap="#aloos_8pyloos_8_convex_hull_8_convex_hull" alt=""/>
-<map name="aloos_8pyloos_8_convex_hull_8_convex_hull" id="aloos_8pyloos_8_convex_hull_8_convex_hull">
-<area shape="rect" href="classloos_1_1pyloos_1_1_convex_hull_1_1_convex_hull.html" title=" " alt="" coords="5,5,236,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_9.png" border="0" usemap="#aloos_8pyloos_8_convex_hull_8_z_slice_selector" alt=""/>
-<map name="aloos_8pyloos_8_convex_hull_8_z_slice_selector" id="aloos_8pyloos_8_convex_hull_8_z_slice_selector">
-<area shape="rect" href="classloos_1_1pyloos_1_1_convex_hull_1_1_z_slice_selector.html" title=" " alt="" coords="5,5,205,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_10.png" border="0" usemap="#aloos_8pyloos_8_n_a_m_d_bin_8_n_a_m_d_bin" alt=""/>
-<map name="aloos_8pyloos_8_n_a_m_d_bin_8_n_a_m_d_bin" id="aloos_8pyloos_8_n_a_m_d_bin_8_n_a_m_d_bin">
-<area shape="rect" href="classloos_1_1pyloos_1_1_n_a_m_d_bin_1_1_n_a_m_d_bin.html" title=" " alt="" coords="5,5,217,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_11.png" border="0" usemap="#aloos_8pyloos_8options_8_loos_options" alt=""/>
-<map name="aloos_8pyloos_8options_8_loos_options" id="aloos_8pyloos_8options_8_loos_options">
-<area shape="rect" href="classloos_1_1pyloos_1_1options_1_1_loos_options.html" title=" " alt="" coords="5,5,172,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_12.png" border="0" usemap="#aloos_8pyloos_8trajectories_8_trajectory" alt=""/>
-<map name="aloos_8pyloos_8trajectories_8_trajectory" id="aloos_8pyloos_8trajectories_8_trajectory">
-<area shape="rect" title=" " alt="" coords="5,46,63,73"/>
-<area shape="rect" href="classloos_1_1pyloos_1_1trajectories_1_1_trajectory.html" title="Python&#45;based wrapper for LOOS Trajectories This class turns a loos Trajectory into something more pyt..." alt="" coords="111,5,271,47"/>
-<area shape="rect" href="classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html" title="Virtual trajectory composed of multiple Trajectory objects This class can combine multiple loos...." alt="" coords="111,71,271,112"/>
-<area shape="rect" href="classloos_1_1pyloos_1_1trajectories_1_1_aligned_virtual_trajectory.html" title="A virtual trajectory that supports iterative alignment." alt="" coords="319,71,480,112"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_13.png" border="0" usemap="#aloos_1_1_abstract_observer" alt=""/>
-<map name="aloos_1_1_abstract_observer" id="aloos_1_1_abstract_observer">
-<area shape="rect" href="classloos_1_1_abstract_observer.html" title=" " alt="" coords="5,31,161,57"/>
-<area shape="rect" href="classloos_1_1_basic_progress.html" title=" " alt="" coords="209,31,348,57"/>
-<area shape="rect" href="classloos_1_1_percent_progress.html" title="Provide feedback by percent&#45;complete." alt="" coords="424,5,575,32"/>
-<area shape="rect" href="classloos_1_1_percent_progress_with_time.html" title=" " alt="" coords="396,56,603,83"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_14.png" border="0" usemap="#aloos_1_1_ascending_sort_3_01_t_01_4" alt=""/>
-<map name="aloos_1_1_ascending_sort_3_01_t_01_4" id="aloos_1_1_ascending_sort_3_01_t_01_4">
-<area shape="rect" href="classloos_1_1_ascending_sort.html" title="Policy class for sorting in ascending sequence." alt="" coords="5,5,177,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_15.png" border="0" usemap="#aloos_1_1_atom" alt=""/>
-<map name="aloos_1_1_atom" id="aloos_1_1_atom">
-<area shape="rect" href="classloos_1_1_atom.html" title="Basic Atom class for handling atom properties." alt="" coords="5,5,91,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_16.png" border="0" usemap="#aloos_1_1_atom_coords_equals" alt=""/>
-<map name="aloos_1_1_atom_coords_equals" id="aloos_1_1_atom_coords_equals">
-<area shape="rect" title=" " alt="" coords="5,31,143,57"/>
-<area shape="rect" href="structloos_1_1_atom_coords_equals.html" title="Compares two atoms based on name, id, resid, resname, segid, and coords." alt="" coords="191,5,357,32"/>
-<area shape="rect" href="structloos_1_1_atom_equals.html" title="Compares two atoms based solely on name, id, resid, resname, and segid." alt="" coords="211,56,337,83"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_17.png" border="0" usemap="#aloos_1_1_atomic_group" alt=""/>
-<map name="aloos_1_1_atomic_group" id="aloos_1_1_atomic_group">
-<area shape="rect" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)" alt="" coords="5,132,136,159"/>
-<area shape="rect" href="classloos_1_1_amber.html" title="Class for reading in AMBER parmtop/coord files..." alt="" coords="195,5,287,32"/>
-<area shape="rect" href="classloos_1_1_c_h_a_r_m_m.html" title="Class for reading a CHARMM coordinate file." alt="" coords="185,56,298,83"/>
-<area shape="rect" href="classloos_1_1_gromacs.html" title="Implements a GROMACS model file (.gro)" alt="" coords="188,107,295,133"/>
-<area shape="rect" href="classloos_1_1_p_d_b.html" title="PDB reading/writing class." alt="" coords="201,157,282,184"/>
-<area shape="rect" href="classloos_1_1_p_s_f.html" title="Class for reading a subset of the PSF format." alt="" coords="201,208,281,235"/>
-<area shape="rect" href="classloos_1_1_tinker_x_y_z.html" title="Class for reading a subset of the TinkerXYZ format." alt="" coords="184,259,299,285"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_18.png" border="0" usemap="#aloos_1_1_atomic_group_1_1_iterator" alt=""/>
-<map name="aloos_1_1_atomic_group_1_1_iterator" id="aloos_1_1_atomic_group_1_1_iterator">
-<area shape="rect" href="classloos_1_1_atomic_group_1_1_iterator.html" title="Our own simple iterator for stepping over all managed atoms." alt="" coords="5,5,144,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_19.png" border="0" usemap="#aloos_1_1_atom_selector" alt=""/>
-<map name="aloos_1_1_atom_selector" id="aloos_1_1_atom_selector">
-<area shape="rect" href="structloos_1_1_atom_selector.html" title="Virtual base&#45;class for selecting atoms from a group." alt="" coords="5,360,139,387"/>
-<area shape="rect" href="structloos_1_1_and_selector.html" title="Combines two selectors with a logical &quot;and&quot;." alt="" coords="215,5,341,32"/>
-<area shape="rect" href="structloos_1_1_atom_name_selector.html" title="Predicate for selecting atoms based on explicit name matching." alt="" coords="194,56,362,83"/>
-<area shape="rect" href="classloos_1_1_backbone_selector.html" title="Predicate for selecting backbone." alt="" coords="198,107,358,133"/>
-<area shape="rect" href="structloos_1_1_c_alpha_selector.html" title="Predicate for selecting CA atoms." alt="" coords="206,157,350,184"/>
-<area shape="rect" href="structloos_1_1_heavy_atom_selector.html" title="Select non&#45;hydrogen atoms." alt="" coords="193,208,363,235"/>
-<area shape="rect" href="structloos_1_1_heavy_solvent_selector.html" title="Select only heavy solvent atoms." alt="" coords="187,259,369,285"/>
-<area shape="rect" href="structloos_1_1_hydrogen_selector.html" title="Select hydrogen atoms." alt="" coords="199,309,357,336"/>
-<area shape="rect" href="structloos_1_1_index_selector.html" title="Predicate for selecting atoms based on index." alt="" coords="211,360,345,387"/>
-<area shape="rect" href="classloos_1_1_kernel_selector.html" title="Selection predicate that executes a compiled Kernel." alt="" coords="209,411,347,437"/>
-<area shape="rect" href="structloos_1_1_not_selector.html" title="Negates a selection predicate." alt="" coords="217,461,339,488"/>
-<area shape="rect" href="structloos_1_1_or_selector.html" title="Combines two selectors with a logical &quot;or&quot;." alt="" coords="220,512,336,539"/>
-<area shape="rect" href="structloos_1_1_resid_range_selector.html" title="Predicate for selecting atoms from a range of resid&#39;s." alt="" coords="192,563,364,589"/>
-<area shape="rect" href="structloos_1_1_segid_selector.html" title="Predicate for selecting atoms based on the passed segid string." alt="" coords="211,613,345,640"/>
-<area shape="rect" href="structloos_1_1_solvent_selector.html" title="Predicate for selecting solvent based on common solvent SEGIDs." alt="" coords="205,664,351,691"/>
-<area shape="rect" href="structloos_1_1_z_slice_selector.html" title="Predicate for selecting atoms in a specific range of z values." alt="" coords="209,715,347,741"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_20.png" border="0" usemap="#aloos_1_1_bound_fmt" alt=""/>
-<map name="aloos_1_1_bound_fmt" id="aloos_1_1_bound_fmt">
-<area shape="rect" href="structloos_1_1_bound_fmt.html" title="Internal helper class to bind formatting state." alt="" coords="5,5,120,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_21.png" border="0" usemap="#aloos_1_1_coord_3_01double_01_4" alt=""/>
-<map name="aloos_1_1_coord_3_01double_01_4" id="aloos_1_1_coord_3_01double_01_4">
-<area shape="rect" href="classloos_1_1_coord.html" title=" " alt="" coords="5,5,156,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_22.png" border="0" usemap="#aloos_1_1_coord_3_01int_01_4" alt=""/>
-<map name="aloos_1_1_coord_3_01int_01_4" id="aloos_1_1_coord_3_01int_01_4">
-<area shape="rect" href="classloos_1_1_coord.html" title=" " alt="" coords="5,5,132,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_23.png" border="0" usemap="#aloos_1_1_coord_3_01_t_01_4" alt=""/>
-<map name="aloos_1_1_coord_3_01_t_01_4" id="aloos_1_1_coord_3_01_t_01_4">
-<area shape="rect" href="classloos_1_1_coord.html" title="Basic 3&#45;D coordinates class." alt="" coords="5,5,127,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_24.png" border="0" usemap="#aloos_1_1_density_tools_1_1_bulk_estimator" alt=""/>
-<map name="aloos_1_1_density_tools_1_1_bulk_estimator" id="aloos_1_1_density_tools_1_1_bulk_estimator">
-<area shape="rect" href="classloos_1_1_density_tools_1_1_bulk_estimator.html" title=" " alt="" coords="5,71,136,112"/>
-<area shape="rect" href="classloos_1_1_density_tools_1_1_null_estimator.html" title=" " alt="" coords="184,5,315,47"/>
-<area shape="rect" href="classloos_1_1_density_tools_1_1_z_clip_estimator.html" title=" " alt="" coords="184,71,315,112"/>
-<area shape="rect" href="classloos_1_1_density_tools_1_1_z_slice_estimator.html" title=" " alt="" coords="184,136,315,177"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_25.png" border="0" usemap="#aloos_1_1_density_tools_1_1_density_grid_3_01double_01_4" alt=""/>
-<map name="aloos_1_1_density_tools_1_1_density_grid_3_01double_01_4" id="aloos_1_1_density_tools_1_1_density_grid_3_01double_01_4">
-<area shape="rect" href="classloos_1_1_density_tools_1_1_density_grid.html" title=" " alt="" coords="5,5,167,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_26.png" border="0" usemap="#aloos_1_1_density_tools_1_1_density_grid_3_01int_01_4" alt=""/>
-<map name="aloos_1_1_density_tools_1_1_density_grid_3_01int_01_4" id="aloos_1_1_density_tools_1_1_density_grid_3_01int_01_4">
-<area shape="rect" href="classloos_1_1_density_tools_1_1_density_grid.html" title=" " alt="" coords="5,5,143,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_27.png" border="0" usemap="#aloos_1_1_density_tools_1_1_density_grid_3_01_t_01_4" alt=""/>
-<map name="aloos_1_1_density_tools_1_1_density_grid_3_01_t_01_4" id="aloos_1_1_density_tools_1_1_density_grid_3_01_t_01_4">
-<area shape="rect" href="classloos_1_1_density_tools_1_1_density_grid.html" title="A simple 3D grid class of arbitrary types." alt="" coords="5,5,136,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_28.png" border="0" usemap="#aloos_1_1_density_tools_1_1_density_grid_iterator_3_01_t_00_01_r_01_4" alt=""/>
-<map name="aloos_1_1_density_tools_1_1_density_grid_iterator_3_01_t_00_01_r_01_4" id="aloos_1_1_density_tools_1_1_density_grid_iterator_3_01_t_00_01_r_01_4">
-<area shape="rect" title=" " alt="" coords="5,20,153,47"/>
-<area shape="rect" href="classloos_1_1_density_tools_1_1_density_grid_iterator.html" title="Random access iterator using the BOOST facade." alt="" coords="201,5,341,61"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_29.png" border="0" usemap="#aloos_1_1_density_tools_1_1_density_grid_plane_3_01_t_01_4" alt=""/>
-<map name="aloos_1_1_density_tools_1_1_density_grid_plane_3_01_t_01_4" id="aloos_1_1_density_tools_1_1_density_grid_plane_3_01_t_01_4">
-<area shape="rect" href="classloos_1_1_density_tools_1_1_density_grid_plane.html" title="Encapsulates an i,j&#45;plane from an DensityGrid." alt="" coords="5,5,169,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_30.png" border="0" usemap="#aloos_1_1_density_tools_1_1_density_grid_row_3_01_t_01_4" alt=""/>
-<map name="aloos_1_1_density_tools_1_1_density_grid_row_3_01_t_01_4" id="aloos_1_1_density_tools_1_1_density_grid_row_3_01_t_01_4">
-<area shape="rect" href="classloos_1_1_density_tools_1_1_density_grid_row.html" title="Encapsulates a j&#45;row from an DensityGrid." alt="" coords="5,5,164,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_31.png" border="0" usemap="#aloos_1_1_density_tools_1_1_nonzero_density_3_01_t_01_4" alt=""/>
-<map name="aloos_1_1_density_tools_1_1_nonzero_density_3_01_t_01_4" id="aloos_1_1_density_tools_1_1_nonzero_density_3_01_t_01_4">
-<area shape="rect" href="classloos_1_1_density_tools_1_1_nonzero_density.html" title="Functor that is true for any non&#45;zero density." alt="" coords="5,5,160,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_32.png" border="0" usemap="#aloos_1_1_density_tools_1_1_simple_meta" alt=""/>
-<map name="aloos_1_1_density_tools_1_1_simple_meta" id="aloos_1_1_density_tools_1_1_simple_meta">
-<area shape="rect" href="classloos_1_1_density_tools_1_1_simple_meta.html" title="Simple class for handling metadata." alt="" coords="5,5,136,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_33.png" border="0" usemap="#aloos_1_1_density_tools_1_1_threshold_3_01_t_01_4" alt=""/>
-<map name="aloos_1_1_density_tools_1_1_threshold_3_01_t_01_4" id="aloos_1_1_density_tools_1_1_threshold_3_01_t_01_4">
-<area shape="rect" href="classloos_1_1_density_tools_1_1_threshold.html" title="Functor that is true if value is greater than or equal to threshold." alt="" coords="5,5,136,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_34.png" border="0" usemap="#aloos_1_1_density_tools_1_1_threshold_range_3_01_t_01_4" alt=""/>
-<map name="aloos_1_1_density_tools_1_1_threshold_range_3_01_t_01_4" id="aloos_1_1_density_tools_1_1_threshold_range_3_01_t_01_4">
-<area shape="rect" href="classloos_1_1_density_tools_1_1_threshold_range.html" title="Functor that is true if value is between low and hi, inclusive." alt="" coords="5,5,161,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_35.png" border="0" usemap="#aloos_1_1_density_tools_1_1_water_filter_base" alt=""/>
-<map name="aloos_1_1_density_tools_1_1_water_filter_base" id="aloos_1_1_density_tools_1_1_water_filter_base">
-<area shape="rect" href="classloos_1_1_density_tools_1_1_water_filter_base.html" title="Base interface for water filter/picker." alt="" coords="5,201,136,243"/>
-<area shape="rect" href="classloos_1_1_density_tools_1_1_water_filter_axis.html" title="Pick waters that are within a radius of the principal axis for a molecule." alt="" coords="194,5,325,47"/>
-<area shape="rect" href="classloos_1_1_density_tools_1_1_water_filter_blob.html" title="Pick waters based on a grid&#45;mask." alt="" coords="194,71,325,112"/>
-<area shape="rect" href="classloos_1_1_density_tools_1_1_water_filter_box.html" title="Pick waters inside a bounding box." alt="" coords="194,136,325,177"/>
-<area shape="rect" href="classloos_1_1_density_tools_1_1_water_filter_contacts.html" title="Pick waters with a minimum number of contacts to protein atoms." alt="" coords="186,201,333,243"/>
-<area shape="rect" href="classloos_1_1_density_tools_1_1_water_filter_core.html" title="Pick waters that are within a radius of the core axis for a molecule." alt="" coords="194,267,325,308"/>
-<area shape="rect" href="classloos_1_1_density_tools_1_1_water_filter_decorator.html" title="Decorator base class for &quot;decorating&quot; the core water filters..." alt="" coords="184,332,335,373"/>
-<area shape="rect" href="classloos_1_1_density_tools_1_1_water_filter_radius.html" title="Pick waters within a given radius of a group of atoms." alt="" coords="193,397,326,439"/>
-<area shape="rect" href="classloos_1_1_density_tools_1_1_bulked_water_filter.html" title="Add bulk water back into the mask/map." alt="" coords="389,300,521,341"/>
-<area shape="rect" href="classloos_1_1_density_tools_1_1_z_clipped_water_filter.html" title="Restrict waters to be within a given z&#45;range." alt="" coords="383,365,528,407"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_36.png" border="0" usemap="#aloos_1_1_density_tools_1_1_water_histogrammer" alt=""/>
-<map name="aloos_1_1_density_tools_1_1_water_histogrammer" id="aloos_1_1_density_tools_1_1_water_histogrammer">
-<area shape="rect" href="classloos_1_1_density_tools_1_1_water_histogrammer.html" title=" " alt="" coords="5,5,152,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_37.png" border="0" usemap="#aloos_1_1_density_tools_1_1_x_e_d_m_writer_3_01_t_01_4" alt=""/>
-<map name="aloos_1_1_density_tools_1_1_x_e_d_m_writer_3_01_t_01_4" id="aloos_1_1_density_tools_1_1_x_e_d_m_writer_3_01_t_01_4">
-<area shape="rect" href="structloos_1_1_density_tools_1_1_x_e_d_m_writer.html" title="Functor for writing out ASCII formatted X&#45;Plor electron density maps." alt="" coords="5,5,140,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_38.png" border="0" usemap="#aloos_1_1_descending_sort_3_01_t_01_4" alt=""/>
-<map name="aloos_1_1_descending_sort_3_01_t_01_4" id="aloos_1_1_descending_sort_3_01_t_01_4">
-<area shape="rect" href="classloos_1_1_descending_sort.html" title="Policy class for sorting in descending sequence." alt="" coords="5,5,185,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_39.png" border="0" usemap="#aloos_1_1_fmt" alt=""/>
-<map name="aloos_1_1_fmt" id="aloos_1_1_fmt">
-<area shape="rect" href="classloos_1_1_fmt.html" title="Output formatter class, adapted from Stroustrup&#39;s book." alt="" coords="5,5,83,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_40.png" border="0" usemap="#aloos_1_1_form_factor" alt=""/>
-<map name="aloos_1_1_form_factor" id="aloos_1_1_form_factor">
-<area shape="rect" href="classloos_1_1_form_factor.html" title=" " alt="" coords="5,5,127,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_41.png" border="0" usemap="#aloos_1_1_form_factor_set" alt=""/>
-<map name="aloos_1_1_form_factor_set" id="aloos_1_1_form_factor_set">
-<area shape="rect" href="classloos_1_1_form_factor_set.html" title=" " alt="" coords="5,5,147,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_42.png" border="0" usemap="#aloos_1_1_h_bond_detector" alt=""/>
-<map name="aloos_1_1_h_bond_detector" id="aloos_1_1_h_bond_detector">
-<area shape="rect" href="classloos_1_1_h_bond_detector.html" title="Class for detecting hydrogen bonds." alt="" coords="5,5,149,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_43.png" border="0" usemap="#aloos_1_1_h_bonds_1_1_error_with_atom" alt=""/>
-<map name="aloos_1_1_h_bonds_1_1_error_with_atom" id="aloos_1_1_h_bonds_1_1_error_with_atom">
-<area shape="rect" title=" " alt="" coords="5,208,108,235"/>
-<area shape="rect" href="structloos_1_1_h_bonds_1_1_error_with_atom.html" title=" " alt="" coords="156,157,351,184"/>
-<area shape="rect" href="classloos_1_1_l_o_o_s_error.html" title="Generic LOOS exception." alt="" coords="194,208,313,235"/>
-<area shape="rect" title=" " alt="" coords="191,436,315,463"/>
-<area shape="rect" href="classloos_1_1_atom_1_1_unset_property.html" title="DEPRECATED exception class...use loos::UnsetProperty instead." alt="" coords="399,5,578,32"/>
-<area shape="rect" href="classloos_1_1_d_c_d_1_1_end_of_file.html" title=" " alt="" coords="414,56,563,83"/>
-<area shape="rect" href="classloos_1_1_file_error.html" title="Errors related to File I/O." alt="" coords="437,107,540,133"/>
-<area shape="rect" href="classloos_1_1_numerical_error.html" title="Exception caused by a blas/atlas error." alt="" coords="418,157,559,184"/>
-<area shape="rect" href="classloos_1_1_options_error.html" title="Exception in options." alt="" coords="425,208,552,235"/>
-<area shape="rect" href="classloos_1_1_parse_error.html" title="Exception when parsing input data." alt="" coords="430,259,547,285"/>
-<area shape="rect" href="classloos_1_1_unset_property.html" title="Exception when trying to use an unset Atom property." alt="" coords="419,309,558,336"/>
-<area shape="rect" href="structloos_1_1_x_d_r_data_size_error.html" title="Exception indicating internal XDR error." alt="" coords="407,360,570,387"/>
-<area shape="rect" href="classloos_1_1_file_open_error.html" title="Error while opening a file." alt="" coords="627,56,761,83"/>
-<area shape="rect" href="classloos_1_1_file_read_error.html" title="Errors that occur while reading a file." alt="" coords="627,107,761,133"/>
-<area shape="rect" href="classloos_1_1_file_write_error.html" title="Errors while writing to files." alt="" coords="627,157,761,184"/>
-<area shape="rect" href="classloos_1_1_file_read_error_with_line.html" title="Errors that occur while reading a text file (where lines are tracked)" alt="" coords="809,107,993,133"/>
-<area shape="rect" href="class_e_n_m_1_1_bad_spring_function.html" title="Bad spring function was requested." alt="" coords="403,411,574,437"/>
-<area shape="rect" href="class_e_n_m_1_1_bad_spring_parameter.html" title="Unspecified problem with parameters in SpringFunction." alt="" coords="399,461,579,488"/>
-<area shape="rect" href="classloos_1_1_matrix_read_error.html" title="Generic reading error class." alt="" coords="415,512,563,539"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_44.png" border="0" usemap="#aloos_1_1_h_bonds_1_1_simple_atom" alt=""/>
-<map name="aloos_1_1_h_bonds_1_1_simple_atom" id="aloos_1_1_h_bonds_1_1_simple_atom">
-<area shape="rect" href="classloos_1_1_h_bonds_1_1_simple_atom.html" title=" " alt="" coords="5,5,185,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_45.png" border="0" usemap="#aloos_1_1internal_1_1_action" alt=""/>
-<map name="aloos_1_1internal_1_1_action" id="aloos_1_1internal_1_1_action">
-<area shape="rect" href="classloos_1_1internal_1_1_action.html" title="Base class for all commands..." alt="" coords="5,671,147,697"/>
-<area shape="rect" href="classloos_1_1internal_1_1_backbone.html" title="Shortcut for checking for backbone atoms..." alt="" coords="213,5,375,32"/>
-<area shape="rect" href="classloos_1_1internal_1_1_hydrogen.html" title="Shortcut for checking for hydrogens..." alt="" coords="215,56,373,83"/>
-<area shape="rect" href="classloos_1_1internal_1_1drop.html" title="Drop the top item from the stack." alt="" coords="229,107,359,133"/>
-<area shape="rect" href="classloos_1_1internal_1_1dup.html" title="Duplicate the top item on the stack." alt="" coords="231,157,357,184"/>
-<area shape="rect" href="classloos_1_1internal_1_1equals.html" title="Test for equality: ARG1 ARG ==." alt="" coords="223,208,365,235"/>
-<area shape="rect" href="classloos_1_1internal_1_1extract_number.html" title="Extracts a number for a string on the stack using a regular expression: ARG1 regexp(S)" alt="" coords="199,259,389,285"/>
-<area shape="rect" href="classloos_1_1internal_1_1greater_than.html" title="ARG1 ARG2 &gt;" alt="" coords="207,309,381,336"/>
-<area shape="rect" href="classloos_1_1internal_1_1greater_than_equals.html" title="ARG1 ARG2 &gt;=." alt="" coords="207,361,381,402"/>
-<area shape="rect" href="classloos_1_1internal_1_1less_than.html" title="Relation operators...: ARG1 ARG2 &lt;." alt="" coords="215,427,373,453"/>
-<area shape="rect" href="classloos_1_1internal_1_1less_than_equals.html" title="ARG1 ARG2 &lt;=." alt="" coords="215,478,373,519"/>
-<area shape="rect" href="classloos_1_1internal_1_1logical_and.html" title="ARG1 ARG2 &amp;&amp;." alt="" coords="212,544,376,571"/>
-<area shape="rect" href="classloos_1_1internal_1_1logical_not.html" title="ARG1 !" alt="" coords="213,595,375,621"/>
-<area shape="rect" href="classloos_1_1internal_1_1logical_or.html" title="ARG1 ARG2 ||." alt="" coords="217,645,371,672"/>
-<area shape="rect" href="classloos_1_1internal_1_1logical_true.html" title="Always returns true..." alt="" coords="211,696,377,723"/>
-<area shape="rect" href="classloos_1_1internal_1_1match_regex.html" title="Regular expression matching: ARG1 regexp(S)" alt="" coords="205,747,383,773"/>
-<area shape="rect" href="classloos_1_1internal_1_1match_string_as_regex.html" title="Regular expression matching: ARG1 regexp(ARG2)" alt="" coords="207,798,381,839"/>
-<area shape="rect" href="classloos_1_1internal_1_1push_atom_chain_id.html" title="Push atom&#39;s chain ID onto the stack." alt="" coords="213,863,375,905"/>
-<area shape="rect" href="classloos_1_1internal_1_1push_atom_id.html" title="Push atom id onto the stack." alt="" coords="207,929,381,956"/>
-<area shape="rect" href="classloos_1_1internal_1_1push_atom_index.html" title="Push atom index onto the stack." alt="" coords="213,981,375,1022"/>
-<area shape="rect" href="classloos_1_1internal_1_1push_atom_name.html" title="Push atom name onto the stack." alt="" coords="195,1047,393,1073"/>
-<area shape="rect" href="classloos_1_1internal_1_1push_atom_resid.html" title="Push atom&#39;s residue id onto the stack." alt="" coords="213,1098,375,1139"/>
-<area shape="rect" href="classloos_1_1internal_1_1push_atom_resname.html" title="Push atom&#39;ss residue name onto the stack." alt="" coords="213,1163,375,1205"/>
-<area shape="rect" href="classloos_1_1internal_1_1push_atom_segid.html" title="Push atom&#39;s segid onto the stack." alt="" coords="213,1229,375,1270"/>
-<area shape="rect" href="classloos_1_1internal_1_1push_float.html" title="Push a float onto the data stack." alt="" coords="213,1295,375,1321"/>
-<area shape="rect" href="classloos_1_1internal_1_1push_int.html" title="Push an integer onto the data stack." alt="" coords="221,1345,367,1372"/>
-<area shape="rect" href="classloos_1_1internal_1_1push_string.html" title="Push a std::string onto the data stack." alt="" coords="211,1396,377,1423"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_46.png" border="0" usemap="#aloos_1_1internal_1_1_atomic_number_deducer" alt=""/>
-<map name="aloos_1_1internal_1_1_atomic_number_deducer" id="aloos_1_1internal_1_1_atomic_number_deducer">
-<area shape="rect" href="classloos_1_1internal_1_1_atomic_number_deducer.html" title=" " alt="" coords="5,5,196,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_47.png" border="0" usemap="#aloos_1_1internal_1_1_basic_matrix_formatter_3_01_t_01_4" alt=""/>
-<map name="aloos_1_1internal_1_1_basic_matrix_formatter_3_01_t_01_4" id="aloos_1_1internal_1_1_basic_matrix_formatter_3_01_t_01_4">
-<area shape="rect" href="structloos_1_1internal_1_1_basic_matrix_formatter.html" title=" " alt="" coords="5,5,179,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_48.png" border="0" usemap="#aloos_1_1internal_1_1_output_trajectory_name_binding_type" alt=""/>
-<map name="aloos_1_1internal_1_1_output_trajectory_name_binding_type" id="aloos_1_1internal_1_1_output_trajectory_name_binding_type">
-<area shape="rect" href="structloos_1_1internal_1_1_output_trajectory_name_binding_type.html" title=" " alt="" coords="5,5,207,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_49.png" border="0" usemap="#aloos_1_1internal_1_1_range_item" alt=""/>
-<map name="aloos_1_1internal_1_1_range_item" id="aloos_1_1internal_1_1_range_item">
-<area shape="rect" href="structloos_1_1internal_1_1_range_item.html" title=" " alt="" coords="5,5,172,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_50.png" border="0" usemap="#aloos_1_1internal_1_1_range_parser_3_01_iterator_01_4" alt=""/>
-<map name="aloos_1_1internal_1_1_range_parser_3_01_iterator_01_4" id="aloos_1_1internal_1_1_range_parser_3_01_iterator_01_4">
-<area shape="rect" title=" " alt="" coords="5,5,121,47"/>
-<area shape="rect" href="structloos_1_1internal_1_1_range_parser.html" title=" " alt="" coords="169,5,349,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_51.png" border="0" usemap="#aloos_1_1internal_1_1_system_name_binding_type" alt=""/>
-<map name="aloos_1_1internal_1_1_system_name_binding_type" id="aloos_1_1internal_1_1_system_name_binding_type">
-<area shape="rect" href="structloos_1_1internal_1_1_system_name_binding_type.html" title=" " alt="" coords="5,5,188,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_52.png" border="0" usemap="#aloos_1_1internal_1_1_trajectory_name_binding_type" alt=""/>
-<map name="aloos_1_1internal_1_1_trajectory_name_binding_type" id="aloos_1_1internal_1_1_trajectory_name_binding_type">
-<area shape="rect" href="structloos_1_1internal_1_1_trajectory_name_binding_type.html" title=" " alt="" coords="5,5,168,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_53.png" border="0" usemap="#aloos_1_1internal_1_1_value" alt=""/>
-<map name="aloos_1_1internal_1_1_value" id="aloos_1_1internal_1_1_value">
-<area shape="rect" href="structloos_1_1internal_1_1_value.html" title="Value class for the LOOS Kernel (virtual machine)" alt="" coords="5,5,141,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_54.png" border="0" usemap="#aloos_1_1internal_1_1_value_stack" alt=""/>
-<map name="aloos_1_1internal_1_1_value_stack" id="aloos_1_1internal_1_1_value_stack">
-<area shape="rect" href="classloos_1_1internal_1_1_value_stack.html" title=" " alt="" coords="5,5,176,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_55.png" border="0" usemap="#aloos_1_1internal_1_1_x_d_r_reader" alt=""/>
-<map name="aloos_1_1internal_1_1_x_d_r_reader" id="aloos_1_1internal_1_1_x_d_r_reader">
-<area shape="rect" href="classloos_1_1internal_1_1_x_d_r_reader.html" title="This class provides some facility for handling XDR data." alt="" coords="5,5,179,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_56.png" border="0" usemap="#aloos_1_1internal_1_1_x_d_r_writer" alt=""/>
-<map name="aloos_1_1internal_1_1_x_d_r_writer" id="aloos_1_1internal_1_1_x_d_r_writer">
-<area shape="rect" href="classloos_1_1internal_1_1_x_d_r_writer.html" title=" " alt="" coords="5,5,172,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_57.png" border="0" usemap="#aloos_1_1_kernel" alt=""/>
-<map name="aloos_1_1_kernel" id="aloos_1_1_kernel">
-<area shape="rect" href="classloos_1_1_kernel.html" title="The Kernel (virtual machine) for compiling and executing user&#45;defined atom selections." alt="" coords="5,5,96,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_58.png" border="0" usemap="#aloos_1_1_line_reader" alt=""/>
-<map name="aloos_1_1_line_reader" id="aloos_1_1_line_reader">
-<area shape="rect" href="classloos_1_1_line_reader.html" title="Class for reading line&#45;by&#45;line from a file while tracking line numbers and stripping comments." alt="" coords="5,5,124,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_59.png" border="0" usemap="#aloos_1_1_math_1_1_col_major" alt=""/>
-<map name="aloos_1_1_math_1_1_col_major" id="aloos_1_1_math_1_1_col_major">
-<area shape="rect" href="classloos_1_1_math_1_1_col_major.html" title="Class for storing a matrix in column&#45;major order." alt="" coords="31,17,174,43"/>
-<area shape="rect" href="classloos_1_1_math_1_1_matrix.html" title=" " alt="" coords="293,5,420,47"/>
-<area shape="rect" href="classloos_1_1_math_1_1_matrix.html" title="Simple matrix template class using policy classes to determine behavior." alt="" coords="248,71,465,112"/>
-<area shape="rect" href="classloos_1_1_math_1_1_shared_array.html" title="Storage policy for a block of memory wrapped in a boost::shared_array pointer." alt="" coords="5,71,200,98"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_60.png" border="0" usemap="#aloos_1_1_math_1_1_row_major" alt=""/>
-<map name="aloos_1_1_math_1_1_row_major" id="aloos_1_1_math_1_1_row_major">
-<area shape="rect" href="classloos_1_1_math_1_1_row_major.html" title="Class for storing a matrix in row&#45;major order..." alt="" coords="5,5,156,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_61.png" border="0" usemap="#aloos_1_1_math_1_1_sparse_array_3_01_t_01_4" alt=""/>
-<map name="aloos_1_1_math_1_1_sparse_array_3_01_t_01_4" id="aloos_1_1_math_1_1_sparse_array_3_01_t_01_4">
-<area shape="rect" href="classloos_1_1_math_1_1_sparse_array.html" title="Storage policy for a sparse matrix (see important note in the detailed documentation)." alt="" coords="5,5,201,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_62.png" border="0" usemap="#aloos_1_1_math_1_1_triangular" alt=""/>
-<map name="aloos_1_1_math_1_1_triangular" id="aloos_1_1_math_1_1_triangular">
-<area shape="rect" href="classloos_1_1_math_1_1_triangular.html" title="Class for storing a symmetric triangular matrix." alt="" coords="5,5,152,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_63.png" border="0" usemap="#aloos_1_1_matrix44_3_01_t_01_4" alt=""/>
-<map name="aloos_1_1_matrix44_3_01_t_01_4" id="aloos_1_1_matrix44_3_01_t_01_4">
-<area shape="rect" href="classloos_1_1_matrix44.html" title="Specialized 4x4 Matrix class for handling coordinate transforms." alt="" coords="5,5,141,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_64.png" border="0" usemap="#aloos_1_1_matrix_read_impl_3_01_t_00_01_math_1_1_triangular_00_01_s_01_4" alt=""/>
-<map name="aloos_1_1_matrix_read_impl_3_01_t_00_01_math_1_1_triangular_00_01_s_01_4" id="aloos_1_1_matrix_read_impl_3_01_t_00_01_math_1_1_triangular_00_01_s_01_4">
-<area shape="rect" href="structloos_1_1_matrix_read_impl_3_01_t_00_01_math_1_1_triangular_00_01_s_01_4.html" title="Special handling for triangular matrices." alt="" coords="5,5,176,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_65.png" border="0" usemap="#aloos_1_1_matrix_read_impl_3_01_t_00_01_p_00_01_math_1_1_sparse_array_01_4" alt=""/>
-<map name="aloos_1_1_matrix_read_impl_3_01_t_00_01_p_00_01_math_1_1_sparse_array_01_4" id="aloos_1_1_matrix_read_impl_3_01_t_00_01_p_00_01_math_1_1_sparse_array_01_4">
-<area shape="rect" href="structloos_1_1_matrix_read_impl_3_01_t_00_01_p_00_01_math_1_1_sparse_array_01_4.html" title="Special handling for sparse matrices." alt="" coords="5,5,192,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_66.png" border="0" usemap="#aloos_1_1_matrix_read_impl_3_01_t_00_01_p_00_01_s_01_4" alt=""/>
-<map name="aloos_1_1_matrix_read_impl_3_01_t_00_01_p_00_01_s_01_4" id="aloos_1_1_matrix_read_impl_3_01_t_00_01_p_00_01_s_01_4">
-<area shape="rect" href="structloos_1_1_matrix_read_impl.html" title=" " alt="" coords="5,5,151,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_67.png" border="0" usemap="#aloos_1_1_matrix_write_impl_3_01_t_00_01_math_1_1_triangular_00_01_s_00_01_f_01_4" alt=""/>
-<map name="aloos_1_1_matrix_write_impl_3_01_t_00_01_math_1_1_triangular_00_01_s_00_01_f_01_4" id="aloos_1_1_matrix_write_impl_3_01_t_00_01_math_1_1_triangular_00_01_s_00_01_f_01_4">
-<area shape="rect" href="structloos_1_1_matrix_write_impl_3_01_t_00_01_math_1_1_triangular_00_01_s_00_01_f_01_4.html" title="Write out a triangular matrix." alt="" coords="5,5,152,61"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_68.png" border="0" usemap="#aloos_1_1_matrix_write_impl_3_01_t_00_01_p_00_01_math_1_1_sparse_array_00_01_f_01_4" alt=""/>
-<map name="aloos_1_1_matrix_write_impl_3_01_t_00_01_p_00_01_math_1_1_sparse_array_00_01_f_01_4" id="aloos_1_1_matrix_write_impl_3_01_t_00_01_p_00_01_math_1_1_sparse_array_00_01_f_01_4">
-<area shape="rect" href="structloos_1_1_matrix_write_impl_3_01_t_00_01_p_00_01_math_1_1_sparse_array_00_01_f_01_4.html" title="Write out a sparse matrix." alt="" coords="5,5,207,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_69.png" border="0" usemap="#aloos_1_1_matrix_write_impl_3_01_t_00_01_p_00_01_s_00_01_f_01_4" alt=""/>
-<map name="aloos_1_1_matrix_write_impl_3_01_t_00_01_p_00_01_s_00_01_f_01_4" id="aloos_1_1_matrix_write_impl_3_01_t_00_01_p_00_01_s_00_01_f_01_4">
-<area shape="rect" href="structloos_1_1_matrix_write_impl.html" title=" " alt="" coords="5,5,151,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_70.png" border="0" usemap="#aloos_1_1_options_framework_1_1_aggregate_options" alt=""/>
-<map name="aloos_1_1_options_framework_1_1_aggregate_options" id="aloos_1_1_options_framework_1_1_aggregate_options">
-<area shape="rect" href="classloos_1_1_options_framework_1_1_aggregate_options.html" title="Combines a set of OptionsPackages." alt="" coords="5,5,169,47"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_71.png" border="0" usemap="#aloos_1_1_options_framework_1_1_options_package" alt=""/>
-<map name="aloos_1_1_options_framework_1_1_options_package" id="aloos_1_1_options_framework_1_1_options_package">
-<area shape="rect" href="classloos_1_1_options_framework_1_1_options_package.html" title="Base class for options." alt="" coords="5,499,169,541"/>
-<area shape="rect" href="class_clustering_1_1_clustering_options.html" title=" " alt="" coords="221,5,414,32"/>
-<area shape="rect" href="class_tool_options.html" title=" " alt="" coords="272,56,363,83"/>
-<area shape="rect" href="classloos_1_1_options_framework_1_1_basic_convergence.html" title=" " alt="" coords="235,107,399,149"/>
-<area shape="rect" href="classloos_1_1_options_framework_1_1_basic_options.html" title="Options common to all tools (including –fullhelp)" alt="" coords="235,173,399,214"/>
-<area shape="rect" href="classloos_1_1_options_framework_1_1_basic_selection.html" title="Provides a single LOOS selection (–selection)" alt="" coords="235,238,399,279"/>
-<area shape="rect" href="classloos_1_1_options_framework_1_1_basic_split_by.html" title="Provides a mechanism for controlling how to split an AtomicGroup." alt="" coords="235,303,399,345"/>
-<area shape="rect" href="classloos_1_1_options_framework_1_1_basic_trajectory.html" title="Basic trajectory with a –skip option." alt="" coords="235,369,399,410"/>
-<area shape="rect" href="classloos_1_1_options_framework_1_1_basic_water.html" title="Options specific to tools that work with water/internal&#45;water." alt="" coords="235,434,399,475"/>
-<area shape="rect" href="classloos_1_1_options_framework_1_1_model_with_coords.html" title="Request a model with coordinates." alt="" coords="235,499,399,541"/>
-<area shape="rect" href="classloos_1_1_options_framework_1_1_multi_traj_options.html" title="Multiple trajectories as one trajectory via MultiTrajectory." alt="" coords="235,565,399,606"/>
-<area shape="rect" href="classloos_1_1_options_framework_1_1_output_prefix.html" title="Gets a string as prefix for output files (–prefix)" alt="" coords="235,630,399,671"/>
-<area shape="rect" href="classloos_1_1_options_framework_1_1_output_trajectory_options.html" title=" " alt="" coords="231,695,403,737"/>
-<area shape="rect" href="classloos_1_1_options_framework_1_1_output_trajectory_type_options.html" title=" " alt="" coords="217,761,417,802"/>
-<area shape="rect" href="classloos_1_1_options_framework_1_1_required_arguments.html" title="Provides simple way to add command&#45;line arguments (required options)" alt="" coords="235,826,399,867"/>
-<area shape="rect" href="classloos_1_1_options_framework_1_1_trajectory_with_frame_indices.html" title="Trajectory with either a –range or –skip." alt="" coords="220,891,415,933"/>
-<area shape="rect" href="classloos_1_1_options_framework_1_1_two_models_with_coords.html" title="Request Two models with coordinates." alt="" coords="235,957,399,998"/>
-<area shape="rect" href="classloos_1_1_options_framework_1_1_weights_options.html" title=" " alt="" coords="235,1022,399,1063"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_72.png" border="0" usemap="#aloos_1_1_parser" alt=""/>
-<map name="aloos_1_1_parser" id="aloos_1_1_parser">
-<area shape="rect" href="classloos_1_1_parser.html" title="Front&#45;end to the Bison/Flex parser." alt="" coords="5,5,99,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_73.png" border="0" usemap="#aloos_1_1_parser_driver" alt=""/>
-<map name="aloos_1_1_parser_driver" id="aloos_1_1_parser_driver">
-<area shape="rect" href="structloos_1_1_parser_driver.html" title=" " alt="" coords="5,5,132,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_74.png" border="0" usemap="#aloos_1_1_percent_trigger" alt=""/>
-<map name="aloos_1_1_percent_trigger" id="aloos_1_1_percent_trigger">
-<area shape="rect" href="classloos_1_1_percent_trigger.html" title="Trigger whenever at least frac percent more iterations have happened." alt="" coords="5,5,143,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_75.png" border="0" usemap="#aloos_1_1_periodic_box" alt=""/>
-<map name="aloos_1_1_periodic_box" id="aloos_1_1_periodic_box">
-<area shape="rect" href="classloos_1_1_periodic_box.html" title="Class for managing periodic box information." alt="" coords="5,5,128,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_76.png" border="0" usemap="#aloos_1_1_precise_matrix_formatter_3_01_t_01_4" alt=""/>
-<map name="aloos_1_1_precise_matrix_formatter_3_01_t_01_4" id="aloos_1_1_precise_matrix_formatter_3_01_t_01_4">
-<area shape="rect" href="classloos_1_1_precise_matrix_formatter.html" title="Generic matrix element formatter allowing setting of width and precision." alt="" coords="5,5,228,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_77.png" border="0" usemap="#aloos_1_1_remarks" alt=""/>
-<map name="aloos_1_1_remarks" id="aloos_1_1_remarks">
-<area shape="rect" href="classloos_1_1_remarks.html" title="Class for handling PDB Remarks." alt="" coords="5,5,112,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_78.png" border="0" usemap="#aloos_1_1_rna_suite" alt=""/>
-<map name="aloos_1_1_rna_suite" id="aloos_1_1_rna_suite">
-<area shape="rect" href="classloos_1_1_rna_suite.html" title="Class for assigning backbone suites to an RNA." alt="" coords="5,5,113,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_79.png" border="0" usemap="#aloos_1_1_scientific_matrix_formatter_3_01_t_01_4" alt=""/>
-<map name="aloos_1_1_scientific_matrix_formatter_3_01_t_01_4" id="aloos_1_1_scientific_matrix_formatter_3_01_t_01_4">
-<area shape="rect" href="classloos_1_1_scientific_matrix_formatter.html" title="Generic matrix element formatter using scientific notation..." alt="" coords="5,5,237,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_80.png" border="0" usemap="#aloos_1_1_shared_periodic_box" alt=""/>
-<map name="aloos_1_1_shared_periodic_box" id="aloos_1_1_shared_periodic_box">
-<area shape="rect" href="classloos_1_1_shared_periodic_box.html" title="This class manages a shared Periodicbox." alt="" coords="5,5,169,32"/>
-</map>
-</td></tr>
-<tr><td><img src="inherit_graph_81.png" border="0" usemap="#aloos_1_1_simple_counter" alt=""/>
-<map name="aloos_1_1_simple_counter" id="aloos_1_1_simple_counter">
-<area shape="rect" href="classloos_1_1_simple_counter.html" title="Basic progress counter object, defining the interface..." alt="" coords="5,35,145,61"/>
-<area shape="rect" href="classloos_1_1_estimating_counter.html" title="A progress counter that can estimate how much time is left." alt="" coords="193,5,356,32"/>
-<area shape="rect" href="classloos_1_1_progress_counter.html" title="The progress counter front&#45;end." alt="" coords="199,57,351,98"/>
-</map>
+<tr><td><img src="inherit_graph_0.png" border="0" usemap="#aall__stacking_8FullHelp" alt=""/>
+<map name="aall__stacking_8FullHelp" id="aall__stacking_8FullHelp">
+<area shape="rect" title=" " alt="" coords="5,144,129,171"/>
+<area shape="rect" href="classall__stacking_1_1FullHelp.html" title=" " alt="" coords="212,5,369,32"/>
+<area shape="rect" href="classhierarchical-cluster_1_1FullHelp.html" title=" " alt="" coords="189,56,392,83"/>
+<area shape="rect" href="classloos_1_1pyloos_1_1options_1_1FullHelper.html" title=" " alt="" coords="203,107,378,149"/>
+<area shape="rect" href="classpacking__score__per__res_1_1FullHelp.html" title=" " alt="" coords="177,173,404,200"/>
+<area shape="rect" href="classscattering_1_1FullHelp.html" title=" " alt="" coords="219,224,363,251"/>
+<area shape="rect" href="classset__segids_1_1FullHelp.html" title=" " alt="" coords="217,275,365,301"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_1.png" border="0" usemap="#aCalcPropertyBase" alt=""/>
+<map name="aCalcPropertyBase" id="aCalcPropertyBase">
+<area shape="rect" href="classCalcPropertyBase.html" title=" " alt="" coords="5,157,143,184"/>
+<area shape="rect" href="classCalcProperty.html" title=" " alt="" coords="191,77,369,104"/>
+<area shape="rect" href="classCalcProperty.html" title=" " alt="" coords="207,150,353,191"/>
+<area shape="rect" href="classCalcProperty.html" title=" " alt="" coords="209,216,351,243"/>
+<area shape="rect" href="classCalcDensity.html" title=" " alt="" coords="433,5,533,32"/>
+<area shape="rect" href="classCalcHeight.html" title=" " alt="" coords="436,56,529,83"/>
+<area shape="rect" href="classCalcMolOrder.html" title=" " alt="" coords="427,107,538,133"/>
+<area shape="rect" href="classCalcDipole.html" title=" " alt="" coords="437,157,529,184"/>
+<area shape="rect" href="classCalcOrientVector.html" title=" " alt="" coords="417,208,548,235"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_2.png" border="0" usemap="#aClustering_1_1HAC" alt=""/>
+<map name="aClustering_1_1HAC" id="aClustering_1_1HAC">
+<area shape="rect" href="classClustering_1_1HAC.html" title=" " alt="" coords="5,5,129,32"/>
+<area shape="rect" href="classClustering_1_1AverageLinkage.html" title=" " alt="" coords="177,5,376,32"/>
+<area shape="rect" href="classClustering_1_1KGS.html" title=" " alt="" coords="424,5,547,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_3.png" border="0" usemap="#aDualWorker" alt=""/>
+<map name="aDualWorker" id="aDualWorker">
+<area shape="rect" href="classDualWorker.html" title=" " alt="" coords="5,5,103,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_4.png" border="0" usemap="#aENM_1_1BadSpringFunction" alt=""/>
+<map name="aENM_1_1BadSpringFunction" id="aENM_1_1BadSpringFunction">
+<area shape="rect" title=" " alt="" coords="5,56,144,83"/>
+<area shape="rect" href="classENM_1_1BadSpringFunction.html" title="Bad spring function was requested." alt="" coords="198,5,379,32"/>
+<area shape="rect" href="classENM_1_1BadSpringParameter.html" title="Unspecified problem with parameters in SpringFunction." alt="" coords="192,56,385,83"/>
+<area shape="rect" href="classloos_1_1MatrixReadError.html" title="Generic reading error class." alt="" coords="207,107,370,133"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_5.png" border="0" usemap="#aENM_1_1ElasticNetworkModel" alt=""/>
+<map name="aENM_1_1ElasticNetworkModel" id="aENM_1_1ElasticNetworkModel">
+<area shape="rect" href="classENM_1_1ElasticNetworkModel.html" title="Interface for all ENMs." alt="" coords="5,31,204,57"/>
+<area shape="rect" href="classENM_1_1ANM.html" title="Anisotropic network model." alt="" coords="252,5,343,32"/>
+<area shape="rect" href="classENM_1_1VSA.html" title="Vibrational subsystem analysis ENM." alt="" coords="254,56,341,83"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_6.png" border="0" usemap="#aENM_1_1SpringFunction" alt=""/>
+<map name="aENM_1_1SpringFunction" id="aENM_1_1SpringFunction">
+<area shape="rect" href="classENM_1_1SpringFunction.html" title="Interface for ENM spring functions." alt="" coords="5,107,161,133"/>
+<area shape="rect" href="classENM_1_1UniformSpringFunction.html" title="Spring functions that are uniform in all directions (ie return a single value)" alt="" coords="209,107,419,133"/>
+<area shape="rect" href="classENM_1_1ConstBonded.html" title="Use a spring function that is a constant weight regardless of distance." alt="" coords="491,5,637,32"/>
+<area shape="rect" href="classENM_1_1DistanceCutoff.html" title="Basic distance cutoff for &quot;traditional&quot; ENM." alt="" coords="486,56,642,83"/>
+<area shape="rect" href="classENM_1_1DistanceWeight.html" title="Distance weighting (i.e. )" alt="" coords="483,107,645,133"/>
+<area shape="rect" href="classENM_1_1ExponentialDistance.html" title="Exponential distance weighting (i.e. )" alt="" coords="467,157,661,184"/>
+<area shape="rect" href="classENM_1_1HCA.html" title="HCA method (bimodal distance&#45;based function)" alt="" coords="520,208,608,235"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_7.png" border="0" usemap="#aENM_1_1SuperBlock" alt=""/>
+<map name="aENM_1_1SuperBlock" id="aENM_1_1SuperBlock">
+<area shape="rect" href="classENM_1_1SuperBlock.html" title="This class creates superblocks in a hessian." alt="" coords="5,5,139,32"/>
+<area shape="rect" href="classENM_1_1SuperBlockDecorator.html" title="SuperBlock decorator base class." alt="" coords="187,5,384,32"/>
+<area shape="rect" href="classENM_1_1BoundSuperBlock.html" title="Decorator for switching spring functions based on a matrix of flags." alt="" coords="432,5,607,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_8.png" border="0" usemap="#aFlexLexer" alt=""/>
+<map name="aFlexLexer" id="aFlexLexer">
+<area shape="rect" href="classFlexLexer.html" title=" " alt="" coords="5,5,91,32"/>
+<area shape="rect" href="classyyFlexLexer.html" title=" " alt="" coords="139,5,240,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_9.png" border="0" usemap="#aHeader" alt=""/>
+<map name="aHeader" id="aHeader">
+<area shape="rect" href="structHeader.html" title=" " alt="" coords="5,5,75,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_10.png" border="0" usemap="#aloos_8__SwigNonDynamicMeta" alt=""/>
+<map name="aloos_8__SwigNonDynamicMeta" id="aloos_8__SwigNonDynamicMeta">
+<area shape="rect" title=" " alt="" coords="5,56,56,83"/>
+<area shape="rect" href="classloos_1_1__SwigNonDynamicMeta.html" title=" " alt="" coords="119,5,327,32"/>
+<area shape="rect" href="classloos_1_1loos_1_1__SwigNonDynamicMeta.html" title=" " alt="" coords="104,56,343,83"/>
+<area shape="rect" href="classpyloos_1_1__SwigNonDynamicMeta.html" title=" " alt="" coords="111,107,335,133"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_11.png" border="0" usemap="#aloos_8AlignmentResult" alt=""/>
+<map name="aloos_8AlignmentResult" id="aloos_8AlignmentResult">
+<area shape="rect" title=" " alt="" coords="5,2276,68,2303"/>
+<area shape="rect" href="classloos_1_1AlignmentResult.html" title=" " alt="" coords="151,5,312,32"/>
+<area shape="rect" href="classloos_1_1Atom.html" title="Basic Atom class for handling atom properties." alt="" coords="187,56,275,83"/>
+<area shape="rect" href="classloos_1_1AtomSelector.html" title="Virtual base&#45;class for selecting atoms from a group." alt="" coords="161,107,302,133"/>
+<area shape="rect" href="classloos_1_1AtomicGroup.html" title="Class for handling groups of Atoms (pAtoms, actually)" alt="" coords="162,157,301,184"/>
+<area shape="rect" href="classloos_1_1AtomicGroupMap.html" title=" " alt="" coords="148,208,315,235"/>
+<area shape="rect" href="classloos_1_1AtomicGroupPythonIterator.html" title=" " alt="" coords="116,259,347,285"/>
+<area shape="rect" href="classloos_1_1AtomicGroupVector.html" title=" " alt="" coords="142,309,321,336"/>
+<area shape="rect" href="classloos_1_1DoubleVector.html" title=" " alt="" coords="161,360,301,387"/>
+<area shape="rect" href="classloos_1_1DoubleVectorMatrix.html" title=" " alt="" coords="140,411,323,437"/>
+<area shape="rect" href="classloos_1_1FormFactor.html" title=" " alt="" coords="169,461,294,488"/>
+<area shape="rect" href="classloos_1_1FormFactorSet.html" title=" " alt="" coords="158,512,305,539"/>
+<area shape="rect" href="classloos_1_1GCoord.html" title=" " alt="" coords="181,563,282,589"/>
+<area shape="rect" href="classloos_1_1GCoordVector.html" title=" " alt="" coords="160,613,303,640"/>
+<area shape="rect" href="classloos_1_1GMatrix.html" title=" " alt="" coords="179,664,284,691"/>
+<area shape="rect" href="classloos_1_1HBondDetector.html" title="Class for detecting hydrogen bonds." alt="" coords="155,715,307,741"/>
+<area shape="rect" href="classloos_1_1IntPair.html" title=" " alt="" coords="184,765,279,792"/>
+<area shape="rect" href="classloos_1_1IntPairVector.html" title=" " alt="" coords="164,816,299,843"/>
+<area shape="rect" href="classloos_1_1IntVector.html" title=" " alt="" coords="176,867,287,893"/>
+<area shape="rect" href="classloos_1_1Remarks.html" title="Class for handling PDB Remarks." alt="" coords="176,917,287,944"/>
+<area shape="rect" href="classloos_1_1RnaSuite.html" title="Class for assigning backbone suites to an RNA." alt="" coords="176,968,287,995"/>
+<area shape="rect" href="classloos_1_1StringVector.html" title=" " alt="" coords="165,1019,297,1045"/>
+<area shape="rect" href="classloos_1_1SwigPyIterator.html" title=" " alt="" coords="157,1069,305,1096"/>
+<area shape="rect" href="classloos_1_1TimeSeriesDbl.html" title=" " alt="" coords="157,1120,305,1147"/>
+<area shape="rect" href="classloos_1_1Trajectory.html" title="Base&#45;class for polymorphic trajectories." alt="" coords="173,1171,290,1197"/>
+<area shape="rect" href="classloos_1_1TrajectoryWriter.html" title="Base class for writing trajectories." alt="" coords="153,1221,310,1248"/>
+<area shape="rect" href="classloos_1_1UIntVector.html" title=" " alt="" coords="171,1272,292,1299"/>
+<area shape="rect" href="classloos_1_1UnitCell.html" title="This class encapsulates crystallographic unit cell data." alt="" coords="179,1323,284,1349"/>
+<area shape="rect" href="classloos_1_1Weights.html" title=" " alt="" coords="179,1373,284,1400"/>
+<area shape="rect" href="classloos_1_1XForm.html" title="Matrix class for handling coordinate transforms..." alt="" coords="184,1424,279,1451"/>
+<area shape="rect" href="classloos_1_1XFormVector.html" title=" " alt="" coords="163,1475,299,1501"/>
+<area shape="rect" href="classloos_1_1loos_1_1AlignmentResult.html" title=" " alt="" coords="135,1525,327,1552"/>
+<area shape="rect" href="classloos_1_1loos_1_1Atom.html" title=" " alt="" coords="172,1576,291,1603"/>
+<area shape="rect" href="classloos_1_1loos_1_1AtomSelector.html" title=" " alt="" coords="145,1627,317,1653"/>
+<area shape="rect" href="classloos_1_1loos_1_1AtomicGroup.html" title=" " alt="" coords="147,1677,316,1704"/>
+<area shape="rect" href="classloos_1_1loos_1_1AtomicGroupMap.html" title=" " alt="" coords="133,1728,330,1755"/>
+<area shape="rect" href="classloos_1_1loos_1_1AtomicGroupPythonIterator.html" title=" " alt="" coords="124,1779,339,1821"/>
+<area shape="rect" href="classloos_1_1loos_1_1AtomicGroupVector.html" title=" " alt="" coords="126,1845,337,1872"/>
+<area shape="rect" href="classloos_1_1loos_1_1DoubleVector.html" title=" " alt="" coords="146,1896,317,1923"/>
+<area shape="rect" href="classloos_1_1loos_1_1DoubleVectorMatrix.html" title=" " alt="" coords="125,1947,338,1973"/>
+<area shape="rect" href="classloos_1_1loos_1_1FormFactor.html" title=" " alt="" coords="153,1997,309,2024"/>
+<area shape="rect" href="classloos_1_1loos_1_1FormFactorSet.html" title=" " alt="" coords="143,2048,320,2075"/>
+<area shape="rect" href="classloos_1_1loos_1_1GCoord.html" title=" " alt="" coords="165,2099,297,2125"/>
+<area shape="rect" href="classloos_1_1loos_1_1GCoordVector.html" title=" " alt="" coords="145,2149,318,2176"/>
+<area shape="rect" href="classloos_1_1loos_1_1GMatrix.html" title=" " alt="" coords="163,2200,299,2227"/>
+<area shape="rect" href="classloos_1_1loos_1_1HBondDetector.html" title=" " alt="" coords="140,2251,323,2277"/>
+<area shape="rect" href="classloos_1_1loos_1_1IntPair.html" title=" " alt="" coords="169,2301,294,2328"/>
+<area shape="rect" href="classloos_1_1loos_1_1IntPairVector.html" title=" " alt="" coords="148,2352,315,2379"/>
+<area shape="rect" href="classloos_1_1loos_1_1IntVector.html" title=" " alt="" coords="160,2403,303,2429"/>
+<area shape="rect" href="classloos_1_1loos_1_1Remarks.html" title=" " alt="" coords="160,2453,303,2480"/>
+<area shape="rect" href="classloos_1_1loos_1_1RnaSuite.html" title=" " alt="" coords="160,2504,303,2531"/>
+<area shape="rect" href="classloos_1_1loos_1_1StringVector.html" title=" " alt="" coords="150,2555,313,2581"/>
+<area shape="rect" href="classloos_1_1loos_1_1SwigPyIterator.html" title=" " alt="" coords="142,2605,321,2632"/>
+<area shape="rect" href="classloos_1_1loos_1_1TimeSeriesDbl.html" title=" " alt="" coords="142,2656,321,2683"/>
+<area shape="rect" href="classloos_1_1loos_1_1Trajectory.html" title=" " alt="" coords="157,2707,305,2733"/>
+<area shape="rect" href="classloos_1_1loos_1_1TrajectoryWriter.html" title=" " alt="" coords="137,2757,325,2784"/>
+<area shape="rect" href="classloos_1_1loos_1_1UIntVector.html" title=" " alt="" coords="155,2808,307,2835"/>
+<area shape="rect" href="classloos_1_1loos_1_1UnitCell.html" title=" " alt="" coords="163,2859,299,2885"/>
+<area shape="rect" href="classloos_1_1loos_1_1Weights.html" title=" " alt="" coords="163,2909,299,2936"/>
+<area shape="rect" href="classloos_1_1loos_1_1XForm.html" title=" " alt="" coords="168,2960,295,2987"/>
+<area shape="rect" href="classloos_1_1loos_1_1XFormVector.html" title=" " alt="" coords="148,3011,315,3037"/>
+<area shape="rect" href="classloos_1_1pyloos_1_1trajectories_1_1Trajectory.html" title="Python&#45;based wrapper for LOOS Trajectories This class turns a loos Trajectory into something more pyt..." alt="" coords="142,3062,321,3103"/>
+<area shape="rect" href="classloos_1_1pyloos_1_1trajectories_1_1VirtualTrajectory.html" title="Virtual trajectory composed of multiple Trajectory objects This class can combine multiple loos...." alt="" coords="142,3127,321,3169"/>
+<area shape="rect" href="classpyloos_1_1AlignmentResult.html" title=" " alt="" coords="143,3193,320,3220"/>
+<area shape="rect" href="classpyloos_1_1Atom.html" title=" " alt="" coords="179,3244,283,3271"/>
+<area shape="rect" href="classpyloos_1_1AtomSelector.html" title=" " alt="" coords="153,3295,310,3321"/>
+<area shape="rect" href="classpyloos_1_1AtomicGroup.html" title=" " alt="" coords="154,3345,309,3372"/>
+<area shape="rect" href="classpyloos_1_1AtomicGroupMap.html" title=" " alt="" coords="140,3396,323,3423"/>
+<area shape="rect" href="classpyloos_1_1AtomicGroupPythonIterator.html" title=" " alt="" coords="132,3447,331,3489"/>
+<area shape="rect" href="classpyloos_1_1AtomicGroupVector.html" title=" " alt="" coords="134,3513,329,3540"/>
+<area shape="rect" href="classpyloos_1_1DoubleVector.html" title=" " alt="" coords="153,3564,309,3591"/>
+<area shape="rect" href="classpyloos_1_1DoubleVectorMatrix.html" title=" " alt="" coords="132,3615,331,3641"/>
+<area shape="rect" href="classpyloos_1_1FormFactor.html" title=" " alt="" coords="161,3665,302,3692"/>
+<area shape="rect" href="classpyloos_1_1FormFactorSet.html" title=" " alt="" coords="150,3716,313,3743"/>
+<area shape="rect" href="classpyloos_1_1GCoord.html" title=" " alt="" coords="173,3767,290,3793"/>
+<area shape="rect" href="classpyloos_1_1GCoordVector.html" title=" " alt="" coords="152,3817,311,3844"/>
+<area shape="rect" href="classpyloos_1_1GMatrix.html" title=" " alt="" coords="171,3868,292,3895"/>
+<area shape="rect" href="classpyloos_1_1HBondDetector.html" title=" " alt="" coords="147,3919,315,3945"/>
+<area shape="rect" href="classpyloos_1_1IntVector.html" title=" " alt="" coords="168,3969,295,3996"/>
+<area shape="rect" href="classpyloos_1_1Remarks.html" title=" " alt="" coords="168,4020,295,4047"/>
+<area shape="rect" href="classpyloos_1_1RnaSuite.html" title=" " alt="" coords="168,4071,295,4097"/>
+<area shape="rect" href="classpyloos_1_1StringVector.html" title=" " alt="" coords="157,4121,305,4148"/>
+<area shape="rect" href="classpyloos_1_1SwigPyIterator.html" title=" " alt="" coords="149,4172,313,4199"/>
+<area shape="rect" href="classpyloos_1_1TimeSeriesDbl.html" title=" " alt="" coords="149,4223,313,4249"/>
+<area shape="rect" href="classpyloos_1_1Trajectory.html" title=" " alt="" coords="165,4273,298,4300"/>
+<area shape="rect" href="classpyloos_1_1TrajectoryWriter.html" title=" " alt="" coords="145,4324,318,4351"/>
+<area shape="rect" href="classpyloos_1_1UIntVector.html" title=" " alt="" coords="163,4375,300,4401"/>
+<area shape="rect" href="classpyloos_1_1UnitCell.html" title=" " alt="" coords="171,4425,292,4452"/>
+<area shape="rect" href="classpyloos_1_1Weights.html" title=" " alt="" coords="171,4476,292,4503"/>
+<area shape="rect" href="classpyloos_1_1XForm.html" title=" " alt="" coords="176,4527,287,4553"/>
+<area shape="rect" href="classpyloos_1_1XFormVector.html" title=" " alt="" coords="155,4577,307,4604"/>
+<area shape="rect" href="structloos_1_1AndSelector.html" title="Combines two selectors with a logical &quot;and&quot;." alt="" coords="428,1069,563,1096"/>
+<area shape="rect" href="structloos_1_1AtomNameSelector.html" title="Predicate for selecting atoms based on explicit name matching." alt="" coords="403,1120,587,1147"/>
+<area shape="rect" href="classloos_1_1BackboneSelector.html" title="Predicate for selecting backbone." alt="" coords="408,1171,583,1197"/>
+<area shape="rect" href="structloos_1_1CAlphaSelector.html" title="Predicate for selecting CA atoms." alt="" coords="417,1221,573,1248"/>
+<area shape="rect" href="structloos_1_1HeavyAtomSelector.html" title="Select non&#45;hydrogen atoms." alt="" coords="402,1272,589,1299"/>
+<area shape="rect" href="structloos_1_1HeavySolventSelector.html" title="Select only heavy solvent atoms." alt="" coords="395,1323,596,1349"/>
+<area shape="rect" href="structloos_1_1HydrogenSelector.html" title="Select hydrogen atoms." alt="" coords="409,1373,582,1400"/>
+<area shape="rect" href="structloos_1_1IndexSelector.html" title="Predicate for selecting atoms based on index." alt="" coords="422,1424,569,1451"/>
+<area shape="rect" href="classloos_1_1KernelSelector.html" title="Selection predicate that executes a compiled Kernel." alt="" coords="420,1475,571,1501"/>
+<area shape="rect" href="structloos_1_1NotSelector.html" title="Negates a selection predicate." alt="" coords="429,1525,562,1552"/>
+<area shape="rect" href="structloos_1_1OrSelector.html" title="Combines two selectors with a logical &quot;or&quot;." alt="" coords="433,1576,558,1603"/>
+<area shape="rect" href="structloos_1_1ResidRangeSelector.html" title="Predicate for selecting atoms from a range of resid&#39;s." alt="" coords="402,1627,589,1653"/>
+<area shape="rect" href="structloos_1_1SegidSelector.html" title="Predicate for selecting atoms based on the passed segid string." alt="" coords="422,1677,569,1704"/>
+<area shape="rect" href="structloos_1_1SolventSelector.html" title="Predicate for selecting solvent based on common solvent SEGIDs." alt="" coords="416,1728,575,1755"/>
+<area shape="rect" href="structloos_1_1ZSliceSelector.html" title="Predicate for selecting atoms in a specific range of z values." alt="" coords="420,1779,571,1805"/>
+<area shape="rect" href="classloos_1_1Amber.html" title="Class for reading in AMBER parmtop/coord files..." alt="" coords="445,1829,545,1856"/>
+<area shape="rect" href="classloos_1_1CHARMM.html" title="Class for reading a CHARMM coordinate file." alt="" coords="436,1880,555,1907"/>
+<area shape="rect" href="classloos_1_1Gromacs.html" title="Implements a GROMACS model file (.gro)" alt="" coords="440,1931,551,1957"/>
+<area shape="rect" href="classloos_1_1PDB.html" title="PDB reading/writing class." alt="" coords="455,1981,535,2008"/>
+<area shape="rect" href="classloos_1_1PSF.html" title="Class for reading a subset of the PSF format." alt="" coords="455,2032,536,2059"/>
+<area shape="rect" href="classloos_1_1TinkerXYZ.html" title="Class for reading a subset of the TinkerXYZ format." alt="" coords="434,2083,557,2109"/>
+<area shape="rect" href="classloos_1_1loos_1_1Gromacs.html" title=" " alt="" coords="424,2133,567,2160"/>
+<area shape="rect" href="classloos_1_1loos_1_1PDB.html" title=" " alt="" coords="440,2184,551,2211"/>
+<area shape="rect" href="classloos_1_1AmberNetcdf.html" title="Class for reading Amber Trajectories in NetCDF format." alt="" coords="424,2308,567,2335"/>
+<area shape="rect" href="classloos_1_1AmberRst.html" title="Class for reading amber restart files as a single&#45;frame trajectory." alt="" coords="435,2359,556,2385"/>
+<area shape="rect" href="classloos_1_1AmberTraj.html" title="Class for reading amber coordinate trajectories." alt="" coords="434,2409,557,2436"/>
+<area shape="rect" href="classloos_1_1CCPDB.html" title="Class for interpreting concatenated PDB files as a Trajectory." alt="" coords="444,2460,547,2487"/>
+<area shape="rect" href="classloos_1_1DCD.html" title="Class for reading DCD files." alt="" coords="452,2511,539,2537"/>
+<area shape="rect" href="classloos_1_1MultiTrajectory.html" title="Combine multiple trajectories (pTraj&#39;s) into one large virtual trajectory." alt="" coords="418,2561,573,2588"/>
+<area shape="rect" href="classloos_1_1PDBTraj.html" title="Class for intepreting separate PDB files as a single trajectory." alt="" coords="442,2612,549,2639"/>
+<area shape="rect" href="classloos_1_1TRR.html" title="Class representing the GROMACS TRR trajectory files." alt="" coords="454,2663,537,2689"/>
+<area shape="rect" href="classloos_1_1TinkerArc.html" title="Class for handling Tinker ARC files (concatenation of .xyz files)" alt="" coords="436,2713,555,2740"/>
+<area shape="rect" href="classloos_1_1XTC.html" title="Class representing GROMACS reduced precision, compressed trajectories." alt="" coords="454,2764,537,2791"/>
+<area shape="rect" href="classloos_1_1DCDWriter.html" title="A very lightweight class for writing simple DCDs." alt="" coords="434,2815,557,2841"/>
+<area shape="rect" href="classloos_1_1XTCWriter.html" title="Class for writing Gromacs XTC trajectories." alt="" coords="436,2865,555,2892"/>
+<area shape="rect" href="classloos_1_1loos_1_1DCDWriter.html" title=" " alt="" coords="419,2916,572,2943"/>
+<area shape="rect" href="classloos_1_1loos_1_1XTCWriter.html" title=" " alt="" coords="421,2967,570,2993"/>
+<area shape="rect" href="classloos_1_1UniformWeight.html" title=" " alt="" coords="418,3017,573,3044"/>
+<area shape="rect" href="classloos_1_1WeightsFromFile.html" title=" " alt="" coords="413,3068,578,3095"/>
+<area shape="rect" href="classloos_1_1pyloos_1_1trajectories_1_1AlignedVirtualTrajectory.html" title="A virtual trajectory that supports iterative alignment." alt="" coords="406,3127,585,3169"/>
+<area shape="rect" href="classpyloos_1_1Gromacs.html" title=" " alt="" coords="432,3320,559,3347"/>
+<area shape="rect" href="classpyloos_1_1PDB.html" title=" " alt="" coords="447,3371,543,3397"/>
+<area shape="rect" href="classpyloos_1_1DCDWriter.html" title=" " alt="" coords="426,4299,565,4325"/>
+<area shape="rect" href="classpyloos_1_1XTCWriter.html" title=" " alt="" coords="428,4349,563,4376"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_12.png" border="0" usemap="#aloos_8AtomicGroup_1_1Iterator" alt=""/>
+<map name="aloos_8AtomicGroup_1_1Iterator" id="aloos_8AtomicGroup_1_1Iterator">
+<area shape="rect" href="classloos_1_1AtomicGroup_1_1Iterator.html" title="Our own simple iterator for stepping over all managed atoms." alt="" coords="5,5,200,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_13.png" border="0" usemap="#aloos_8LOOSError" alt=""/>
+<map name="aloos_8LOOSError" id="aloos_8LOOSError">
+<area shape="rect" title=" " alt="" coords="19,588,106,615"/>
+<area shape="rect" href="classloos_1_1LOOSError.html" title="Generic LOOS exception." alt="" coords="214,841,333,868"/>
+<area shape="rect" href="classloos_1_1Voronoi_1_1Voronoi_1_1VoronoiError.html" title=" " alt="" coords="169,319,377,361"/>
+<area shape="rect" href="classloos_1_1loos_1_1LOOSError.html" title=" " alt="" coords="198,385,349,412"/>
+<area shape="rect" href="classpyloos_1_1LOOSError.html" title=" " alt="" coords="206,791,341,817"/>
+<area shape="rect" href="classloos_1_1Atom_1_1UnsetProperty.html" title="DEPRECATED exception class...use loos::UnsetProperty instead." alt="" coords="433,5,622,32"/>
+<area shape="rect" href="classloos_1_1DCD_1_1EndOfFile.html" title=" " alt="" coords="449,56,605,83"/>
+<area shape="rect" href="classloos_1_1FileError.html" title="Errors related to File I/O." alt="" coords="474,107,581,133"/>
+<area shape="rect" href="classloos_1_1NumericalError.html" title="Exception caused by a blas/atlas error." alt="" coords="452,157,603,184"/>
+<area shape="rect" href="classloos_1_1OptionsError.html" title="Exception in options." alt="" coords="460,208,595,235"/>
+<area shape="rect" href="classloos_1_1ParseError.html" title="Exception when parsing input data." alt="" coords="468,259,587,285"/>
+<area shape="rect" href="classloos_1_1UnsetProperty.html" title="Exception when trying to use an unset Atom property." alt="" coords="454,309,601,336"/>
+<area shape="rect" href="classloos_1_1XDRDataSizeError.html" title="Exception indicating internal XDR error." alt="" coords="442,360,613,387"/>
+<area shape="rect" href="classloos_1_1loos_1_1FileError.html" title=" " alt="" coords="458,411,597,437"/>
+<area shape="rect" href="classloos_1_1loos_1_1NumericalError.html" title=" " alt="" coords="436,461,619,488"/>
+<area shape="rect" href="classloos_1_1loos_1_1OptionsError.html" title=" " alt="" coords="445,512,610,539"/>
+<area shape="rect" href="classloos_1_1loos_1_1ParseError.html" title=" " alt="" coords="452,563,603,589"/>
+<area shape="rect" href="classloos_1_1loos_1_1UnsetProperty.html" title=" " alt="" coords="439,613,616,640"/>
+<area shape="rect" href="classloos_1_1loos_1_1XDRDataSizeError.html" title=" " alt="" coords="427,664,628,691"/>
+<area shape="rect" href="classloos_1_1FileOpenError.html" title="Error while opening a file." alt="" coords="692,284,833,311"/>
+<area shape="rect" href="classloos_1_1FileReadError.html" title="Errors that occur while reading a file." alt="" coords="693,335,833,361"/>
+<area shape="rect" href="classloos_1_1FileWriteError.html" title="Errors while writing to files." alt="" coords="691,385,834,412"/>
+<area shape="rect" href="classloos_1_1loos_1_1FileOpenError.html" title=" " alt="" coords="677,436,849,463"/>
+<area shape="rect" href="classloos_1_1loos_1_1FileReadError.html" title=" " alt="" coords="677,487,848,513"/>
+<area shape="rect" href="classloos_1_1loos_1_1FileWriteError.html" title=" " alt="" coords="676,537,849,564"/>
+<area shape="rect" href="classloos_1_1FileReadErrorWithLine.html" title="Errors that occur while reading a text file (where lines are tracked)" alt="" coords="913,461,1110,488"/>
+<area shape="rect" href="classloos_1_1loos_1_1FileReadErrorWithLine.html" title=" " alt="" coords="897,512,1125,539"/>
+<area shape="rect" href="classpyloos_1_1FileError.html" title=" " alt="" coords="466,715,589,741"/>
+<area shape="rect" href="classpyloos_1_1NumericalError.html" title=" " alt="" coords="444,765,611,792"/>
+<area shape="rect" href="classpyloos_1_1OptionsError.html" title=" " alt="" coords="452,816,603,843"/>
+<area shape="rect" href="classpyloos_1_1ParseError.html" title=" " alt="" coords="460,867,595,893"/>
+<area shape="rect" href="classpyloos_1_1UnsetProperty.html" title=" " alt="" coords="446,917,609,944"/>
+<area shape="rect" href="classpyloos_1_1XDRDataSizeError.html" title=" " alt="" coords="434,968,621,995"/>
+<area shape="rect" href="classpyloos_1_1FileOpenError.html" title=" " alt="" coords="684,664,841,691"/>
+<area shape="rect" href="classpyloos_1_1FileReadError.html" title=" " alt="" coords="685,715,841,741"/>
+<area shape="rect" href="classpyloos_1_1FileWriteError.html" title=" " alt="" coords="683,765,842,792"/>
+<area shape="rect" href="classpyloos_1_1FileReadErrorWithLine.html" title=" " alt="" coords="905,715,1118,741"/>
+<area shape="rect" title=" " alt="" coords="5,867,120,893"/>
+<area shape="rect" href="structloos_1_1HBonds_1_1ErrorWithAtom.html" title=" " alt="" coords="168,892,379,919"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_14.png" border="0" usemap="#aloos_8pyloos_8ConvexHull_8ConvexHull" alt=""/>
+<map name="aloos_8pyloos_8ConvexHull_8ConvexHull" id="aloos_8pyloos_8ConvexHull_8ConvexHull">
+<area shape="rect" href="classloos_1_1pyloos_1_1ConvexHull_1_1ConvexHull.html" title=" " alt="" coords="5,5,260,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_15.png" border="0" usemap="#aloos_8pyloos_8ConvexHull_8ZSliceSelector" alt=""/>
+<map name="aloos_8pyloos_8ConvexHull_8ZSliceSelector" id="aloos_8pyloos_8ConvexHull_8ZSliceSelector">
+<area shape="rect" href="classloos_1_1pyloos_1_1ConvexHull_1_1ZSliceSelector.html" title=" " alt="" coords="5,5,224,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_16.png" border="0" usemap="#aloos_8pyloos_8NAMDBin_8NAMDBin" alt=""/>
+<map name="aloos_8pyloos_8NAMDBin_8NAMDBin" id="aloos_8pyloos_8NAMDBin_8NAMDBin">
+<area shape="rect" href="classloos_1_1pyloos_1_1NAMDBin_1_1NAMDBin.html" title=" " alt="" coords="5,5,233,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_17.png" border="0" usemap="#aloos_8pyloos_8options_8LoosOptions" alt=""/>
+<map name="aloos_8pyloos_8options_8LoosOptions" id="aloos_8pyloos_8options_8LoosOptions">
+<area shape="rect" href="classloos_1_1pyloos_1_1options_1_1LoosOptions.html" title=" " alt="" coords="5,5,188,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_18.png" border="0" usemap="#aloos_8pyloos_8SymmMatrix_8SymmMatrix" alt=""/>
+<map name="aloos_8pyloos_8SymmMatrix_8SymmMatrix" id="aloos_8pyloos_8SymmMatrix_8SymmMatrix">
+<area shape="rect" href="classloos_1_1pyloos_1_1SymmMatrix_1_1SymmMatrix.html" title=" " alt="" coords="5,5,236,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_19.png" border="0" usemap="#aloos_8Voronoi_8Voronoi_8Edge" alt=""/>
+<map name="aloos_8Voronoi_8Voronoi_8Edge" id="aloos_8Voronoi_8Voronoi_8Edge">
+<area shape="rect" href="classloos_1_1Voronoi_1_1Voronoi_1_1Edge.html" title=" " alt="" coords="5,5,196,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_20.png" border="0" usemap="#aloos_8Voronoi_8Voronoi_8Region" alt=""/>
+<map name="aloos_8Voronoi_8Voronoi_8Region" id="aloos_8Voronoi_8Voronoi_8Region">
+<area shape="rect" href="classloos_1_1Voronoi_1_1Voronoi_1_1Region.html" title=" " alt="" coords="5,5,209,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_21.png" border="0" usemap="#aloos_8Voronoi_8Voronoi_8SuperRegion" alt=""/>
+<map name="aloos_8Voronoi_8Voronoi_8SuperRegion" id="aloos_8Voronoi_8Voronoi_8SuperRegion">
+<area shape="rect" href="classloos_1_1Voronoi_1_1Voronoi_1_1SuperRegion.html" title=" " alt="" coords="5,5,201,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_22.png" border="0" usemap="#aloos_8Voronoi_8Voronoi_8VoronoiWrapper" alt=""/>
+<map name="aloos_8Voronoi_8Voronoi_8VoronoiWrapper" id="aloos_8Voronoi_8Voronoi_8VoronoiWrapper">
+<area shape="rect" href="classloos_1_1Voronoi_1_1Voronoi_1_1VoronoiWrapper.html" title=" " alt="" coords="5,5,213,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_23.png" border="0" usemap="#aloos_8Voronoi_8Voronoi_8ZSliceSelector" alt=""/>
+<map name="aloos_8Voronoi_8Voronoi_8ZSliceSelector" id="aloos_8Voronoi_8Voronoi_8ZSliceSelector">
+<area shape="rect" href="classloos_1_1Voronoi_1_1Voronoi_1_1ZSliceSelector.html" title=" " alt="" coords="5,5,204,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_24.png" border="0" usemap="#aloos_1_1AbstractObserver" alt=""/>
+<map name="aloos_1_1AbstractObserver" id="aloos_1_1AbstractObserver">
+<area shape="rect" href="classloos_1_1AbstractObserver.html" title=" " alt="" coords="5,31,176,57"/>
+<area shape="rect" href="classloos_1_1BasicProgress.html" title=" " alt="" coords="224,31,372,57"/>
+<area shape="rect" href="classloos_1_1PercentProgress.html" title="Provide feedback by percent&#45;complete." alt="" coords="451,5,614,32"/>
+<area shape="rect" href="classloos_1_1PercentProgressWithTime.html" title=" " alt="" coords="420,56,645,83"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_25.png" border="0" usemap="#aloos_1_1AscendingSort_3_01T_01_4" alt=""/>
+<map name="aloos_1_1AscendingSort_3_01T_01_4" id="aloos_1_1AscendingSort_3_01T_01_4">
+<area shape="rect" href="classloos_1_1AscendingSort.html" title="Policy class for sorting in ascending sequence." alt="" coords="5,5,193,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_26.png" border="0" usemap="#aloos_1_1AtomCoordsEquals" alt=""/>
+<map name="aloos_1_1AtomCoordsEquals" id="aloos_1_1AtomCoordsEquals">
+<area shape="rect" title=" " alt="" coords="5,31,156,57"/>
+<area shape="rect" href="structloos_1_1AtomCoordsEquals.html" title="Compares two atoms based on name, id, resid, resname, segid, and coords." alt="" coords="204,5,384,32"/>
+<area shape="rect" href="structloos_1_1AtomEquals.html" title="Compares two atoms based solely on name, id, resid, resname, and segid." alt="" coords="227,56,361,83"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_27.png" border="0" usemap="#aloos_1_1BoundFmt" alt=""/>
+<map name="aloos_1_1BoundFmt" id="aloos_1_1BoundFmt">
+<area shape="rect" href="structloos_1_1BoundFmt.html" title="Internal helper class to bind formatting state." alt="" coords="5,5,129,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_28.png" border="0" usemap="#aloos_1_1Coord_3_01double_01_4" alt=""/>
+<map name="aloos_1_1Coord_3_01double_01_4" id="aloos_1_1Coord_3_01double_01_4">
+<area shape="rect" href="classloos_1_1Coord.html" title=" " alt="" coords="5,5,175,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_29.png" border="0" usemap="#aloos_1_1Coord_3_01int_01_4" alt=""/>
+<map name="aloos_1_1Coord_3_01int_01_4" id="aloos_1_1Coord_3_01int_01_4">
+<area shape="rect" href="classloos_1_1Coord.html" title=" " alt="" coords="5,5,148,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_30.png" border="0" usemap="#aloos_1_1Coord_3_01T_01_4" alt=""/>
+<map name="aloos_1_1Coord_3_01T_01_4" id="aloos_1_1Coord_3_01T_01_4">
+<area shape="rect" href="classloos_1_1Coord.html" title="Basic 3&#45;D coordinates class." alt="" coords="5,5,139,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_31.png" border="0" usemap="#aloos_1_1DensityTools_1_1BulkEstimator" alt=""/>
+<map name="aloos_1_1DensityTools_1_1BulkEstimator" id="aloos_1_1DensityTools_1_1BulkEstimator">
+<area shape="rect" href="classloos_1_1DensityTools_1_1BulkEstimator.html" title=" " alt="" coords="5,71,145,112"/>
+<area shape="rect" href="classloos_1_1DensityTools_1_1NullEstimator.html" title=" " alt="" coords="193,5,333,47"/>
+<area shape="rect" href="classloos_1_1DensityTools_1_1ZClipEstimator.html" title=" " alt="" coords="193,71,333,112"/>
+<area shape="rect" href="classloos_1_1DensityTools_1_1ZSliceEstimator.html" title=" " alt="" coords="193,136,333,177"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_32.png" border="0" usemap="#aloos_1_1DensityTools_1_1DensityGrid_3_01double_01_4" alt=""/>
+<map name="aloos_1_1DensityTools_1_1DensityGrid_3_01double_01_4" id="aloos_1_1DensityTools_1_1DensityGrid_3_01double_01_4">
+<area shape="rect" href="classloos_1_1DensityTools_1_1DensityGrid.html" title=" " alt="" coords="5,5,187,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_33.png" border="0" usemap="#aloos_1_1DensityTools_1_1DensityGrid_3_01int_01_4" alt=""/>
+<map name="aloos_1_1DensityTools_1_1DensityGrid_3_01int_01_4" id="aloos_1_1DensityTools_1_1DensityGrid_3_01int_01_4">
+<area shape="rect" href="classloos_1_1DensityTools_1_1DensityGrid.html" title=" " alt="" coords="5,5,160,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_34.png" border="0" usemap="#aloos_1_1DensityTools_1_1DensityGrid_3_01T_01_4" alt=""/>
+<map name="aloos_1_1DensityTools_1_1DensityGrid_3_01T_01_4" id="aloos_1_1DensityTools_1_1DensityGrid_3_01T_01_4">
+<area shape="rect" href="classloos_1_1DensityTools_1_1DensityGrid.html" title="A simple 3D grid class of arbitrary types." alt="" coords="5,5,151,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_35.png" border="0" usemap="#aloos_1_1DensityTools_1_1DensityGridIterator_3_01T_00_01R_01_4" alt=""/>
+<map name="aloos_1_1DensityTools_1_1DensityGridIterator_3_01T_00_01R_01_4" id="aloos_1_1DensityTools_1_1DensityGridIterator_3_01T_00_01R_01_4">
+<area shape="rect" title=" " alt="" coords="5,20,171,47"/>
+<area shape="rect" href="classloos_1_1DensityTools_1_1DensityGridIterator.html" title="Random access iterator using the BOOST facade." alt="" coords="219,5,373,61"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_36.png" border="0" usemap="#aloos_1_1DensityTools_1_1DensityGridPlane_3_01T_01_4" alt=""/>
+<map name="aloos_1_1DensityTools_1_1DensityGridPlane_3_01T_01_4" id="aloos_1_1DensityTools_1_1DensityGridPlane_3_01T_01_4">
+<area shape="rect" href="classloos_1_1DensityTools_1_1DensityGridPlane.html" title="Encapsulates an i,j&#45;plane from an DensityGrid." alt="" coords="5,5,187,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_37.png" border="0" usemap="#aloos_1_1DensityTools_1_1DensityGridRow_3_01T_01_4" alt=""/>
+<map name="aloos_1_1DensityTools_1_1DensityGridRow_3_01T_01_4" id="aloos_1_1DensityTools_1_1DensityGridRow_3_01T_01_4">
+<area shape="rect" href="classloos_1_1DensityTools_1_1DensityGridRow.html" title="Encapsulates a j&#45;row from an DensityGrid." alt="" coords="5,5,179,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_38.png" border="0" usemap="#aloos_1_1DensityTools_1_1NonzeroDensity_3_01T_01_4" alt=""/>
+<map name="aloos_1_1DensityTools_1_1NonzeroDensity_3_01T_01_4" id="aloos_1_1DensityTools_1_1NonzeroDensity_3_01T_01_4">
+<area shape="rect" href="classloos_1_1DensityTools_1_1NonzeroDensity.html" title="Functor that is true for any non&#45;zero density." alt="" coords="5,5,177,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_39.png" border="0" usemap="#aloos_1_1DensityTools_1_1SimpleMeta" alt=""/>
+<map name="aloos_1_1DensityTools_1_1SimpleMeta" id="aloos_1_1DensityTools_1_1SimpleMeta">
+<area shape="rect" href="classloos_1_1DensityTools_1_1SimpleMeta.html" title="Simple class for handling metadata." alt="" coords="5,5,145,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_40.png" border="0" usemap="#aloos_1_1DensityTools_1_1Threshold_3_01T_01_4" alt=""/>
+<map name="aloos_1_1DensityTools_1_1Threshold_3_01T_01_4" id="aloos_1_1DensityTools_1_1Threshold_3_01T_01_4">
+<area shape="rect" href="classloos_1_1DensityTools_1_1Threshold.html" title="Functor that is true if value is greater than or equal to threshold." alt="" coords="5,5,145,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_41.png" border="0" usemap="#aloos_1_1DensityTools_1_1ThresholdRange_3_01T_01_4" alt=""/>
+<map name="aloos_1_1DensityTools_1_1ThresholdRange_3_01T_01_4" id="aloos_1_1DensityTools_1_1ThresholdRange_3_01T_01_4">
+<area shape="rect" href="classloos_1_1DensityTools_1_1ThresholdRange.html" title="Functor that is true if value is between low and hi, inclusive." alt="" coords="5,5,179,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_42.png" border="0" usemap="#aloos_1_1DensityTools_1_1WaterFilterBase" alt=""/>
+<map name="aloos_1_1DensityTools_1_1WaterFilterBase" id="aloos_1_1DensityTools_1_1WaterFilterBase">
+<area shape="rect" href="classloos_1_1DensityTools_1_1WaterFilterBase.html" title="Base interface for water filter/picker." alt="" coords="5,201,145,243"/>
+<area shape="rect" href="classloos_1_1DensityTools_1_1WaterFilterAxis.html" title="Pick waters that are within a radius of the principal axis for a molecule." alt="" coords="206,5,346,47"/>
+<area shape="rect" href="classloos_1_1DensityTools_1_1WaterFilterBlob.html" title="Pick waters based on a grid&#45;mask." alt="" coords="206,71,346,112"/>
+<area shape="rect" href="classloos_1_1DensityTools_1_1WaterFilterBox.html" title="Pick waters inside a bounding box." alt="" coords="206,136,346,177"/>
+<area shape="rect" href="classloos_1_1DensityTools_1_1WaterFilterContacts.html" title="Pick waters with a minimum number of contacts to protein atoms." alt="" coords="197,201,355,243"/>
+<area shape="rect" href="classloos_1_1DensityTools_1_1WaterFilterCore.html" title="Pick waters that are within a radius of the core axis for a molecule." alt="" coords="206,267,346,308"/>
+<area shape="rect" href="classloos_1_1DensityTools_1_1WaterFilterDecorator.html" title="Decorator base class for &quot;decorating&quot; the core water filters..." alt="" coords="193,332,359,373"/>
+<area shape="rect" href="classloos_1_1DensityTools_1_1WaterFilterRadius.html" title="Pick waters within a given radius of a group of atoms." alt="" coords="203,397,349,439"/>
+<area shape="rect" href="classloos_1_1DensityTools_1_1BulkedWaterFilter.html" title="Add bulk water back into the mask/map." alt="" coords="413,300,559,341"/>
+<area shape="rect" href="classloos_1_1DensityTools_1_1ZClippedWaterFilter.html" title="Restrict waters to be within a given z&#45;range." alt="" coords="407,365,565,407"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_43.png" border="0" usemap="#aloos_1_1DensityTools_1_1WaterHistogrammer" alt=""/>
+<map name="aloos_1_1DensityTools_1_1WaterHistogrammer" id="aloos_1_1DensityTools_1_1WaterHistogrammer">
+<area shape="rect" href="classloos_1_1DensityTools_1_1WaterHistogrammer.html" title=" " alt="" coords="5,5,168,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_44.png" border="0" usemap="#aloos_1_1DensityTools_1_1XEDMWriter_3_01T_01_4" alt=""/>
+<map name="aloos_1_1DensityTools_1_1XEDMWriter_3_01T_01_4" id="aloos_1_1DensityTools_1_1XEDMWriter_3_01T_01_4">
+<area shape="rect" href="structloos_1_1DensityTools_1_1XEDMWriter.html" title="Functor for writing out ASCII formatted X&#45;Plor electron density maps." alt="" coords="5,5,152,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_45.png" border="0" usemap="#aloos_1_1DescendingSort_3_01T_01_4" alt=""/>
+<map name="aloos_1_1DescendingSort_3_01T_01_4" id="aloos_1_1DescendingSort_3_01T_01_4">
+<area shape="rect" href="classloos_1_1DescendingSort.html" title="Policy class for sorting in descending sequence." alt="" coords="5,5,203,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_46.png" border="0" usemap="#aloos_1_1Fmt" alt=""/>
+<map name="aloos_1_1Fmt" id="aloos_1_1Fmt">
+<area shape="rect" href="classloos_1_1Fmt.html" title="Output formatter class, adapted from Stroustrup&#39;s book." alt="" coords="5,5,88,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_47.png" border="0" usemap="#aloos_1_1HBonds_1_1SimpleAtom" alt=""/>
+<map name="aloos_1_1HBonds_1_1SimpleAtom" id="aloos_1_1HBonds_1_1SimpleAtom">
+<area shape="rect" href="classloos_1_1HBonds_1_1SimpleAtom.html" title=" " alt="" coords="5,5,200,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_48.png" border="0" usemap="#aloos_1_1internal_1_1Action" alt=""/>
+<map name="aloos_1_1internal_1_1Action" id="aloos_1_1internal_1_1Action">
+<area shape="rect" href="classloos_1_1internal_1_1Action.html" title="Base class for all commands..." alt="" coords="5,671,161,697"/>
+<area shape="rect" href="classloos_1_1internal_1_1Backbone.html" title="Shortcut for checking for backbone atoms..." alt="" coords="230,5,409,32"/>
+<area shape="rect" href="classloos_1_1internal_1_1Hydrogen.html" title="Shortcut for checking for hydrogens..." alt="" coords="230,56,409,83"/>
+<area shape="rect" href="classloos_1_1internal_1_1drop.html" title="Drop the top item from the stack." alt="" coords="247,107,391,133"/>
+<area shape="rect" href="classloos_1_1internal_1_1dup.html" title="Duplicate the top item on the stack." alt="" coords="250,157,389,184"/>
+<area shape="rect" href="classloos_1_1internal_1_1equals.html" title="Test for equality: ARG1 ARG ==." alt="" coords="240,208,399,235"/>
+<area shape="rect" href="classloos_1_1internal_1_1extractNumber.html" title="Extracts a number for a string on the stack using a regular expression: ARG1 regexp(S)" alt="" coords="213,259,426,285"/>
+<area shape="rect" href="classloos_1_1internal_1_1greaterThan.html" title="ARG1 ARG2 &gt;" alt="" coords="222,309,417,336"/>
+<area shape="rect" href="classloos_1_1internal_1_1greaterThanEquals.html" title="ARG1 ARG2 &gt;=." alt="" coords="222,361,417,402"/>
+<area shape="rect" href="classloos_1_1internal_1_1lessThan.html" title="Relation operators...: ARG1 ARG2 &lt;." alt="" coords="233,427,406,453"/>
+<area shape="rect" href="classloos_1_1internal_1_1lessThanEquals.html" title="ARG1 ARG2 &lt;=." alt="" coords="233,478,406,519"/>
+<area shape="rect" href="classloos_1_1internal_1_1logicalAnd.html" title="ARG1 ARG2 &amp;&amp;." alt="" coords="228,544,411,571"/>
+<area shape="rect" href="classloos_1_1internal_1_1logicalNot.html" title="ARG1 !" alt="" coords="229,595,410,621"/>
+<area shape="rect" href="classloos_1_1internal_1_1logicalOr.html" title="ARG1 ARG2 ||." alt="" coords="233,645,406,672"/>
+<area shape="rect" href="classloos_1_1internal_1_1logicalTrue.html" title="Always returns true..." alt="" coords="227,696,412,723"/>
+<area shape="rect" href="classloos_1_1internal_1_1matchRegex.html" title="Regular expression matching: ARG1 regexp(S)" alt="" coords="221,747,418,773"/>
+<area shape="rect" href="classloos_1_1internal_1_1matchStringAsRegex.html" title="Regular expression matching: ARG1 regexp(ARG2)" alt="" coords="222,798,417,839"/>
+<area shape="rect" href="classloos_1_1internal_1_1pushAtomChainId.html" title="Push atom&#39;s chain ID onto the stack." alt="" coords="229,863,410,905"/>
+<area shape="rect" href="classloos_1_1internal_1_1pushAtomId.html" title="Push atom id onto the stack." alt="" coords="223,929,416,956"/>
+<area shape="rect" href="classloos_1_1internal_1_1pushAtomIndex.html" title="Push atom index onto the stack." alt="" coords="229,981,410,1022"/>
+<area shape="rect" href="classloos_1_1internal_1_1pushAtomName.html" title="Push atom name onto the stack." alt="" coords="209,1047,429,1073"/>
+<area shape="rect" href="classloos_1_1internal_1_1pushAtomResid.html" title="Push atom&#39;s residue id onto the stack." alt="" coords="229,1098,410,1139"/>
+<area shape="rect" href="classloos_1_1internal_1_1pushAtomResname.html" title="Push atom&#39;ss residue name onto the stack." alt="" coords="229,1163,410,1205"/>
+<area shape="rect" href="classloos_1_1internal_1_1pushAtomSegid.html" title="Push atom&#39;s segid onto the stack." alt="" coords="229,1229,410,1270"/>
+<area shape="rect" href="classloos_1_1internal_1_1pushFloat.html" title="Push a float onto the data stack." alt="" coords="230,1295,409,1321"/>
+<area shape="rect" href="classloos_1_1internal_1_1pushInt.html" title="Push an integer onto the data stack." alt="" coords="238,1345,401,1372"/>
+<area shape="rect" href="classloos_1_1internal_1_1pushString.html" title="Push a std::string onto the data stack." alt="" coords="227,1396,411,1423"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_49.png" border="0" usemap="#aloos_1_1internal_1_1AtomicNumberDeducer" alt=""/>
+<map name="aloos_1_1internal_1_1AtomicNumberDeducer" id="aloos_1_1internal_1_1AtomicNumberDeducer">
+<area shape="rect" href="classloos_1_1internal_1_1AtomicNumberDeducer.html" title=" " alt="" coords="5,5,219,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_50.png" border="0" usemap="#aloos_1_1internal_1_1BasicMatrixFormatter_3_01T_01_4" alt=""/>
+<map name="aloos_1_1internal_1_1BasicMatrixFormatter_3_01T_01_4" id="aloos_1_1internal_1_1BasicMatrixFormatter_3_01T_01_4">
+<area shape="rect" href="structloos_1_1internal_1_1BasicMatrixFormatter.html" title=" " alt="" coords="5,5,197,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_51.png" border="0" usemap="#aloos_1_1internal_1_1OutputTrajectoryNameBindingType" alt=""/>
+<map name="aloos_1_1internal_1_1OutputTrajectoryNameBindingType" id="aloos_1_1internal_1_1OutputTrajectoryNameBindingType">
+<area shape="rect" href="structloos_1_1internal_1_1OutputTrajectoryNameBindingType.html" title=" " alt="" coords="5,5,228,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_52.png" border="0" usemap="#aloos_1_1internal_1_1RangeItem" alt=""/>
+<map name="aloos_1_1internal_1_1RangeItem" id="aloos_1_1internal_1_1RangeItem">
+<area shape="rect" href="structloos_1_1internal_1_1RangeItem.html" title=" " alt="" coords="5,5,192,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_53.png" border="0" usemap="#aloos_1_1internal_1_1RangeParser_3_01Iterator_01_4" alt=""/>
+<map name="aloos_1_1internal_1_1RangeParser_3_01Iterator_01_4" id="aloos_1_1internal_1_1RangeParser_3_01Iterator_01_4">
+<area shape="rect" title=" " alt="" coords="5,5,132,47"/>
+<area shape="rect" href="structloos_1_1internal_1_1RangeParser.html" title=" " alt="" coords="180,5,376,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_54.png" border="0" usemap="#aloos_1_1internal_1_1SystemNameBindingType" alt=""/>
+<map name="aloos_1_1internal_1_1SystemNameBindingType" id="aloos_1_1internal_1_1SystemNameBindingType">
+<area shape="rect" href="structloos_1_1internal_1_1SystemNameBindingType.html" title=" " alt="" coords="5,5,208,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_55.png" border="0" usemap="#aloos_1_1internal_1_1TrajectoryNameBindingType" alt=""/>
+<map name="aloos_1_1internal_1_1TrajectoryNameBindingType" id="aloos_1_1internal_1_1TrajectoryNameBindingType">
+<area shape="rect" href="structloos_1_1internal_1_1TrajectoryNameBindingType.html" title=" " alt="" coords="5,5,184,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_56.png" border="0" usemap="#aloos_1_1internal_1_1Value" alt=""/>
+<map name="aloos_1_1internal_1_1Value" id="aloos_1_1internal_1_1Value">
+<area shape="rect" href="structloos_1_1internal_1_1Value.html" title="Value class for the LOOS Kernel (virtual machine)" alt="" coords="5,5,156,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_57.png" border="0" usemap="#aloos_1_1internal_1_1ValueStack" alt=""/>
+<map name="aloos_1_1internal_1_1ValueStack" id="aloos_1_1internal_1_1ValueStack">
+<area shape="rect" href="classloos_1_1internal_1_1ValueStack.html" title=" " alt="" coords="5,5,192,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_58.png" border="0" usemap="#aloos_1_1internal_1_1XDRReader" alt=""/>
+<map name="aloos_1_1internal_1_1XDRReader" id="aloos_1_1internal_1_1XDRReader">
+<area shape="rect" href="classloos_1_1internal_1_1XDRReader.html" title="This class provides some facility for handling XDR data." alt="" coords="5,5,195,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_59.png" border="0" usemap="#aloos_1_1internal_1_1XDRWriter" alt=""/>
+<map name="aloos_1_1internal_1_1XDRWriter" id="aloos_1_1internal_1_1XDRWriter">
+<area shape="rect" href="classloos_1_1internal_1_1XDRWriter.html" title=" " alt="" coords="5,5,188,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_60.png" border="0" usemap="#aloos_1_1Kernel" alt=""/>
+<map name="aloos_1_1Kernel" id="aloos_1_1Kernel">
+<area shape="rect" href="classloos_1_1Kernel.html" title="The Kernel (virtual machine) for compiling and executing user&#45;defined atom selections." alt="" coords="5,5,104,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_61.png" border="0" usemap="#aloos_1_1LineReader" alt=""/>
+<map name="aloos_1_1LineReader" id="aloos_1_1LineReader">
+<area shape="rect" href="classloos_1_1LineReader.html" title="Class for reading line&#45;by&#45;line from a file while tracking line numbers and stripping comments." alt="" coords="5,5,136,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_62.png" border="0" usemap="#aloos_1_1Math_1_1ColMajor" alt=""/>
+<map name="aloos_1_1Math_1_1ColMajor" id="aloos_1_1Math_1_1ColMajor">
+<area shape="rect" href="classloos_1_1Math_1_1ColMajor.html" title="Class for storing a matrix in column&#45;major order." alt="" coords="35,17,191,43"/>
+<area shape="rect" href="classloos_1_1Math_1_1Matrix.html" title=" " alt="" coords="319,5,459,47"/>
+<area shape="rect" href="classloos_1_1Math_1_1Matrix.html" title="Simple matrix template class using policy classes to determine behavior." alt="" coords="269,71,509,112"/>
+<area shape="rect" href="classloos_1_1Math_1_1SharedArray.html" title="Storage policy for a block of memory wrapped in a boost::shared_array pointer." alt="" coords="5,71,221,98"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_63.png" border="0" usemap="#aloos_1_1Math_1_1RowMajor" alt=""/>
+<map name="aloos_1_1Math_1_1RowMajor" id="aloos_1_1Math_1_1RowMajor">
+<area shape="rect" href="classloos_1_1Math_1_1RowMajor.html" title="Class for storing a matrix in row&#45;major order..." alt="" coords="5,5,168,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_64.png" border="0" usemap="#aloos_1_1Math_1_1SparseArray_3_01T_01_4" alt=""/>
+<map name="aloos_1_1Math_1_1SparseArray_3_01T_01_4" id="aloos_1_1Math_1_1SparseArray_3_01T_01_4">
+<area shape="rect" href="classloos_1_1Math_1_1SparseArray.html" title="Storage policy for a sparse matrix (see important note in the detailed documentation)." alt="" coords="5,5,220,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_65.png" border="0" usemap="#aloos_1_1Math_1_1Triangular" alt=""/>
+<map name="aloos_1_1Math_1_1Triangular" id="aloos_1_1Math_1_1Triangular">
+<area shape="rect" href="classloos_1_1Math_1_1Triangular.html" title="Class for storing a symmetric triangular matrix." alt="" coords="5,5,168,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_66.png" border="0" usemap="#aloos_1_1Matrix44_3_01T_01_4" alt=""/>
+<map name="aloos_1_1Matrix44_3_01T_01_4" id="aloos_1_1Matrix44_3_01T_01_4">
+<area shape="rect" href="classloos_1_1Matrix44.html" title="Specialized 4x4 Matrix class for handling coordinate transforms." alt="" coords="5,5,159,32"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_67.png" border="0" usemap="#aloos_1_1MatrixReadImpl_3_01T_00_01Math_1_1Triangular_00_01S_01_4" alt=""/>
+<map name="aloos_1_1MatrixReadImpl_3_01T_00_01Math_1_1Triangular_00_01S_01_4" id="aloos_1_1MatrixReadImpl_3_01T_00_01Math_1_1Triangular_00_01S_01_4">
+<area shape="rect" href="structloos_1_1MatrixReadImpl_3_01T_00_01Math_1_1Triangular_00_01S_01_4.html" title="Special handling for triangular matrices." alt="" coords="5,5,195,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_68.png" border="0" usemap="#aloos_1_1MatrixReadImpl_3_01T_00_01P_00_01Math_1_1SparseArray_01_4" alt=""/>
+<map name="aloos_1_1MatrixReadImpl_3_01T_00_01P_00_01Math_1_1SparseArray_01_4" id="aloos_1_1MatrixReadImpl_3_01T_00_01P_00_01Math_1_1SparseArray_01_4">
+<area shape="rect" href="structloos_1_1MatrixReadImpl_3_01T_00_01P_00_01Math_1_1SparseArray_01_4.html" title="Special handling for sparse matrices." alt="" coords="5,5,209,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_69.png" border="0" usemap="#aloos_1_1MatrixReadImpl_3_01T_00_01P_00_01S_01_4" alt=""/>
+<map name="aloos_1_1MatrixReadImpl_3_01T_00_01P_00_01S_01_4" id="aloos_1_1MatrixReadImpl_3_01T_00_01P_00_01S_01_4">
+<area shape="rect" href="structloos_1_1MatrixReadImpl.html" title=" " alt="" coords="5,5,167,47"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_70.png" border="0" usemap="#aloos_1_1MatrixWriteImpl_3_01T_00_01Math_1_1Triangular_00_01S_00_01F_01_4" alt=""/>
+<map name="aloos_1_1MatrixWriteImpl_3_01T_00_01Math_1_1Triangular_00_01S_00_01F_01_4" id="aloos_1_1MatrixWriteImpl_3_01T_00_01Math_1_1Triangular_00_01S_00_01F_01_4">
+<area shape="rect" href="structloos_1_1MatrixWriteImpl_3_01T_00_01Math_1_1Triangular_00_01S_00_01F_01_4.html" title="Write out a triangular matrix." alt="" coords="5,5,168,61"/>
+</map>
+</td></tr>
+<tr><td><img src="inherit_graph_71.png" border="0" usemap="#aloos_1_1MatrixWriteImpl_3_01T_00_01P_00_01Math_1_1SparseArray_00_01F_01_4" alt=""/>
+<map name="aloos_1_1MatrixWriteImpl_3_01T_00_01P_00_01Math_1_1SparseArray_00_01F_01_4" id="aloos_1_1MatrixWriteImpl_3_01T_00_01P_00_01Math_1_1SparseArray_00_01F_01_4">
+<area shape="rect" href="structloos_1_1MatrixWriteImpl_3_01T_00_01P_00_01Math_1_1SparseArray_00_01F_01_4.html" title="Write out a sparse matrix." alt="" coords="5,5,225,47"/>
+</map>
 </td></tr>
-<tr><td><img src="inherit_graph_82.png" border="0" usemap="#aloos_1_1_stream_wrapper" alt=""/>
-<map name="aloos_1_1_stream_wrapper" id="aloos_1_1_stream_wrapper">
-<area shape="rect" title=" " alt="" coords="5,5,140,32"/>
-<area shape="rect" href="classloos_1_1_stream_wrapper.html" title="Simple wrapper class for caching stream pointers." alt="" coords="188,5,332,32"/>
+<tr><td><img src="inherit_graph_72.png" border="0" usemap="#aloos_1_1MatrixWriteImpl_3_01T_00_01P_00_01S_00_01F_01_4" alt=""/>
+<map name="aloos_1_1MatrixWriteImpl_3_01T_00_01P_00_01S_00_01F_01_4" id="aloos_1_1MatrixWriteImpl_3_01T_00_01P_00_01S_00_01F_01_4">
+<area shape="rect" href="structloos_1_1MatrixWriteImpl.html" title=" " alt="" coords="5,5,168,47"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_83.png" border="0" usemap="#aloos_1_1_time_series_3_01_t_01_4" alt=""/>
-<map name="aloos_1_1_time_series_3_01_t_01_4" id="aloos_1_1_time_series_3_01_t_01_4">
-<area shape="rect" href="classloos_1_1_time_series.html" title="Time Series Class." alt="" coords="5,5,157,32"/>
+<tr><td><img src="inherit_graph_73.png" border="0" usemap="#aloos_1_1OptionsFramework_1_1AggregateOptions" alt=""/>
+<map name="aloos_1_1OptionsFramework_1_1AggregateOptions" id="aloos_1_1OptionsFramework_1_1AggregateOptions">
+<area shape="rect" href="classloos_1_1OptionsFramework_1_1AggregateOptions.html" title="Combines a set of OptionsPackages." alt="" coords="5,5,185,47"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_84.png" border="0" usemap="#aloos_1_1_trajectory" alt=""/>
-<map name="aloos_1_1_trajectory" id="aloos_1_1_trajectory">
-<area shape="rect" href="classloos_1_1_trajectory.html" title="Base&#45;class for polymorphic trajectories." alt="" coords="5,233,117,260"/>
-<area shape="rect" href="classloos_1_1_amber_netcdf.html" title="Class for reading Amber Trajectories in NetCDF format." alt="" coords="170,5,301,32"/>
-<area shape="rect" href="classloos_1_1_amber_rst.html" title="Class for reading amber restart files as a single&#45;frame trajectory." alt="" coords="179,56,292,83"/>
-<area shape="rect" href="classloos_1_1_amber_traj.html" title="Class for reading amber coordinate trajectories." alt="" coords="179,107,292,133"/>
-<area shape="rect" href="classloos_1_1_c_c_p_d_b.html" title="Class for interpreting concatenated PDB files as a Trajectory." alt="" coords="185,157,285,184"/>
-<area shape="rect" href="classloos_1_1_d_c_d.html" title="Class for reading DCD files." alt="" coords="194,208,277,235"/>
-<area shape="rect" href="classloos_1_1_multi_trajectory.html" title="Combine multiple trajectories (pTraj&#39;s) into one large virtual trajectory." alt="" coords="165,259,305,285"/>
-<area shape="rect" href="classloos_1_1_p_d_b_traj.html" title="Class for intepreting separate PDB files as a single trajectory." alt="" coords="184,309,287,336"/>
-<area shape="rect" href="classloos_1_1_t_r_r.html" title="Class representing the GROMACS TRR trajectory files." alt="" coords="195,360,276,387"/>
-<area shape="rect" href="classloos_1_1_tinker_arc.html" title="Class for handling Tinker ARC files (concatenation of .xyz files)" alt="" coords="181,411,290,437"/>
-<area shape="rect" href="classloos_1_1_x_t_c.html" title="Class representing GROMACS reduced precision, compressed trajectories." alt="" coords="195,461,276,488"/>
+<tr><td><img src="inherit_graph_74.png" border="0" usemap="#aloos_1_1OptionsFramework_1_1OptionsPackage" alt=""/>
+<map name="aloos_1_1OptionsFramework_1_1OptionsPackage" id="aloos_1_1OptionsFramework_1_1OptionsPackage">
+<area shape="rect" href="classloos_1_1OptionsFramework_1_1OptionsPackage.html" title="Base class for options." alt="" coords="5,499,185,541"/>
+<area shape="rect" href="classClustering_1_1ClusteringOptions.html" title=" " alt="" coords="237,5,449,32"/>
+<area shape="rect" href="classToolOptions.html" title=" " alt="" coords="293,56,392,83"/>
+<area shape="rect" href="classloos_1_1OptionsFramework_1_1BasicConvergence.html" title=" " alt="" coords="253,107,433,149"/>
+<area shape="rect" href="classloos_1_1OptionsFramework_1_1BasicOptions.html" title="Options common to all tools (including –fullhelp)" alt="" coords="253,173,433,214"/>
+<area shape="rect" href="classloos_1_1OptionsFramework_1_1BasicSelection.html" title="Provides a single LOOS selection (–selection)" alt="" coords="253,238,433,279"/>
+<area shape="rect" href="classloos_1_1OptionsFramework_1_1BasicSplitBy.html" title="Provides a mechanism for controlling how to split an AtomicGroup." alt="" coords="253,303,433,345"/>
+<area shape="rect" href="classloos_1_1OptionsFramework_1_1BasicTrajectory.html" title="Basic trajectory with a –skip option." alt="" coords="253,369,433,410"/>
+<area shape="rect" href="classloos_1_1OptionsFramework_1_1BasicWater.html" title="Options specific to tools that work with water/internal&#45;water." alt="" coords="253,434,433,475"/>
+<area shape="rect" href="classloos_1_1OptionsFramework_1_1ModelWithCoords.html" title="Request a model with coordinates." alt="" coords="253,499,433,541"/>
+<area shape="rect" href="classloos_1_1OptionsFramework_1_1MultiTrajOptions.html" title="Multiple trajectories as one trajectory via MultiTrajectory." alt="" coords="253,565,433,606"/>
+<area shape="rect" href="classloos_1_1OptionsFramework_1_1OutputPrefix.html" title="Gets a string as prefix for output files (–prefix)" alt="" coords="253,630,433,671"/>
+<area shape="rect" href="classloos_1_1OptionsFramework_1_1OutputTrajectoryOptions.html" title=" " alt="" coords="249,695,437,737"/>
+<area shape="rect" href="classloos_1_1OptionsFramework_1_1OutputTrajectoryTypeOptions.html" title=" " alt="" coords="233,761,452,802"/>
+<area shape="rect" href="classloos_1_1OptionsFramework_1_1RequiredArguments.html" title="Provides simple way to add command&#45;line arguments (required options)" alt="" coords="253,826,433,867"/>
+<area shape="rect" href="classloos_1_1OptionsFramework_1_1TrajectoryWithFrameIndices.html" title="Trajectory with either a –range or –skip." alt="" coords="237,891,448,933"/>
+<area shape="rect" href="classloos_1_1OptionsFramework_1_1TwoModelsWithCoords.html" title="Request Two models with coordinates." alt="" coords="253,957,433,998"/>
+<area shape="rect" href="classloos_1_1OptionsFramework_1_1WeightsOptions.html" title=" " alt="" coords="253,1022,433,1063"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_85.png" border="0" usemap="#aloos_1_1_trajectory_writer" alt=""/>
-<map name="aloos_1_1_trajectory_writer" id="aloos_1_1_trajectory_writer">
-<area shape="rect" href="classloos_1_1_trajectory_writer.html" title="Base class for writing trajectories." alt="" coords="5,31,152,57"/>
-<area shape="rect" href="classloos_1_1_d_c_d_writer.html" title="A very lightweight class for writing simple DCDs." alt="" coords="200,5,316,32"/>
-<area shape="rect" href="classloos_1_1_x_t_c_writer.html" title="Class for writing Gromacs XTC trajectories." alt="" coords="201,56,315,83"/>
+<tr><td><img src="inherit_graph_75.png" border="0" usemap="#aloos_1_1Parser" alt=""/>
+<map name="aloos_1_1Parser" id="aloos_1_1Parser">
+<area shape="rect" href="classloos_1_1Parser.html" title="Front&#45;end to the Bison/Flex parser." alt="" coords="5,5,103,32"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_86.png" border="0" usemap="#aloos_1_1_trigger_always" alt=""/>
-<map name="aloos_1_1_trigger_always" id="aloos_1_1_trigger_always">
-<area shape="rect" href="classloos_1_1_trigger_always.html" title="This is a simple &quot;trigger&quot; for use as a default." alt="" coords="5,5,140,32"/>
+<tr><td><img src="inherit_graph_76.png" border="0" usemap="#aloos_1_1ParserDriver" alt=""/>
+<map name="aloos_1_1ParserDriver" id="aloos_1_1ParserDriver">
+<area shape="rect" href="structloos_1_1ParserDriver.html" title=" " alt="" coords="5,5,143,32"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_87.png" border="0" usemap="#aloos_1_1_trigger_every" alt=""/>
-<map name="aloos_1_1_trigger_every" id="aloos_1_1_trigger_every">
-<area shape="rect" href="classloos_1_1_trigger_every.html" title="Trigger every i&#45;iterations." alt="" coords="5,5,132,32"/>
+<tr><td><img src="inherit_graph_77.png" border="0" usemap="#aloos_1_1PercentTrigger" alt=""/>
+<map name="aloos_1_1PercentTrigger" id="aloos_1_1PercentTrigger">
+<area shape="rect" href="classloos_1_1PercentTrigger.html" title="Trigger whenever at least frac percent more iterations have happened." alt="" coords="5,5,156,32"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_88.png" border="0" usemap="#aloos_1_1_unique_strings" alt=""/>
-<map name="aloos_1_1_unique_strings" id="aloos_1_1_unique_strings">
-<area shape="rect" href="classloos_1_1_unique_strings.html" title="Class for uniquifying strings..." alt="" coords="5,5,141,32"/>
+<tr><td><img src="inherit_graph_78.png" border="0" usemap="#aloos_1_1PeriodicBox" alt=""/>
+<map name="aloos_1_1PeriodicBox" id="aloos_1_1PeriodicBox">
+<area shape="rect" href="classloos_1_1PeriodicBox.html" title="Class for managing periodic box information." alt="" coords="5,5,140,32"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_89.png" border="0" usemap="#aloos_1_1_unit_cell" alt=""/>
-<map name="aloos_1_1_unit_cell" id="aloos_1_1_unit_cell">
-<area shape="rect" href="classloos_1_1_unit_cell.html" title="This class encapsulates crystallographic unit cell data." alt="" coords="5,5,107,32"/>
+<tr><td><img src="inherit_graph_79.png" border="0" usemap="#aloos_1_1PreciseMatrixFormatter_3_01T_01_4" alt=""/>
+<map name="aloos_1_1PreciseMatrixFormatter_3_01T_01_4" id="aloos_1_1PreciseMatrixFormatter_3_01T_01_4">
+<area shape="rect" href="classloos_1_1PreciseMatrixFormatter.html" title="Generic matrix element formatter allowing setting of width and precision." alt="" coords="5,5,253,32"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_90.png" border="0" usemap="#aloos_1_1unordered__pair__eq_3_01_t_01_4" alt=""/>
-<map name="aloos_1_1unordered__pair__eq_3_01_t_01_4" id="aloos_1_1unordered__pair__eq_3_01_t_01_4">
-<area shape="rect" href="structloos_1_1unordered__pair__eq.html" title="test equality of unordered pair. typename T must have == operator." alt="" coords="5,5,144,47"/>
+<tr><td><img src="inherit_graph_80.png" border="0" usemap="#aloos_1_1ScientificMatrixFormatter_3_01T_01_4" alt=""/>
+<map name="aloos_1_1ScientificMatrixFormatter_3_01T_01_4" id="aloos_1_1ScientificMatrixFormatter_3_01T_01_4">
+<area shape="rect" href="classloos_1_1ScientificMatrixFormatter.html" title="Generic matrix element formatter using scientific notation..." alt="" coords="5,5,265,32"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_91.png" border="0" usemap="#aloos_1_1unordered__pair__hash_3_01_t_01_4" alt=""/>
-<map name="aloos_1_1unordered__pair__hash_3_01_t_01_4" id="aloos_1_1unordered__pair__hash_3_01_t_01_4">
-<area shape="rect" href="structloos_1_1unordered__pair__hash.html" title=" " alt="" coords="5,5,144,47"/>
+<tr><td><img src="inherit_graph_81.png" border="0" usemap="#aloos_1_1SharedPeriodicBox" alt=""/>
+<map name="aloos_1_1SharedPeriodicBox" id="aloos_1_1SharedPeriodicBox">
+<area shape="rect" href="classloos_1_1SharedPeriodicBox.html" title="This class manages a shared Periodicbox." alt="" coords="5,5,184,32"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_92.png" border="0" usemap="#aloos_1_1_user_timer" alt=""/>
-<map name="aloos_1_1_user_timer" id="aloos_1_1_user_timer">
-<area shape="rect" href="classloos_1_1_user_timer.html" title="Policy class for tracking only user process time." alt="" coords="5,5,120,32"/>
+<tr><td><img src="inherit_graph_82.png" border="0" usemap="#aloos_1_1SimpleCounter" alt=""/>
+<map name="aloos_1_1SimpleCounter" id="aloos_1_1SimpleCounter">
+<area shape="rect" href="classloos_1_1SimpleCounter.html" title="Basic progress counter object, defining the interface..." alt="" coords="5,35,159,61"/>
+<area shape="rect" href="classloos_1_1EstimatingCounter.html" title="A progress counter that can estimate how much time is left." alt="" coords="207,5,385,32"/>
+<area shape="rect" href="classloos_1_1ProgressCounter.html" title="The progress counter front&#45;end." alt="" coords="214,57,378,98"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_93.png" border="0" usemap="#aloos_1_1_wall_timer" alt=""/>
-<map name="aloos_1_1_wall_timer" id="aloos_1_1_wall_timer">
-<area shape="rect" href="classloos_1_1_wall_timer.html" title="Policy class for tracking wall&#45;time." alt="" coords="5,42,117,69"/>
-<area shape="rect" href="classloos_1_1_timer.html" title=" " alt="" coords="186,5,317,47"/>
-<area shape="rect" href="classloos_1_1_timer.html" title="Class for tracking time." alt="" coords="165,71,337,98"/>
+<tr><td><img src="inherit_graph_83.png" border="0" usemap="#aloos_1_1StreamWrapper" alt=""/>
+<map name="aloos_1_1StreamWrapper" id="aloos_1_1StreamWrapper">
+<area shape="rect" title=" " alt="" coords="5,5,155,32"/>
+<area shape="rect" href="classloos_1_1StreamWrapper.html" title="Simple wrapper class for caching stream pointers." alt="" coords="203,5,361,32"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_94.png" border="0" usemap="#aloos_1_1_weights" alt=""/>
-<map name="aloos_1_1_weights" id="aloos_1_1_weights">
-<area shape="rect" href="classloos_1_1_weights.html" title=" " alt="" coords="5,31,107,57"/>
-<area shape="rect" href="classloos_1_1_uniform_weight.html" title=" " alt="" coords="161,5,301,32"/>
-<area shape="rect" href="classloos_1_1_weights_from_file.html" title=" " alt="" coords="155,56,307,83"/>
+<tr><td><img src="inherit_graph_84.png" border="0" usemap="#aloos_1_1TimeSeries_3_01T_01_4" alt=""/>
+<map name="aloos_1_1TimeSeries_3_01T_01_4" id="aloos_1_1TimeSeries_3_01T_01_4">
+<area shape="rect" href="classloos_1_1TimeSeries.html" title="Time Series Class." alt="" coords="5,5,173,32"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_95.png" border="0" usemap="#aloos_1_1_x_form" alt=""/>
-<map name="aloos_1_1_x_form" id="aloos_1_1_x_form">
-<area shape="rect" href="classloos_1_1_x_form.html" title="Matrix class for handling coordinate transforms..." alt="" coords="5,5,99,32"/>
+<tr><td><img src="inherit_graph_85.png" border="0" usemap="#aloos_1_1TriggerAlways" alt=""/>
+<map name="aloos_1_1TriggerAlways" id="aloos_1_1TriggerAlways">
+<area shape="rect" href="classloos_1_1TriggerAlways.html" title="This is a simple &quot;trigger&quot; for use as a default." alt="" coords="5,5,153,32"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_96.png" border="0" usemap="#a_master" alt=""/>
-<map name="a_master" id="a_master">
-<area shape="rect" href="class_master.html" title=" " alt="" coords="5,5,68,32"/>
+<tr><td><img src="inherit_graph_86.png" border="0" usemap="#aloos_1_1TriggerEvery" alt=""/>
+<map name="aloos_1_1TriggerEvery" id="aloos_1_1TriggerEvery">
+<area shape="rect" href="classloos_1_1TriggerEvery.html" title="Trigger every i&#45;iterations." alt="" coords="5,5,144,32"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_97.png" border="0" usemap="#a_regex_fmt" alt=""/>
-<map name="a_regex_fmt" id="a_regex_fmt">
-<area shape="rect" href="struct_regex_fmt.html" title=" " alt="" coords="5,5,88,32"/>
+<tr><td><img src="inherit_graph_87.png" border="0" usemap="#aloos_1_1UniqueStrings" alt=""/>
+<map name="aloos_1_1UniqueStrings" id="aloos_1_1UniqueStrings">
+<area shape="rect" href="classloos_1_1UniqueStrings.html" title="Class for uniquifying strings..." alt="" coords="5,5,153,32"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_98.png" border="0" usemap="#a_scanf_fmt" alt=""/>
-<map name="a_scanf_fmt" id="a_scanf_fmt">
-<area shape="rect" href="struct_scanf_fmt.html" title=" " alt="" coords="5,5,84,32"/>
+<tr><td><img src="inherit_graph_88.png" border="0" usemap="#aloos_1_1unordered__pair__eq_3_01T_01_4" alt=""/>
+<map name="aloos_1_1unordered__pair__eq_3_01T_01_4" id="aloos_1_1unordered__pair__eq_3_01T_01_4">
+<area shape="rect" href="structloos_1_1unordered__pair__eq.html" title="test equality of unordered pair. typename T must have == operator." alt="" coords="5,5,160,47"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_99.png" border="0" usemap="#a_simplex_3_01_t_01_4" alt=""/>
-<map name="a_simplex_3_01_t_01_4" id="a_simplex_3_01_t_01_4">
-<area shape="rect" href="class_simplex.html" title="Nelder&#45;Meade Simplex Optimizer (based loosely on the NRC (1996) implementation)" alt="" coords="5,5,107,32"/>
+<tr><td><img src="inherit_graph_89.png" border="0" usemap="#aloos_1_1unordered__pair__hash_3_01T_01_4" alt=""/>
+<map name="aloos_1_1unordered__pair__hash_3_01T_01_4" id="aloos_1_1unordered__pair__hash_3_01T_01_4">
+<area shape="rect" href="structloos_1_1unordered__pair__hash.html" title=" " alt="" coords="5,5,160,47"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_100.png" border="0" usemap="#a_single_worker" alt=""/>
-<map name="a_single_worker" id="a_single_worker">
-<area shape="rect" href="class_single_worker.html" title=" " alt="" coords="5,5,104,32"/>
+<tr><td><img src="inherit_graph_90.png" border="0" usemap="#aloos_1_1UserTimer" alt=""/>
+<map name="aloos_1_1UserTimer" id="aloos_1_1UserTimer">
+<area shape="rect" href="classloos_1_1UserTimer.html" title="Policy class for tracking only user process time." alt="" coords="5,5,131,32"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_101.png" border="0" usemap="#a_sort_datum" alt=""/>
-<map name="a_sort_datum" id="a_sort_datum">
-<area shape="rect" href="struct_sort_datum.html" title=" " alt="" coords="5,5,91,32"/>
+<tr><td><img src="inherit_graph_91.png" border="0" usemap="#aloos_1_1WallTimer" alt=""/>
+<map name="aloos_1_1WallTimer" id="aloos_1_1WallTimer">
+<area shape="rect" href="classloos_1_1WallTimer.html" title="Policy class for tracking wall&#45;time." alt="" coords="5,42,128,69"/>
+<area shape="rect" href="classloos_1_1Timer.html" title=" " alt="" coords="200,5,345,47"/>
+<area shape="rect" href="classloos_1_1Timer.html" title="Class for tracking time." alt="" coords="176,71,369,98"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_102.png" border="0" usemap="#a_threader_3_01_w_01_4" alt=""/>
-<map name="a_threader_3_01_w_01_4" id="a_threader_3_01_w_01_4">
-<area shape="rect" href="class_threader.html" title=" " alt="" coords="5,5,116,32"/>
+<tr><td><img src="inherit_graph_92.png" border="0" usemap="#aMaster" alt=""/>
+<map name="aMaster" id="aMaster">
+<area shape="rect" href="classMaster.html" title=" " alt="" coords="5,5,72,32"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_103.png" border="0" usemap="#a_voronoi_8_voronoi_8_edge" alt=""/>
-<map name="a_voronoi_8_voronoi_8_edge" id="a_voronoi_8_voronoi_8_edge">
-<area shape="rect" href="class_voronoi_1_1_voronoi_1_1_edge.html" title=" " alt="" coords="5,5,152,32"/>
+<tr><td><img src="inherit_graph_93.png" border="0" usemap="#aRegexFmt" alt=""/>
+<map name="aRegexFmt" id="aRegexFmt">
+<area shape="rect" href="structRegexFmt.html" title=" " alt="" coords="5,5,95,32"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_104.png" border="0" usemap="#a_voronoi_8_voronoi_8_region" alt=""/>
-<map name="a_voronoi_8_voronoi_8_region" id="a_voronoi_8_voronoi_8_region">
-<area shape="rect" href="class_voronoi_1_1_voronoi_1_1_region.html" title=" " alt="" coords="5,5,161,32"/>
+<tr><td><img src="inherit_graph_94.png" border="0" usemap="#aScanfFmt" alt=""/>
+<map name="aScanfFmt" id="aScanfFmt">
+<area shape="rect" href="structScanfFmt.html" title=" " alt="" coords="5,5,89,32"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_105.png" border="0" usemap="#a_voronoi_8_voronoi_8_super_region" alt=""/>
-<map name="a_voronoi_8_voronoi_8_super_region" id="a_voronoi_8_voronoi_8_super_region">
-<area shape="rect" href="class_voronoi_1_1_voronoi_1_1_super_region.html" title=" " alt="" coords="5,5,196,32"/>
+<tr><td><img src="inherit_graph_95.png" border="0" usemap="#aSimplex_3_01T_01_4" alt=""/>
+<map name="aSimplex_3_01T_01_4" id="aSimplex_3_01T_01_4">
+<area shape="rect" href="classSimplex.html" title="Nelder&#45;Meade Simplex Optimizer (based loosely on the NRC (1996) implementation)" alt="" coords="5,5,119,32"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_106.png" border="0" usemap="#a_voronoi_8_voronoi_8_voronoi_error" alt=""/>
-<map name="a_voronoi_8_voronoi_8_voronoi_error" id="a_voronoi_8_voronoi_8_voronoi_error">
-<area shape="rect" title=" " alt="" coords="5,5,84,32"/>
-<area shape="rect" href="class_voronoi_1_1_voronoi_1_1_voronoi_error.html" title=" " alt="" coords="132,5,319,32"/>
+<tr><td><img src="inherit_graph_96.png" border="0" usemap="#aSingleWorker" alt=""/>
+<map name="aSingleWorker" id="aSingleWorker">
+<area shape="rect" href="classSingleWorker.html" title=" " alt="" coords="5,5,112,32"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_107.png" border="0" usemap="#a_voronoi_8_voronoi_8_voronoi_wrapper" alt=""/>
-<map name="a_voronoi_8_voronoi_8_voronoi_wrapper" id="a_voronoi_8_voronoi_8_voronoi_wrapper">
-<area shape="rect" href="class_voronoi_1_1_voronoi_1_1_voronoi_wrapper.html" title=" " alt="" coords="5,5,212,32"/>
+<tr><td><img src="inherit_graph_97.png" border="0" usemap="#aSortDatum" alt=""/>
+<map name="aSortDatum" id="aSortDatum">
+<area shape="rect" href="structSortDatum.html" title=" " alt="" coords="5,5,97,32"/>
 </map>
 </td></tr>
-<tr><td><img src="inherit_graph_108.png" border="0" usemap="#a_voronoi_8_voronoi_8_z_slice_selector" alt=""/>
-<map name="a_voronoi_8_voronoi_8_z_slice_selector" id="a_voronoi_8_voronoi_8_z_slice_selector">
-<area shape="rect" href="class_voronoi_1_1_voronoi_1_1_z_slice_selector.html" title=" " alt="" coords="5,5,207,32"/>
+<tr><td><img src="inherit_graph_98.png" border="0" usemap="#aThreader_3_01W_01_4" alt=""/>
+<map name="aThreader_3_01W_01_4" id="aThreader_3_01W_01_4">
+<area shape="rect" href="classThreader.html" title=" " alt="" coords="5,5,128,32"/>
 </map>
 </td></tr>
 </table>
 </div><!-- contents -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+</small></address>
 </body>
 </html>

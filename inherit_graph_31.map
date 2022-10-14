@@ -1,3 +1,6 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classloos_1_1_density_tools_1_1_nonzero_density.html" title="Functor that is true for any non&#45;zero density." alt="" coords="5,5,160,47"/>
+<area shape="rect" id="node1" href="$classloos_1_1DensityTools_1_1BulkEstimator.html" title=" " alt="" coords="5,71,145,112"/>
+<area shape="rect" id="node2" href="$classloos_1_1DensityTools_1_1NullEstimator.html" title=" " alt="" coords="193,5,333,47"/>
+<area shape="rect" id="node3" href="$classloos_1_1DensityTools_1_1ZClipEstimator.html" title=" " alt="" coords="193,71,333,112"/>
+<area shape="rect" id="node4" href="$classloos_1_1DensityTools_1_1ZSliceEstimator.html" title=" " alt="" coords="193,136,333,177"/>
 </map>

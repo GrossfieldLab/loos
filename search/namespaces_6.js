@@ -1,12 +1,19 @@
 var searchData=
 [
-  ['alignment_965',['alignment',['../namespaceloos_1_1pyloos_1_1alignment.html',1,'loos::pyloos']]],
-  ['densitytools_966',['DensityTools',['../namespaceloos_1_1_density_tools.html',1,'loos']]],
-  ['ensembles_967',['ensembles',['../namespaceloos_1_1pyloos_1_1ensembles.html',1,'loos::pyloos']]],
-  ['internal_968',['internal',['../namespaceloos_1_1internal.html',1,'loos']]],
-  ['math_969',['Math',['../namespaceloos_1_1_math.html',1,'loos']]],
-  ['namdbin_970',['NAMDBin',['../namespaceloos_1_1pyloos_1_1_n_a_m_d_bin.html',1,'loos::pyloos']]],
-  ['optionsframework_971',['OptionsFramework',['../namespaceloos_1_1_options_framework.html',1,'loos']]],
-  ['subspace_972',['subspace',['../namespaceloos_1_1pyloos_1_1subspace.html',1,'loos::pyloos']]],
-  ['trajectories_973',['trajectories',['../namespaceloos_1_1pyloos_1_1trajectories.html',1,'loos::pyloos']]]
+  ['add_5fmolecules_1191',['add_molecules',['../namespaceloos_1_1OptimalMembraneGenerator_1_1add__molecules.html',1,'loos::OptimalMembraneGenerator']]],
+  ['alignment_1192',['alignment',['../namespaceloos_1_1pyloos_1_1alignment.html',1,'loos::pyloos']]],
+  ['area_5fper_5fmolecule_1193',['area_per_molecule',['../namespaceloos_1_1Voronoi_1_1area__per__molecule.html',1,'loos::Voronoi']]],
+  ['area_5fprofile_1194',['area_profile',['../namespaceloos_1_1Voronoi_1_1area__profile.html',1,'loos::Voronoi']]],
+  ['densitytools_1195',['DensityTools',['../namespaceloos_1_1DensityTools.html',1,'loos']]],
+  ['ensembles_1196',['ensembles',['../namespaceloos_1_1pyloos_1_1ensembles.html',1,'loos::pyloos']]],
+  ['internal_1197',['internal',['../namespaceloos_1_1internal.html',1,'loos']]],
+  ['lipid_5flifetime_1198',['lipid_lifetime',['../namespaceloos_1_1Voronoi_1_1lipid__lifetime.html',1,'loos::Voronoi']]],
+  ['loos_1199',['loos',['../namespaceloos.html',1,'']]],
+  ['make_5flibrary_1200',['make_library',['../namespaceloos_1_1OptimalMembraneGenerator_1_1make__library.html',1,'loos::OptimalMembraneGenerator']]],
+  ['math_1201',['Math',['../namespaceloos_1_1Math.html',1,'loos']]],
+  ['namdbin_1202',['NAMDBin',['../namespaceloos_1_1pyloos_1_1NAMDBin.html',1,'loos::pyloos']]],
+  ['optionsframework_1203',['OptionsFramework',['../namespaceloos_1_1OptionsFramework.html',1,'loos']]],
+  ['run_5fareas_1204',['run_areas',['../namespaceloos_1_1Voronoi_1_1run__areas.html',1,'loos::Voronoi']]],
+  ['subspace_1205',['subspace',['../namespaceloos_1_1pyloos_1_1subspace.html',1,'loos::pyloos']]],
+  ['trajectories_1206',['trajectories',['../namespaceloos_1_1pyloos_1_1trajectories.html',1,'loos::pyloos']]]
 ];

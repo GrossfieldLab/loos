@@ -1,0 +1,5 @@
+<map id="loos::OrSelector" name="loos::OrSelector">
+<area shape="rect" id="node1" title="Combines two selectors with a logical &quot;or&quot;." alt="" coords="29,185,154,212"/>
+<area shape="rect" id="node2" href="$classloos_1_1loos_1_1AtomSelector.html" title=" " alt="" coords="5,81,177,108"/>
+<area shape="rect" id="node3" title=" " alt="" coords="60,5,123,32"/>
+</map>

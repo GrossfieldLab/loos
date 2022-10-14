@@ -1,4 +1,4 @@
 <map id="loos::internal::equals" name="loos::internal::equals">
-<area shape="rect" id="node1" title="Test for equality: ARG1 ARG ==." alt="" coords="5,80,148,107"/>
-<area shape="rect" id="node2" href="$classloos_1_1internal_1_1_action.html" title="Base class for all commands..." alt="" coords="6,5,147,32"/>
+<area shape="rect" id="node1" title="Test for equality: ARG1 ARG ==." alt="" coords="5,80,164,107"/>
+<area shape="rect" id="node2" href="$classloos_1_1internal_1_1Action.html" title="Base class for all commands..." alt="" coords="7,5,163,32"/>
 </map>

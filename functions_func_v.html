@@ -9,10 +9,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -26,8 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LOOS
-   &#160;<span id="projectnumber">v3.3</span>
+   &#160;<span id="projectnumber">4.0</span>
    </div>
+   <div id="projectbrief">The Lightweight Object Oriented Structural analysis library/toolkit</div>
   </td>
  </tr>
  </tbody>
@@ -51,22 +48,6 @@ $(function() {
 /* @license-end */</script>
 <div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('functions_func_v.html',''); initResizable(); });
-/* @license-end */
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -86,61 +67,77 @@ $(document).ready(function(){initNavTree('functions_func_v.html',''); initResiza
 
 <h3><a id="index_v"></a>- v -</h3><ul>
 <li>validParams()
-: <a class="el" href="class_e_n_m_1_1_bound_super_block.html#ab2c238eff89373944fe003f0093132e0">ENM::BoundSuperBlock</a>
-, <a class="el" href="class_e_n_m_1_1_const_bonded.html#afae5ce09a65e869eae1be8e24d59c16b">ENM::ConstBonded</a>
-, <a class="el" href="class_e_n_m_1_1_distance_cutoff.html#a801b607f6acab33a86d5306ba7ac935c">ENM::DistanceCutoff</a>
-, <a class="el" href="class_e_n_m_1_1_distance_weight.html#a7c4fed2a8df9ce84bcfab16d8b5d07c1">ENM::DistanceWeight</a>
-, <a class="el" href="class_e_n_m_1_1_elastic_network_model.html#a5e922ad4b6047970d9531ce50c7c76a7">ENM::ElasticNetworkModel</a>
-, <a class="el" href="class_e_n_m_1_1_exponential_distance.html#aa5e1a8d7d17da45a9185d08b82cc90a8">ENM::ExponentialDistance</a>
-, <a class="el" href="class_e_n_m_1_1_h_c_a.html#a43c03f21ef1469d6de233345660e729b">ENM::HCA</a>
-, <a class="el" href="class_e_n_m_1_1_spring_function.html#aa0296fb364eae21f9f49e5235bb5b052">ENM::SpringFunction</a>
-, <a class="el" href="class_e_n_m_1_1_super_block.html#a022a35435339c6d63c337fb2b3ade5e8">ENM::SuperBlock</a>
+: <a class="el" href="classENM_1_1BoundSuperBlock.html#ab2c238eff89373944fe003f0093132e0">ENM::BoundSuperBlock</a>
+, <a class="el" href="classENM_1_1ConstBonded.html#afae5ce09a65e869eae1be8e24d59c16b">ENM::ConstBonded</a>
+, <a class="el" href="classENM_1_1DistanceCutoff.html#a801b607f6acab33a86d5306ba7ac935c">ENM::DistanceCutoff</a>
+, <a class="el" href="classENM_1_1DistanceWeight.html#a7c4fed2a8df9ce84bcfab16d8b5d07c1">ENM::DistanceWeight</a>
+, <a class="el" href="classENM_1_1ElasticNetworkModel.html#a5e922ad4b6047970d9531ce50c7c76a7">ENM::ElasticNetworkModel</a>
+, <a class="el" href="classENM_1_1ExponentialDistance.html#aa5e1a8d7d17da45a9185d08b82cc90a8">ENM::ExponentialDistance</a>
+, <a class="el" href="classENM_1_1HCA.html#a43c03f21ef1469d6de233345660e729b">ENM::HCA</a>
+, <a class="el" href="classENM_1_1SpringFunction.html#aa0296fb364eae21f9f49e5235bb5b052">ENM::SpringFunction</a>
+, <a class="el" href="classENM_1_1SuperBlock.html#a022a35435339c6d63c337fb2b3ade5e8">ENM::SuperBlock</a>
 </li>
 <li>value()
-: <a class="el" href="classloos_1_1_options_framework_1_1_required_arguments.html#a863eceb31bf6076ef0c73cddac7699f2">loos::OptionsFramework::RequiredArguments</a>
+: <a class="el" href="classloos_1_1loos_1_1SwigPyIterator.html#a6aad72ed1a82dc1a9b986394434fb7cb">loos.loos.SwigPyIterator</a>
+, <a class="el" href="classloos_1_1SwigPyIterator.html#aa876382bb3715e46717b960e03fd5e41">loos.SwigPyIterator</a>
+, <a class="el" href="classloos_1_1OptionsFramework_1_1RequiredArguments.html#a863eceb31bf6076ef0c73cddac7699f2">loos::OptionsFramework::RequiredArguments</a>
+, <a class="el" href="classpyloos_1_1SwigPyIterator.html#aa31e69ae01975ff51491499729e9f897">pyloos.SwigPyIterator</a>
+</li>
+<li>value_iterator()
+: <a class="el" href="classloos_1_1AtomicGroupMap.html#a1db3bea6e8ab3c9bf81c47274ae8989b">loos.AtomicGroupMap</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroupMap.html#afc416e7cd324e2e1e36bb75c33e837b6">loos.loos.AtomicGroupMap</a>
+, <a class="el" href="classpyloos_1_1AtomicGroupMap.html#abd1b3834e5c80766a50cb91b9114b202">pyloos.AtomicGroupMap</a>
+</li>
+<li>values()
+: <a class="el" href="classloos_1_1AtomicGroupMap.html#af7651a948fe86774b1a0f17f6dc0f02c">loos.AtomicGroupMap</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroupMap.html#a6f686a7bea6a10e55ff1d51ec29dca84">loos.loos.AtomicGroupMap</a>
+, <a class="el" href="classpyloos_1_1AtomicGroupMap.html#aab638524caac9d838ce24e4872d102e4">pyloos.AtomicGroupMap</a>
 </li>
 <li>variableValues()
-: <a class="el" href="classloos_1_1_options_framework_1_1_required_arguments.html#aa887a3652620f04255eef23bf63f8056">loos::OptionsFramework::RequiredArguments</a>
+: <a class="el" href="classloos_1_1OptionsFramework_1_1RequiredArguments.html#aa887a3652620f04255eef23bf63f8056">loos::OptionsFramework::RequiredArguments</a>
 </li>
 <li>variance()
-: <a class="el" href="classloos_1_1_time_series.html#a8ee732249bcb2f0493449f93863ec218">loos::TimeSeries&lt; T &gt;</a>
+: <a class="el" href="classloos_1_1loos_1_1TimeSeriesDbl.html#aef1e39846d76e390137f22f68bc94168">loos.loos.TimeSeriesDbl</a>
+, <a class="el" href="classloos_1_1TimeSeriesDbl.html#a1d740e2ba04ec114231e67ed1507f661">loos.TimeSeriesDbl</a>
+, <a class="el" href="classloos_1_1TimeSeries.html#a8ee732249bcb2f0493449f93863ec218">loos::TimeSeries&lt; T &gt;</a>
+, <a class="el" href="classpyloos_1_1TimeSeriesDbl.html#a958794796d0fa6fa2f080377814f9a8b">pyloos.TimeSeriesDbl</a>
 </li>
 <li>velocities()
-: <a class="el" href="classloos_1_1_atom.html#a4410bb8ba574d1c4f2738f955efdd614">loos::Atom</a>
-, <a class="el" href="classloos_1_1_trajectory.html#a4498b921f0d38690a364bea633ce3793">loos::Trajectory</a>
+: <a class="el" href="classloos_1_1Atom.html#a2803ce603072e578259dc3c0d2be8ce6">loos.Atom</a>
+, <a class="el" href="classloos_1_1loos_1_1Atom.html#a0e7d5c788a8cf459e727e0469cc18570">loos.loos.Atom</a>
+, <a class="el" href="classloos_1_1loos_1_1Trajectory.html#a018abd58b4ec89b8635498dea0a733d1">loos.loos.Trajectory</a>
+, <a class="el" href="classloos_1_1Trajectory.html#aaba812f55608747c007ab02203a2892e">loos.Trajectory</a>
+, <a class="el" href="classpyloos_1_1Atom.html#ad52028d2c529d71efea21b8f863d4f4d">pyloos.Atom</a>
+, <a class="el" href="classpyloos_1_1Trajectory.html#acd3688068dd0c94ab9059b19113565cd">pyloos.Trajectory</a>
 </li>
 <li>velocityConversionFactor()
-: <a class="el" href="classloos_1_1_amber_netcdf.html#a65d86359893dd77658c0392226ef1a00">loos::AmberNetcdf</a>
-, <a class="el" href="classloos_1_1_amber_traj.html#a37d0a6fd8aea0a3bdf9e3645e8ce4d51">loos::AmberTraj</a>
-, <a class="el" href="classloos_1_1_d_c_d.html#a5a6f44c27112e4b703b28e6e8f9ce53b">loos::DCD</a>
-, <a class="el" href="classloos_1_1_trajectory.html#aacf1791619f99dae57a7739d05aa6c53">loos::Trajectory</a>
+: <a class="el" href="classloos_1_1loos_1_1Trajectory.html#a4ccefab5664be1b47838571e48fe3a49">loos.loos.Trajectory</a>
+, <a class="el" href="classloos_1_1Trajectory.html#ac9b80cbe2e29cddd05210cb1214443ee">loos.Trajectory</a>
+, <a class="el" href="classpyloos_1_1Trajectory.html#a7e2ee79e2f78102ae6f8aef78c2d0784">pyloos.Trajectory</a>
 </li>
 <li>verbosity()
-: <a class="el" href="class_e_n_m_1_1_elastic_network_model.html#a7d9019fa1cb8855de8646220dbf88b8b">ENM::ElasticNetworkModel</a>
+: <a class="el" href="classENM_1_1ElasticNetworkModel.html#a7d9019fa1cb8855de8646220dbf88b8b">ENM::ElasticNetworkModel</a>
 </li>
 <li>volume()
-: <a class="el" href="classloos_1_1_density_tools_1_1_bulked_water_filter.html#a4b3dcc66b0e114f2e59e34ea5f11fe5f">loos::DensityTools::BulkedWaterFilter</a>
-, <a class="el" href="classloos_1_1_density_tools_1_1_water_filter_axis.html#aeabb20be1a930ff701c6457adf9bd218">loos::DensityTools::WaterFilterAxis</a>
-, <a class="el" href="classloos_1_1_density_tools_1_1_water_filter_base.html#a9bb2770cf98f4941047afc85199c5b40">loos::DensityTools::WaterFilterBase</a>
-, <a class="el" href="classloos_1_1_density_tools_1_1_water_filter_blob.html#a487e7ef8a5faaf9650ba8bdbd9efa142">loos::DensityTools::WaterFilterBlob</a>
-, <a class="el" href="classloos_1_1_density_tools_1_1_water_filter_box.html#a3d7f8d96dc1a8ccb74d0426b5c2b5c50">loos::DensityTools::WaterFilterBox</a>
-, <a class="el" href="classloos_1_1_density_tools_1_1_water_filter_contacts.html#ac5a56481541121f55b1580de423d7341">loos::DensityTools::WaterFilterContacts</a>
-, <a class="el" href="classloos_1_1_density_tools_1_1_water_filter_core.html#aea0b8f33ab3a2c077d5b3a379d86ac52">loos::DensityTools::WaterFilterCore</a>
-, <a class="el" href="classloos_1_1_density_tools_1_1_water_filter_decorator.html#a77ef814f9cf353e3806eff941eb7df18">loos::DensityTools::WaterFilterDecorator</a>
-, <a class="el" href="classloos_1_1_density_tools_1_1_water_filter_radius.html#a08cb15c162fae0669c8d7fea75b6e8a6">loos::DensityTools::WaterFilterRadius</a>
-, <a class="el" href="classloos_1_1_density_tools_1_1_z_clipped_water_filter.html#ad0bb2761bd9f13af40b18afc841f06f5">loos::DensityTools::ZClippedWaterFilter</a>
+: <a class="el" href="classloos_1_1DensityTools_1_1BulkedWaterFilter.html#a4b3dcc66b0e114f2e59e34ea5f11fe5f">loos::DensityTools::BulkedWaterFilter</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1WaterFilterAxis.html#aeabb20be1a930ff701c6457adf9bd218">loos::DensityTools::WaterFilterAxis</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1WaterFilterBase.html#a9bb2770cf98f4941047afc85199c5b40">loos::DensityTools::WaterFilterBase</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1WaterFilterBlob.html#a487e7ef8a5faaf9650ba8bdbd9efa142">loos::DensityTools::WaterFilterBlob</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1WaterFilterBox.html#a3d7f8d96dc1a8ccb74d0426b5c2b5c50">loos::DensityTools::WaterFilterBox</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1WaterFilterContacts.html#ac5a56481541121f55b1580de423d7341">loos::DensityTools::WaterFilterContacts</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1WaterFilterCore.html#aea0b8f33ab3a2c077d5b3a379d86ac52">loos::DensityTools::WaterFilterCore</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1WaterFilterDecorator.html#a77ef814f9cf353e3806eff941eb7df18">loos::DensityTools::WaterFilterDecorator</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1WaterFilterRadius.html#a08cb15c162fae0669c8d7fea75b6e8a6">loos::DensityTools::WaterFilterRadius</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1ZClippedWaterFilter.html#ad0bb2761bd9f13af40b18afc841f06f5">loos::DensityTools::ZClippedWaterFilter</a>
 </li>
 <li>VSA()
-: <a class="el" href="class_e_n_m_1_1_v_s_a.html#a6d9ae520d5aca80eda52fb9656886594">ENM::VSA</a>
+: <a class="el" href="classENM_1_1VSA.html#a6d9ae520d5aca80eda52fb9656886594">ENM::VSA</a>
 </li>
 </ul>
 </div><!-- contents -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+</small></address>
 </body>
 </html>

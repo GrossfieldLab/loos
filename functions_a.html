@@ -9,10 +9,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -26,8 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LOOS
-   &#160;<span id="projectnumber">v3.3</span>
+   &#160;<span id="projectnumber">4.0</span>
    </div>
+   <div id="projectbrief">The Lightweight Object Oriented Structural analysis library/toolkit</div>
   </td>
  </tr>
  </tbody>
@@ -51,22 +48,6 @@ $(function() {
 /* @license-end */</script>
 <div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('functions_a.html',''); initResizable(); });
-/* @license-end */
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -85,125 +66,260 @@ $(document).ready(function(){initNavTree('functions_a.html',''); initResizable()
 <div class="textblock">Here is a list of all documented class members with links to the class documentation for each member:</div>
 
 <h3><a id="index_a"></a>- a -</h3><ul>
+<li>a()
+: <a class="el" href="classloos_1_1loos_1_1UnitCell.html#ab31b8cecb8657055797b6219b87871af">loos.loos.UnitCell</a>
+, <a class="el" href="classloos_1_1UnitCell.html#a580bf84d911566aecd60ae8fce1a232f">loos.UnitCell</a>
+, <a class="el" href="classpyloos_1_1UnitCell.html#a677d7bdd2f5128a2c385c85f94ecff21">pyloos.UnitCell</a>
+</li>
 <li>accumulate()
-: <a class="el" href="classloos_1_1_uniform_weight.html#a1de4ed621953c9669d99f9685251ae42">loos::UniformWeight</a>
-, <a class="el" href="classloos_1_1_weights.html#ab92499d159d6049921e4460705df9427">loos::Weights</a>
+: <a class="el" href="classloos_1_1loos_1_1Weights.html#a348075b44028bd423ae07fb4d8d29dc3">loos.loos.Weights</a>
+, <a class="el" href="classloos_1_1Weights.html#ab792082432411a20def54222e08bf7ab">loos.Weights</a>
+, <a class="el" href="classloos_1_1UniformWeight.html#a7c2360040915bcc58909f39187e01867">loos::UniformWeight</a>
+, <a class="el" href="classpyloos_1_1Weights.html#a91948fa4922069bdc232cc9f2b30f734">pyloos.Weights</a>
 </li>
 <li>actualSize()
-: <a class="el" href="classloos_1_1_math_1_1_sparse_array.html#abd9538fe1af49509419c76ba1e336859">loos::Math::SparseArray&lt; T &gt;</a>
+: <a class="el" href="classloos_1_1Math_1_1SparseArray.html#abd9538fe1af49509419c76ba1e336859">loos::Math::SparseArray&lt; T &gt;</a>
 </li>
 <li>add()
-: <a class="el" href="classloos_1_1_density_tools_1_1_simple_meta.html#aa3cd16b361ae12998fb2a643d3038019">loos::DensityTools::SimpleMeta</a>
-, <a class="el" href="classloos_1_1_options_framework_1_1_aggregate_options.html#a66be876f10c6395c7c56c7728b19b07b">loos::OptionsFramework::AggregateOptions</a>
-, <a class="el" href="classloos_1_1_remarks.html#af21f5b38b7baf4b3100cb7e6d9ec95a5">loos::Remarks</a>
-, <a class="el" href="classloos_1_1_unique_strings.html#a33cecdc65114c162f3a0fc88a3921b3c">loos::UniqueStrings</a>
+: <a class="el" href="classloos_1_1loos_1_1Remarks.html#acd796227087b8832f914691674759353">loos.loos.Remarks</a>
+, <a class="el" href="classloos_1_1Remarks.html#a6932fe0a422573d3b812293b1e5a0d52">loos.Remarks</a>
+, <a class="el" href="classloos_1_1DensityTools_1_1SimpleMeta.html#aa3cd16b361ae12998fb2a643d3038019">loos::DensityTools::SimpleMeta</a>
+, <a class="el" href="classloos_1_1OptionsFramework_1_1AggregateOptions.html#a66be876f10c6395c7c56c7728b19b07b">loos::OptionsFramework::AggregateOptions</a>
+, <a class="el" href="classloos_1_1UniqueStrings.html#a33cecdc65114c162f3a0fc88a3921b3c">loos::UniqueStrings</a>
+, <a class="el" href="classpyloos_1_1Remarks.html#a5647542eafc6160cca635aa5952c5486">pyloos.Remarks</a>
 </li>
 <li>add_argument()
-: <a class="el" href="classloos_1_1pyloos_1_1options_1_1_loos_options.html#abe9c324f8e499c6e34eae747d920a6e4">loos.pyloos.options.LoosOptions</a>
+: <a class="el" href="classloos_1_1pyloos_1_1options_1_1LoosOptions.html#abe9c324f8e499c6e34eae747d920a6e4">loos.pyloos.options.LoosOptions</a>
 </li>
 <li>addArgument()
-: <a class="el" href="classloos_1_1_options_framework_1_1_required_arguments.html#aa4382e73c1e8614059d1a8a1d1707183">loos::OptionsFramework::RequiredArguments</a>
+: <a class="el" href="classloos_1_1OptionsFramework_1_1RequiredArguments.html#aa4382e73c1e8614059d1a8a1d1707183">loos::OptionsFramework::RequiredArguments</a>
 </li>
 <li>addBond()
-: <a class="el" href="classloos_1_1_atom.html#ab2237924f426f57f15ddd75025378014">loos::Atom</a>
+: <a class="el" href="classloos_1_1Atom.html#a4cb994e2a42185458e915fe90451b9b8">loos.Atom</a>
+, <a class="el" href="classloos_1_1loos_1_1Atom.html#a1d0e310f9a108c07eef44af261fe6f74">loos.loos.Atom</a>
+, <a class="el" href="classpyloos_1_1Atom.html#ad0ff5ade7eadbad7f72e0a14ae14bef7">pyloos.Atom</a>
 </li>
 <li>addGeneric()
-: <a class="el" href="classloos_1_1_options_framework_1_1_basic_convergence.html#a08c230a279fbb0c6968fdaed01c69b2a">loos::OptionsFramework::BasicConvergence</a>
-, <a class="el" href="classloos_1_1_options_framework_1_1_basic_water.html#afb7000fe6935ee91b7eb4ce2d7c3be64">loos::OptionsFramework::BasicWater</a>
-, <a class="el" href="classloos_1_1_options_framework_1_1_options_package.html#a1290edbf724ebb3b2aa103a7c4a22e65">loos::OptionsFramework::OptionsPackage</a>
-, <a class="el" href="class_tool_options.html#af496ac3de8d7831380ad823f8e5b455e">ToolOptions</a>
+: <a class="el" href="classloos_1_1OptionsFramework_1_1BasicConvergence.html#a08c230a279fbb0c6968fdaed01c69b2a">loos::OptionsFramework::BasicConvergence</a>
+, <a class="el" href="classloos_1_1OptionsFramework_1_1BasicWater.html#afb7000fe6935ee91b7eb4ce2d7c3be64">loos::OptionsFramework::BasicWater</a>
+, <a class="el" href="classloos_1_1OptionsFramework_1_1OptionsPackage.html#a1290edbf724ebb3b2aa103a7c4a22e65">loos::OptionsFramework::OptionsPackage</a>
+, <a class="el" href="classToolOptions.html#af496ac3de8d7831380ad823f8e5b455e">ToolOptions</a>
 </li>
 <li>addHidden()
-: <a class="el" href="classloos_1_1_options_framework_1_1_options_package.html#adb61118b00242405572c40151e6ce882">loos::OptionsFramework::OptionsPackage</a>
-, <a class="el" href="class_tool_options.html#abb755c2dc8222fbbc4dfdca9ea11c10b">ToolOptions</a>
+: <a class="el" href="classloos_1_1OptionsFramework_1_1OptionsPackage.html#adb61118b00242405572c40151e6ce882">loos::OptionsFramework::OptionsPackage</a>
+, <a class="el" href="classToolOptions.html#abb755c2dc8222fbbc4dfdca9ea11c10b">ToolOptions</a>
 </li>
 <li>addPositional()
-: <a class="el" href="classloos_1_1_options_framework_1_1_options_package.html#a801afa56a4f13e5fb0df512cb1dff607">loos::OptionsFramework::OptionsPackage</a>
-, <a class="el" href="class_tool_options.html#ae295392a2fbafdd3a6cc159730cb495a">ToolOptions</a>
+: <a class="el" href="classloos_1_1OptionsFramework_1_1OptionsPackage.html#a801afa56a4f13e5fb0df512cb1dff607">loos::OptionsFramework::OptionsPackage</a>
+, <a class="el" href="classToolOptions.html#ae295392a2fbafdd3a6cc159730cb495a">ToolOptions</a>
+</li>
+<li>addTitle()
+: <a class="el" href="classloos_1_1DCDWriter.html#ae450e87444ae9f3194c56ff46f78f74c">loos.DCDWriter</a>
+, <a class="el" href="classloos_1_1loos_1_1DCDWriter.html#aa9dc3c12b6174bf80733aa840c519f63">loos.loos.DCDWriter</a>
+, <a class="el" href="classpyloos_1_1DCDWriter.html#ac7afa32b2f4aa2059448d58028a4bc8a">pyloos.DCDWriter</a>
 </li>
 <li>addTraj()
-: <a class="el" href="classloos_1_1_weights.html#a9e5f95fcea1a401f7888d8ba79876ab6">loos::Weights</a>
-, <a class="el" href="classloos_1_1_weights_from_file.html#ae084d7d95bcd2e5b212481c8c1a0272c">loos::WeightsFromFile</a>
+: <a class="el" href="classloos_1_1loos_1_1Weights.html#ac9bb8d1f157e0f8996aa99ab2b8700ef">loos.loos.Weights</a>
+, <a class="el" href="classloos_1_1Weights.html#aebd5a34809a98e8d516dc552d3a1ee6a">loos.Weights</a>
+, <a class="el" href="classloos_1_1WeightsFromFile.html#ae084d7d95bcd2e5b212481c8c1a0272c">loos::WeightsFromFile</a>
+, <a class="el" href="classpyloos_1_1Weights.html#a7d3e6418c3470fb73236245d88cc91e5">pyloos.Weights</a>
 </li>
 <li>addTrajectory()
-: <a class="el" href="classloos_1_1_multi_trajectory.html#a6f2d7f1f5056d37f6642c6b6d3c97df7">loos::MultiTrajectory</a>
+: <a class="el" href="classloos_1_1MultiTrajectory.html#a6f2d7f1f5056d37f6642c6b6d3c97df7">loos::MultiTrajectory</a>
 </li>
 <li>addVariableArguments()
-: <a class="el" href="classloos_1_1_options_framework_1_1_required_arguments.html#a93aa057bf143088859a5ec5c9382c9a4">loos::OptionsFramework::RequiredArguments</a>
+: <a class="el" href="classloos_1_1OptionsFramework_1_1RequiredArguments.html#a93aa057bf143088859a5ec5c9382c9a4">loos::OptionsFramework::RequiredArguments</a>
+</li>
+<li>advance()
+: <a class="el" href="classloos_1_1loos_1_1SwigPyIterator.html#aa01c39982fbdc07ca360764c3332f803">loos.loos.SwigPyIterator</a>
+, <a class="el" href="classloos_1_1SwigPyIterator.html#a009eef1c80872b7cd80098d4dece317a">loos.SwigPyIterator</a>
+, <a class="el" href="classpyloos_1_1SwigPyIterator.html#accd9f7b640cfb3ca7dbf5d1910deca75">pyloos.SwigPyIterator</a>
 </li>
 <li>AggregateOptions()
-: <a class="el" href="classloos_1_1_options_framework_1_1_aggregate_options.html#a70df848ed873c908d44378ef24931c18">loos::OptionsFramework::AggregateOptions</a>
+: <a class="el" href="classloos_1_1OptionsFramework_1_1AggregateOptions.html#a1b36f3e7203ae278a7efc7db7ad2f67f">loos::OptionsFramework::AggregateOptions</a>
 </li>
 <li>alignOnto()
-: <a class="el" href="classloos_1_1_atomic_group.html#a9d1966c971d7730391d417bcdfd1486e">loos::AtomicGroup</a>
+: <a class="el" href="classloos_1_1AtomicGroup.html#a2d763631d2379dc7597eecdd27b0a566">loos.AtomicGroup</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroup.html#a064d3a43a746c6a9380cc2fdf13e708c">loos.loos.AtomicGroup</a>
+, <a class="el" href="classpyloos_1_1AtomicGroup.html#a23354e3ca998c54bd6bbaa4f78832b2b">pyloos.AtomicGroup</a>
 </li>
 <li>alignWith()
-: <a class="el" href="classloos_1_1pyloos_1_1trajectories_1_1_aligned_virtual_trajectory.html#af62cef7d6f7bddf20668737e518af559">loos.pyloos.trajectories.AlignedVirtualTrajectory</a>
+: <a class="el" href="classloos_1_1pyloos_1_1trajectories_1_1AlignedVirtualTrajectory.html#af62cef7d6f7bddf20668737e518af559">loos.pyloos.trajectories.AlignedVirtualTrajectory</a>
 </li>
 <li>allHaveProperty()
-: <a class="el" href="classloos_1_1_atomic_group.html#a27053134ce55273e477144d7b654e60b">loos::AtomicGroup</a>
+: <a class="el" href="classloos_1_1AtomicGroup.html#a715f7045f8e5c337ece9a0811118c1c3">loos.AtomicGroup</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroup.html#a21ad0ba7bab80e8d64445385489f5352">loos.loos.AtomicGroup</a>
+, <a class="el" href="classpyloos_1_1AtomicGroup.html#a71692b2700d78d79e75ae36f3c0ba875">pyloos.AtomicGroup</a>
 </li>
 <li>allRemarks()
-: <a class="el" href="classloos_1_1_remarks.html#a04bbb0de50f0a312b3cff96bfa261ad8">loos::Remarks</a>
+: <a class="el" href="classloos_1_1loos_1_1Remarks.html#ad2212c2921af8c09a7b6bb0b3555736b">loos.loos.Remarks</a>
+, <a class="el" href="classloos_1_1Remarks.html#a8b88f73444fa350cd9f35771e1632b46">loos.Remarks</a>
+, <a class="el" href="classpyloos_1_1Remarks.html#a1e969da1f86b58b03fc1559b0bd4fe43">pyloos.Remarks</a>
 </li>
 <li>allSkip()
-: <a class="el" href="classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html#a4eae745b42cc69c2b743a024a4363dbb">loos.pyloos.trajectories.VirtualTrajectory</a>
+: <a class="el" href="classloos_1_1pyloos_1_1trajectories_1_1VirtualTrajectory.html#a4eae745b42cc69c2b743a024a4363dbb">loos.pyloos.trajectories.VirtualTrajectory</a>
 </li>
 <li>allStride()
-: <a class="el" href="classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html#ada866032b9237e981395a5dbc26c0776">loos.pyloos.trajectories.VirtualTrajectory</a>
+: <a class="el" href="classloos_1_1pyloos_1_1trajectories_1_1VirtualTrajectory.html#ada866032b9237e981395a5dbc26c0776">loos.pyloos.trajectories.VirtualTrajectory</a>
+</li>
+<li>alpha()
+: <a class="el" href="classloos_1_1loos_1_1UnitCell.html#a29247bd590fb5d125051fcf7f425098b">loos.loos.UnitCell</a>
+, <a class="el" href="classloos_1_1UnitCell.html#a517df996c33f045de2f11a4b7005c3c1">loos.UnitCell</a>
+, <a class="el" href="classpyloos_1_1UnitCell.html#a8b152ef6fb583cf282d531eb0f4240dc">pyloos.UnitCell</a>
+</li>
+<li>altLoc()
+: <a class="el" href="classloos_1_1Atom.html#a89cab756b0acf1a22b0ca5effaf86061">loos.Atom</a>
+, <a class="el" href="classloos_1_1loos_1_1Atom.html#aba6b3e7a2dffaacfa4f086da46f76489">loos.loos.Atom</a>
+, <a class="el" href="classpyloos_1_1Atom.html#a983e94bd6da4a5db844a82d6847b769e">pyloos.Atom</a>
 </li>
 <li>Amber()
-: <a class="el" href="classloos_1_1_amber.html#a9d448b682cd825c495e8ad048e755098">loos::Amber</a>
+: <a class="el" href="classloos_1_1Amber.html#a9d448b682cd825c495e8ad048e755098">loos::Amber</a>
 </li>
 <li>anyHaveProperty()
-: <a class="el" href="classloos_1_1_atomic_group.html#a886ebce01151b9ea19f4c2d718a077e0">loos::AtomicGroup</a>
+: <a class="el" href="classloos_1_1AtomicGroup.html#a14bb0fe6d2bfe7b9c7efdb7ad6d402c9">loos.AtomicGroup</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroup.html#ad5ad38334a2c6d8d19bc6bc962b9cd27">loos.loos.AtomicGroup</a>
+, <a class="el" href="classpyloos_1_1AtomicGroup.html#a472ec4585959bbd4d085f724382d810a">pyloos.AtomicGroup</a>
 </li>
 <li>append()
-: <a class="el" href="classloos_1_1pyloos_1_1trajectories_1_1_aligned_virtual_trajectory.html#a29418ba01a5f1b405c32863f384825c9">loos.pyloos.trajectories.AlignedVirtualTrajectory</a>
-, <a class="el" href="classloos_1_1pyloos_1_1trajectories_1_1_virtual_trajectory.html#a9593e1898bf5009f691801d446adbab9">loos.pyloos.trajectories.VirtualTrajectory</a>
-, <a class="el" href="classloos_1_1_atomic_group.html#a292faf9da4066b9425d0b3334bcf9e43">loos::AtomicGroup</a>
+: <a class="el" href="classloos_1_1AtomicGroup.html#a2dee760b40244be122d917bfc7832528">loos.AtomicGroup</a>
+, <a class="el" href="classloos_1_1AtomicGroupVector.html#a9ae678c48f6f9c801578f576636dd08a">loos.AtomicGroupVector</a>
+, <a class="el" href="classloos_1_1DoubleVector.html#a6b29703ad9fc8fccbcd3f2bdda59f84d">loos.DoubleVector</a>
+, <a class="el" href="classloos_1_1DoubleVectorMatrix.html#a88a033b0b008182179e1aa72d045c190">loos.DoubleVectorMatrix</a>
+, <a class="el" href="classloos_1_1GCoordVector.html#a33427f23d9d031fc180de8eb7c47e67f">loos.GCoordVector</a>
+, <a class="el" href="classloos_1_1IntPairVector.html#ad09cdd18eb5ab006e0c70f1f5a068f74">loos.IntPairVector</a>
+, <a class="el" href="classloos_1_1IntVector.html#a572667df5adcee922e097390d81f3cb3">loos.IntVector</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroup.html#a626b93f5bd9a0284fdfa7c42446b7a01">loos.loos.AtomicGroup</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroupVector.html#a50498a15d0b33d3c39297c5010c1ff96">loos.loos.AtomicGroupVector</a>
+, <a class="el" href="classloos_1_1loos_1_1DoubleVector.html#a97367138a0789306e99cd3e0c99e3597">loos.loos.DoubleVector</a>
+, <a class="el" href="classloos_1_1loos_1_1DoubleVectorMatrix.html#a6c642d66ad16b25992c479b3367f9a3a">loos.loos.DoubleVectorMatrix</a>
+, <a class="el" href="classloos_1_1loos_1_1GCoordVector.html#aede01e0d41e6ca7094c07032b1d56648">loos.loos.GCoordVector</a>
+, <a class="el" href="classloos_1_1loos_1_1IntPairVector.html#a5e527bf35e6688fd3df0f0ed621a846d">loos.loos.IntPairVector</a>
+, <a class="el" href="classloos_1_1loos_1_1IntVector.html#a365213a74f3c2438490d3d78ea3488a1">loos.loos.IntVector</a>
+, <a class="el" href="classloos_1_1loos_1_1StringVector.html#af614861a62392d3ed80b23a16cdb373e">loos.loos.StringVector</a>
+, <a class="el" href="classloos_1_1loos_1_1UIntVector.html#adfcdc897017fdba0b56452895fe78df2">loos.loos.UIntVector</a>
+, <a class="el" href="classloos_1_1loos_1_1XFormVector.html#a2ff8a79b03996d2626a551087b9e8adb">loos.loos.XFormVector</a>
+, <a class="el" href="classloos_1_1pyloos_1_1trajectories_1_1AlignedVirtualTrajectory.html#a29418ba01a5f1b405c32863f384825c9">loos.pyloos.trajectories.AlignedVirtualTrajectory</a>
+, <a class="el" href="classloos_1_1pyloos_1_1trajectories_1_1VirtualTrajectory.html#a9593e1898bf5009f691801d446adbab9">loos.pyloos.trajectories.VirtualTrajectory</a>
+, <a class="el" href="classloos_1_1StringVector.html#abdaa983093627de3500877a1df1441b9">loos.StringVector</a>
+, <a class="el" href="classloos_1_1UIntVector.html#a8e023b93bb631d87c23ca446b67aca8e">loos.UIntVector</a>
+, <a class="el" href="classloos_1_1XFormVector.html#abce80210ee8d5a62f5ff72d23c1c4a27">loos.XFormVector</a>
+, <a class="el" href="classpyloos_1_1AtomicGroup.html#af9154ec4ae326b49b447652750eaafa4">pyloos.AtomicGroup</a>
+, <a class="el" href="classpyloos_1_1AtomicGroupVector.html#a7e3a52a5ee10bf64692804bfa30ffe1d">pyloos.AtomicGroupVector</a>
+, <a class="el" href="classpyloos_1_1DoubleVector.html#a8a7725ba7ade56a6c4d52110a9e58e01">pyloos.DoubleVector</a>
+, <a class="el" href="classpyloos_1_1DoubleVectorMatrix.html#af07c73cec6a8468d3f1c98cbb4ce6ecc">pyloos.DoubleVectorMatrix</a>
+, <a class="el" href="classpyloos_1_1GCoordVector.html#a99152506dfdd3248240d9bb75459ffc6">pyloos.GCoordVector</a>
+, <a class="el" href="classpyloos_1_1IntVector.html#a5a379cb9778b42ff4bf16992a172d1c5">pyloos.IntVector</a>
+, <a class="el" href="classpyloos_1_1StringVector.html#ab9384ed359fa76a9cfe924789d2fdb14">pyloos.StringVector</a>
+, <a class="el" href="classpyloos_1_1UIntVector.html#a2a1fccc0085fdb1d3e115405df30e182">pyloos.UIntVector</a>
+, <a class="el" href="classpyloos_1_1XFormVector.html#a40ae3152e8310dedccbef593f3d1b401">pyloos.XFormVector</a>
 </li>
 <li>apply()
-: <a class="el" href="classloos_1_1_atomic_group.html#a300ee7d7bb26e246c1cd78829191a4fd">loos::AtomicGroup</a>
+: <a class="el" href="classloos_1_1AtomicGroup.html#a40f9a6a9048afd065c398c1f7111e728">loos.AtomicGroup</a>
 </li>
 <li>applyTransform()
-: <a class="el" href="classloos_1_1_atomic_group.html#a52542da1e67eeb3a14fd8ecf2c7a8c87">loos::AtomicGroup</a>
+: <a class="el" href="classloos_1_1AtomicGroup.html#a9dabbe58d1b9199ebbfa151e8d3f81a8">loos.AtomicGroup</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroup.html#ac8ddeae4ee1228754698ae602fb871d6">loos.loos.AtomicGroup</a>
+, <a class="el" href="classpyloos_1_1AtomicGroup.html#a72fc99cdda083378d0abefaff0af5b49">pyloos.AtomicGroup</a>
 </li>
 <li>applyWithinRadius()
-: <a class="el" href="classloos_1_1_density_tools_1_1_density_grid.html#a48342b2140e34e5df72241b4199c8442">loos::DensityTools::DensityGrid&lt; T &gt;</a>
+: <a class="el" href="classloos_1_1DensityTools_1_1DensityGrid.html#a48342b2140e34e5df72241b4199c8442">loos::DensityTools::DensityGrid&lt; T &gt;</a>
+</li>
+<li>asdict()
+: <a class="el" href="classloos_1_1AtomicGroupMap.html#aaab865a12045eb001fb3881a6c668a77">loos.AtomicGroupMap</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroupMap.html#ad366c2359f60c9074a7cc6cfee7377c7">loos.loos.AtomicGroupMap</a>
+, <a class="el" href="classpyloos_1_1AtomicGroupMap.html#af2aae44cc0a5c27b1e823866f3c0a33b">pyloos.AtomicGroupMap</a>
+</li>
+<li>assign()
+: <a class="el" href="classloos_1_1AtomicGroupVector.html#a11c493935fd2168be09826736f7cfcb4">loos.AtomicGroupVector</a>
+, <a class="el" href="classloos_1_1DoubleVector.html#a6cf4936c81ab22e19411d6ddf87ea9b9">loos.DoubleVector</a>
+, <a class="el" href="classloos_1_1DoubleVectorMatrix.html#a37d4fed7c4df49203e3c5be7ca9da469">loos.DoubleVectorMatrix</a>
+, <a class="el" href="classloos_1_1GCoordVector.html#a739f5f3810923d2061ee95295ae1abd5">loos.GCoordVector</a>
+, <a class="el" href="classloos_1_1IntPairVector.html#aa015bb4bc47a478eb9ea6a578993744d">loos.IntPairVector</a>
+, <a class="el" href="classloos_1_1IntVector.html#adf860f5d430ac07a62711a0f58ab7c71">loos.IntVector</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroupVector.html#a651b0ee493329f266d0720a3e119ed5a">loos.loos.AtomicGroupVector</a>
+, <a class="el" href="classloos_1_1loos_1_1DoubleVector.html#ac5f04df5412d259103e1404a26b4ff8f">loos.loos.DoubleVector</a>
+, <a class="el" href="classloos_1_1loos_1_1DoubleVectorMatrix.html#a91f5aae74ee71a8f002155b3bab7f0f7">loos.loos.DoubleVectorMatrix</a>
+, <a class="el" href="classloos_1_1loos_1_1GCoordVector.html#a98be02d4cd78f76152e2321f9b44e0cc">loos.loos.GCoordVector</a>
+, <a class="el" href="classloos_1_1loos_1_1IntPairVector.html#a41d32406079c81fcf987eb18f6863b0f">loos.loos.IntPairVector</a>
+, <a class="el" href="classloos_1_1loos_1_1IntVector.html#ae2d68d34c750b303dcbd3d5f7c159f5c">loos.loos.IntVector</a>
+, <a class="el" href="classloos_1_1loos_1_1StringVector.html#a6985e21b88ce3e85c8056d3d69e0465a">loos.loos.StringVector</a>
+, <a class="el" href="classloos_1_1loos_1_1UIntVector.html#aaf811baf9114e5fecba97387c9faab73">loos.loos.UIntVector</a>
+, <a class="el" href="classloos_1_1loos_1_1XFormVector.html#a27b9b49c9cac01018498cc9a2a1d7318">loos.loos.XFormVector</a>
+, <a class="el" href="classloos_1_1StringVector.html#a627c35aca4b042caf83a892eece055e9">loos.StringVector</a>
+, <a class="el" href="classloos_1_1UIntVector.html#a2db34f5858e4a3802c6d77c3012a6742">loos.UIntVector</a>
+, <a class="el" href="classloos_1_1XFormVector.html#adf4e3f9875b8fc1ce650a0e44575a446">loos.XFormVector</a>
+, <a class="el" href="classpyloos_1_1AtomicGroupVector.html#ae4f4201b570b36624188fa713bbc0cee">pyloos.AtomicGroupVector</a>
+, <a class="el" href="classpyloos_1_1DoubleVector.html#a215278f00f944a850f0662a34a6959b3">pyloos.DoubleVector</a>
+, <a class="el" href="classpyloos_1_1DoubleVectorMatrix.html#a51781f71b3147541286018bf64dd2bd5">pyloos.DoubleVectorMatrix</a>
+, <a class="el" href="classpyloos_1_1GCoordVector.html#ae52bfc41eca4b886c186bb035512e71d">pyloos.GCoordVector</a>
+, <a class="el" href="classpyloos_1_1IntVector.html#aa9f5b20fe49054a75bc2f22ec75ba3c0">pyloos.IntVector</a>
+, <a class="el" href="classpyloos_1_1StringVector.html#a341884cbd0f732d0ead9316c935ba8a6">pyloos.StringVector</a>
+, <a class="el" href="classpyloos_1_1UIntVector.html#a605c4a69634ab204f410d2b6917def2b">pyloos.UIntVector</a>
+, <a class="el" href="classpyloos_1_1XFormVector.html#abd7fc1f3da9f031758309153970f361e">pyloos.XFormVector</a>
 </li>
 <li>assignSuitenameSuites()
-: <a class="el" href="classloos_1_1_rna_suite.html#ae0e8fb47a85b533b499058693e10a17b">loos::RnaSuite</a>
+: <a class="el" href="classloos_1_1loos_1_1RnaSuite.html#a8b761cd4755905a29d2e73168c63ced2">loos.loos.RnaSuite</a>
+, <a class="el" href="classloos_1_1RnaSuite.html#a8571cde64fadcda900f637fd7e014d85">loos.RnaSuite</a>
+, <a class="el" href="classpyloos_1_1RnaSuite.html#aa7b6d4419055d4874989c0d011fb2b9f">pyloos.RnaSuite</a>
+</li>
+<li>asString()
+: <a class="el" href="classloos_1_1Atom.html#a0dad193a70fc6bf45a77cfe9d03bccf5">loos.Atom</a>
+, <a class="el" href="classloos_1_1AtomicGroup.html#a157de763f538ce06c0519b3534a60221">loos.AtomicGroup</a>
+, <a class="el" href="classloos_1_1Gromacs.html#a49bb7d40ecbd94f431b37655449f0aa8">loos.Gromacs</a>
+, <a class="el" href="classloos_1_1loos_1_1Atom.html#ae8f45bc8a8e3764e39b04768d6a6f433">loos.loos.Atom</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroup.html#a95d82c2d5b1e32b52f73e1428a9882c5">loos.loos.AtomicGroup</a>
+, <a class="el" href="classloos_1_1loos_1_1Gromacs.html#a4d6f8c9f0eeff8422ec6d5b88cf5b1dd">loos.loos.Gromacs</a>
+, <a class="el" href="classloos_1_1loos_1_1PDB.html#aa16212d25e13b3c290a28547995e998d">loos.loos.PDB</a>
+, <a class="el" href="classloos_1_1PDB.html#af49103a82d6be00cdb6d886480af4c36">loos.PDB</a>
+</li>
+<li>atEnd()
+: <a class="el" href="classloos_1_1loos_1_1Trajectory.html#a8123151b8e0a1f0c3c59ad7a098f3058">loos.loos.Trajectory</a>
+, <a class="el" href="classloos_1_1Trajectory.html#a3f2666acbab5360e1b9340a395c4d13c">loos.Trajectory</a>
+, <a class="el" href="classpyloos_1_1Trajectory.html#ad1c8ea282225f4355e02d08378106bcf">pyloos.Trajectory</a>
 </li>
 <li>Atom()
-: <a class="el" href="classloos_1_1_atom.html#ac4d9dc7b33f7be0be66c105c5c623eab">loos::Atom</a>
+: <a class="el" href="classloos_1_1Atom.html#a38d81996342a1576a3bb8f8819f93452">loos.Atom</a>
 </li>
 <li>atom
-: <a class="el" href="classloos_1_1internal_1_1_action.html#accbf64f640fa5bc18cf77fb8a4a8c316">loos::internal::Action</a>
+: <a class="el" href="classloos_1_1internal_1_1Action.html#accbf64f640fa5bc18cf77fb8a4a8c316">loos::internal::Action</a>
+</li>
+<li>atomic_number()
+: <a class="el" href="classloos_1_1Atom.html#afd18a2d83cc1921d038cdeaf0331eaa9">loos.Atom</a>
+, <a class="el" href="classloos_1_1loos_1_1Atom.html#a78ea1294a5ca8f4d995e1cc643b2d94b">loos.loos.Atom</a>
+, <a class="el" href="classpyloos_1_1Atom.html#a28f4d99ccb7a405496e24104f14f4da7">pyloos.Atom</a>
 </li>
 <li>AtomicGroup()
-: <a class="el" href="classloos_1_1_atomic_group.html#a125a4b144bc5457366ae204e8f98f446">loos::AtomicGroup</a>
+: <a class="el" href="classloos_1_1AtomicGroup.html#a77cf299b39c39c498929cd7958169467">loos.AtomicGroup</a>
 </li>
 <li>atomOrderMapFrom()
-: <a class="el" href="classloos_1_1_atomic_group.html#a6c50256c66c58e818df2090b1cdce05c">loos::AtomicGroup</a>
+: <a class="el" href="classloos_1_1AtomicGroup.html#a605325b6ef299e807ced290f7add4980">loos.AtomicGroup</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroup.html#a26180e9df420f856e806c21e9481cf88">loos.loos.AtomicGroup</a>
+, <a class="el" href="classpyloos_1_1AtomicGroup.html#a75a6e482325d7203571f9bef332ed443">pyloos.AtomicGroup</a>
+</li>
+<li>atomType()
+: <a class="el" href="classloos_1_1Atom.html#a02056fd5af197c47d3b84deef3be05f1">loos.Atom</a>
+, <a class="el" href="classloos_1_1loos_1_1Atom.html#a69c6fe9358fee04a6899c9aa4d4dff54">loos.loos.Atom</a>
+, <a class="el" href="classpyloos_1_1Atom.html#a020753fff67d2bb0f9193ccd8cb26055">pyloos.Atom</a>
 </li>
 <li>autoTerminate()
-: <a class="el" href="classloos_1_1_p_d_b.html#a0561d2b682347779f3fc5dd1bc53a5e1">loos::PDB</a>
+: <a class="el" href="classloos_1_1loos_1_1PDB.html#aa1172ba5cf16b6839979936b24a510c4">loos.loos.PDB</a>
+, <a class="el" href="classloos_1_1PDB.html#ac02092b72e1349284f96717514922856">loos.PDB</a>
+, <a class="el" href="classpyloos_1_1PDB.html#a06e8ec3896897531ab72c192730ff593">pyloos.PDB</a>
 </li>
 <li>average()
-: <a class="el" href="classloos_1_1_time_series.html#a4fb63cfa53f64841b2c72107c04b433d">loos::TimeSeries&lt; T &gt;</a>
+: <a class="el" href="classloos_1_1loos_1_1TimeSeriesDbl.html#a7be18ebc95a072633c1a5199d93e2018">loos.loos.TimeSeriesDbl</a>
+, <a class="el" href="classloos_1_1TimeSeriesDbl.html#acee5edc768663471e773ceaf249f76d4">loos.TimeSeriesDbl</a>
+, <a class="el" href="classloos_1_1TimeSeries.html#a4fb63cfa53f64841b2c72107c04b433d">loos::TimeSeries&lt; T &gt;</a>
+, <a class="el" href="classpyloos_1_1TimeSeriesDbl.html#aa10b7a5acc97fb53925c5d4435035fc5">pyloos.TimeSeriesDbl</a>
 </li>
 <li>averageLapTime()
-: <a class="el" href="classloos_1_1_timer.html#aac6d50e2b4754d77fb0da01c80a325f1">loos::Timer&lt; TimerType &gt;</a>
+: <a class="el" href="classloos_1_1Timer.html#aac6d50e2b4754d77fb0da01c80a325f1">loos::Timer&lt; TimerType &gt;</a>
 </li>
 </ul>
 </div><!-- contents -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+</small></address>
 </body>
 </html>

@@ -1,0 +1,7 @@
+<map id="loos::HeavyAtomSelector" name="loos::HeavyAtomSelector">
+<area shape="rect" id="node1" title="Select non&#45;hydrogen atoms." alt="" coords="5,260,192,287"/>
+<area shape="rect" id="node2" href="$classloos_1_1loos_1_1AtomSelector.html" title=" " alt="" coords="11,81,183,108"/>
+<area shape="rect" id="node4" href="$structloos_1_1NotSelector.html" title="Negates a selection predicate." alt="" coords="32,171,165,197"/>
+<area shape="rect" id="node5" href="$structloos_1_1HydrogenSelector.html" title="Select hydrogen atoms." alt="" coords="189,171,363,197"/>
+<area shape="rect" id="node3" title=" " alt="" coords="66,5,129,32"/>
+</map>

@@ -1,5 +1,6 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$class_e_n_m_1_1_elastic_network_model.html" title="Interface for all ENMs." alt="" coords="5,31,189,57"/>
-<area shape="rect" id="node2" href="$class_e_n_m_1_1_a_n_m.html" title="Anisotropic network model." alt="" coords="237,5,328,32"/>
-<area shape="rect" id="node3" href="$class_e_n_m_1_1_v_s_a.html" title="Vibrational subsystem analysis ENM." alt="" coords="239,56,326,83"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,56,144,83"/>
+<area shape="rect" id="node2" href="$classENM_1_1BadSpringFunction.html" title="Bad spring function was requested." alt="" coords="198,5,379,32"/>
+<area shape="rect" id="node3" href="$classENM_1_1BadSpringParameter.html" title="Unspecified problem with parameters in SpringFunction." alt="" coords="192,56,385,83"/>
+<area shape="rect" id="node4" href="$classloos_1_1MatrixReadError.html" title="Generic reading error class." alt="" coords="207,107,370,133"/>
 </map>

@@ -1,0 +1,5 @@
+<map id="loos::NotSelector" name="loos::NotSelector">
+<area shape="rect" id="node1" title="Negates a selection predicate." alt="" coords="25,171,158,197"/>
+<area shape="rect" id="node2" href="$classloos_1_1loos_1_1AtomSelector.html" title=" " alt="" coords="5,81,177,108"/>
+<area shape="rect" id="node3" title=" " alt="" coords="60,5,123,32"/>
+</map>

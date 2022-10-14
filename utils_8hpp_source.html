@@ -9,10 +9,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -26,8 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LOOS
-   &#160;<span id="projectnumber">v3.3</span>
+   &#160;<span id="projectnumber">4.0</span>
    </div>
+   <div id="projectbrief">The Lightweight Object Oriented Structural analysis library/toolkit</div>
   </td>
  </tr>
  </tbody>
@@ -50,23 +47,6 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
-</div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('utils_8hpp_source.html',''); initResizable(); });
-/* @license-end */
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -81,6 +61,11 @@ $(document).ready(function(){initNavTree('utils_8hpp_source.html',''); initResiz
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+</div>
+</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">utils.hpp</div>  </div>
@@ -107,365 +92,396 @@ $(document).ready(function(){initNavTree('utils_8hpp_source.html',''); initResiz
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="comment">  along with this program.  If not, see &lt;http://www.gnu.org/licenses/&gt;.</span></div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="comment">*/</span></div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#if !defined(LOOS_UTILS_HPP)</span></div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#define LOOS_UTILS_HPP</span></div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#if !defined(LOOS_UTILS_HPP)</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#define LOOS_UTILS_HPP</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &lt;sstream&gt;</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &lt;fstream&gt;</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;iterator&gt;</span></div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;algorithm&gt;</span></div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;<span class="preprocessor">#include &lt;set&gt;</span></div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;exception&gt;</span></div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;stdexcept&gt;</span></div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;<span class="preprocessor">#include &lt;boost/algorithm/string.hpp&gt;</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#include &lt;boost/any.hpp&gt;</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#include &lt;boost/lexical_cast.hpp&gt;</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#include &lt;boost/program_options.hpp&gt;</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#include &lt;ctime&gt;</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;<span class="preprocessor">#include &lt;loos_defs.hpp&gt;</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;<span class="preprocessor">#include &lt;exceptions.hpp&gt;</span></div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="preprocessor">#include &lt;Coord.hpp&gt;</span></div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#include &lt;pdb_remarks.hpp&gt;</span></div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;<span class="preprocessor">#include &lt;LineReader.hpp&gt;</span></div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &lt;iostream&gt;</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &lt;sstream&gt;</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &lt;fstream&gt;</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="preprocessor">#include &lt;iterator&gt;</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="preprocessor">#include &lt;algorithm&gt;</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="preprocessor">#include &lt;set&gt;</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;<span class="preprocessor">#include &lt;exception&gt;</span></div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;stdexcept&gt;</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;boost/algorithm/string.hpp&gt;</span></div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="preprocessor">#include &lt;boost/any.hpp&gt;</span></div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;<span class="preprocessor">#include &lt;boost/lexical_cast.hpp&gt;</span></div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="preprocessor">#include &lt;boost/program_options.hpp&gt;</span></div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="preprocessor">#include &lt;ctime&gt;</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#include &lt;loos_defs.hpp&gt;</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="preprocessor">#include &lt;exceptions.hpp&gt;</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="preprocessor">#include &lt;Coord.hpp&gt;</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;<span class="preprocessor">#include &lt;pdb_remarks.hpp&gt;</span></div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;<span class="preprocessor">#include &lt;LineReader.hpp&gt;</span></div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceloos.html">loos</a></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;{</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  std::string <a class="code" href="namespaceloos.html#ad2ff567e5068bc5283e57d2992c9565c">findBaseName</a>(<span class="keyword">const</span> std::string &amp;);</div>
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160; </div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="keyword">namespace </span>loos {</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  std::string findBaseName(<span class="keyword">const</span> std::string&amp;);</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160; </div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  boost::tuple&lt;std::string, std::string&gt; splitFilename(<span class="keyword">const</span> std::string&amp; filename);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  std::string getNextLine(std::istream&amp; is, <span class="keywordtype">int</span>* lineno);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  std::vector&lt;T&gt; readVector(LineReader&amp; reader) {</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    std::vector&lt;T&gt; data;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keywordflow">while</span> (reader.getNext()) {</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;      std::istringstream iss(reader.line());</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;      T datum;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;      iss &gt;&gt; datum;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;      data.push_back(datum);</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    }</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160; </div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordflow">return</span>(data);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  }</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160; </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  std::vector&lt;T&gt; readVector(std::istream&amp; is) {</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    LineReader lr(is);</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keywordflow">return</span>(readVector&lt;T&gt;(lr));</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  }</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;  std::vector&lt;T&gt; readVector(<span class="keyword">const</span> std::string&amp; fname) {</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    std::ifstream ifs(fname.c_str());</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    LineReader lr(ifs, fname);</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keywordflow">return</span>(readVector&lt;T&gt;(lr));</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;  }</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  boost::tuple&lt;std::string, std::string&gt; <a class="code" href="namespaceloos.html#a01e5fe5f71a7d67df88b19d334483f9d">splitFilename</a>(<span class="keyword">const</span> std::string &amp;filename);</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  std::string <a class="code" href="namespaceloos.html#a374040fb573bbe1386dfe3d45fc96f49">getNextLine</a>(std::istream &amp;is, <span class="keywordtype">int</span> *lineno);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00071"></a><span class="lineno"><a class="line" href="namespaceloos.html#ad402d8c3aa16082e4187b60d61f2687c">   71</a></span>&#160;  std::vector&lt;T&gt; <a class="code" href="namespaceloos.html#ad402d8c3aa16082e4187b60d61f2687c">readVector</a>(<a class="code" href="classloos_1_1LineReader.html">LineReader</a> &amp;reader)</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  {</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    std::vector&lt;T&gt; data;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="keywordflow">while</span> (reader.<a class="code" href="classloos_1_1LineReader.html#a42926499cb05af08d27954e60b03a88d">getNext</a>())</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    {</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;      std::istringstream iss(reader.<a class="code" href="classloos_1_1LineReader.html#aad850eb760d2365ebfb61e68c548f1b2">line</a>());</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;      T datum;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;      iss &gt;&gt; datum;</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;      data.push_back(datum);</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    }</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordflow">return</span> (data);</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;  }</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00087"></a><span class="lineno"><a class="line" href="namespaceloos.html#af7c4fcef4f427eeca90408b24b0d775a">   87</a></span>&#160;  std::vector&lt;T&gt; <a class="code" href="namespaceloos.html#ad402d8c3aa16082e4187b60d61f2687c">readVector</a>(std::istream &amp;is)</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  {</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <a class="code" href="classloos_1_1LineReader.html">LineReader</a> lr(is);</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordflow">return</span> (readVector&lt;T&gt;(lr));</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  }</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00095"></a><span class="lineno"><a class="line" href="namespaceloos.html#a924b19197b15f3d4ddb0bbe7269927a6">   95</a></span>&#160;  std::vector&lt;T&gt; <a class="code" href="namespaceloos.html#ad402d8c3aa16082e4187b60d61f2687c">readVector</a>(<span class="keyword">const</span> std::string &amp;fname)</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  {</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    std::ifstream ifs(fname.c_str());</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    <a class="code" href="classloos_1_1LineReader.html">LineReader</a> lr(ifs, fname);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keywordflow">return</span> (readVector&lt;T&gt;(lr));</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  }</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  </div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160; </div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;  std::vector&lt; std::vector&lt;T&gt; &gt; readTable(LineReader&amp; reader) {</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;    std::vector&lt; std::vector&lt;T&gt; &gt; table;</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160; </div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keywordflow">while</span> (reader.getNext()) {</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;      <span class="keywordflow">if</span> (reader.line().empty())</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;      std::istringstream iss(reader.line());</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;      T datum;</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;      std::vector&lt;T&gt; row;</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;      <span class="keywordflow">while</span> (iss &gt;&gt; datum)</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        row.push_back(datum);</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;      table.push_back(row);</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    }</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <span class="keywordflow">return</span>(table);</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;  }</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;  std::vector&lt; std::vector&lt;T&gt; &gt; readTable(std::istream&amp; is) {</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    LineReader lr(is);</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    <span class="keywordflow">return</span>(readTable&lt;T&gt;(lr));</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;  }</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;  std::vector&lt; std::vector&lt;T&gt; &gt; readTable(<span class="keyword">const</span> std::string&amp; fname) {</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    std::ifstream ifs(fname.c_str());</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    LineReader lr(ifs, fname);</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keywordflow">return</span>(readTable&lt;T&gt;(lr));</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;  }</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;  std::string invocationHeader(<span class="keywordtype">int</span>, <span class="keywordtype">char</span> *[]);</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="namespaceloos.html#ad74655d3c84450f5f033942576c73979">  109</a></span>&#160;  std::vector&lt;std::vector&lt;T&gt;&gt; <a class="code" href="namespaceloos.html#ad74655d3c84450f5f033942576c73979">readTable</a>(<a class="code" href="classloos_1_1LineReader.html">LineReader</a> &amp;reader)</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;  {</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    std::vector&lt;std::vector&lt;T&gt;&gt; table;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keywordflow">while</span> (reader.<a class="code" href="classloos_1_1LineReader.html#a42926499cb05af08d27954e60b03a88d">getNext</a>())</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    {</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;      <span class="keywordflow">if</span> (reader.<a class="code" href="classloos_1_1LineReader.html#aad850eb760d2365ebfb61e68c548f1b2">line</a>().empty())</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;      std::istringstream iss(reader.<a class="code" href="classloos_1_1LineReader.html#aad850eb760d2365ebfb61e68c548f1b2">line</a>());</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;      T datum;</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;      std::vector&lt;T&gt; row;</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;      <span class="keywordflow">while</span> (iss &gt;&gt; datum)</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;        row.push_back(datum);</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;      table.push_back(row);</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    }</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    <span class="keywordflow">return</span> (table);</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  }</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00130"></a><span class="lineno"><a class="line" href="namespaceloos.html#a8d7b551cc22edfda4ada7dd6a7021654">  130</a></span>&#160;  std::vector&lt;std::vector&lt;T&gt;&gt; <a class="code" href="namespaceloos.html#ad74655d3c84450f5f033942576c73979">readTable</a>(std::istream &amp;is)</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;  {</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;    <a class="code" href="classloos_1_1LineReader.html">LineReader</a> lr(is);</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <span class="keywordflow">return</span> (readTable&lt;T&gt;(lr));</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;  }</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160; </div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00138"></a><span class="lineno"><a class="line" href="namespaceloos.html#af498bcf1436fa609d583bda498cedfde">  138</a></span>&#160;  std::vector&lt;std::vector&lt;T&gt;&gt; <a class="code" href="namespaceloos.html#ad74655d3c84450f5f033942576c73979">readTable</a>(<span class="keyword">const</span> std::string &amp;fname)</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;  {</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    std::ifstream ifs(fname.c_str());</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    <a class="code" href="classloos_1_1LineReader.html">LineReader</a> lr(ifs, fname);</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="keywordflow">return</span> (readTable&lt;T&gt;(lr));</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;  }</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160; </div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;  std::string <a class="code" href="namespaceloos.html#a00c94cd1a8f5f8234001eb57cadb9b48">invocationHeader</a>(<span class="keywordtype">int</span>, <span class="keywordtype">char</span> *[]);</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
 <div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160; </div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160; </div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;  std::vector&lt;T&gt; parseRange(<span class="keyword">const</span> std::string&amp; text, <span class="keyword">const</span> T endpoint = 0) {</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    T a;</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    T b;</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    T c;</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    <span class="keywordtype">char</span> sep;</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    std::vector&lt;T&gt; indices;</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    std::istringstream is(text);</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    </div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    is &gt;&gt; a;</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    <span class="keywordflow">if</span> (is.eof()) {</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;      indices.push_back(a);</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;      <span class="keywordflow">return</span>(indices);</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    }</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00168"></a><span class="lineno"><a class="line" href="namespaceloos.html#aef82d7e98c0493c76dfad5621043b43c">  168</a></span>&#160;  std::vector&lt;T&gt; <a class="code" href="namespaceloos.html#aef82d7e98c0493c76dfad5621043b43c">parseRange</a>(<span class="keyword">const</span> std::string &amp;text, <span class="keyword">const</span> T endpoint = 0)</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;  {</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    T a;</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    T b;</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    T c;</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="keywordtype">char</span> sep;</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    std::vector&lt;T&gt; indices;</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    std::istringstream is(text);</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160; </div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    is &gt;&gt; a;</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    <span class="keywordflow">if</span> (is.eof())</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    {</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;      indices.push_back(a);</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;      <span class="keywordflow">return</span> (indices);</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    }</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160; </div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    sep = is.get();</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    <span class="keywordtype">bool</span> is_negative = <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160; </div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    sep = is.get();</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    <span class="keywordtype">bool</span> is_negative = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160; </div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    <span class="keywordflow">if</span> (is.peek() == <span class="charliteral">&#39;*&#39;</span>) {</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;      b = endpoint;</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;      is.get();</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;      <span class="keywordflow">if</span> (is.peek() == <span class="charliteral">&#39;-&#39;</span>) {</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;        is_negative = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;        is.get();</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;      }</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;      is &gt;&gt; b;</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;      <span class="keywordflow">if</span> (is.fail() || sep != <span class="charliteral">&#39;:&#39;</span>)</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;        <span class="keywordflow">throw</span>(ParseError(<span class="stringliteral">&quot;Could not parse range (1) &quot;</span> + text));</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    }</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;    sep = is.get();</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    <span class="keywordflow">if</span> (is.eof()) {</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;      c = 1;</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;      <span class="keywordflow">if</span> (is_negative)</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        b = -b;</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;      </div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;      is_negative = a &gt; b;</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;        </div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;      <span class="keywordflow">if</span> (sep != <span class="charliteral">&#39;:&#39;</span>)</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;        <span class="keywordflow">throw</span>(ParseError(<span class="stringliteral">&quot;Could not parse range (2) &quot;</span> + text));</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;      c = b;</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;      <span class="keywordflow">if</span> (is.peek() == <span class="charliteral">&#39;*&#39;</span>) {</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;        b = endpoint;</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;        is.get();</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;      } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;        is &gt;&gt; b;</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;        <span class="keywordflow">if</span> (is.fail())</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;          <span class="keywordflow">throw</span>(ParseError(<span class="stringliteral">&quot;Could not parse range (3) &quot;</span> + text));</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    <span class="keywordflow">if</span> (is.peek() == <span class="charliteral">&#39;*&#39;</span>)</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    {</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;      b = endpoint;</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;      is.get();</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    }</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    {</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;      <span class="keywordflow">if</span> (is.peek() == <span class="charliteral">&#39;-&#39;</span>)</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;      {</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;        is_negative = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;        is.get();</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;      }</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;      is &gt;&gt; b;</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;      <span class="keywordflow">if</span> (is.fail() || sep != <span class="charliteral">&#39;:&#39;</span>)</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;        <span class="keywordflow">throw</span>(<a class="code" href="classloos_1_1ParseError.html">ParseError</a>(<span class="stringliteral">&quot;Could not parse range (1) &quot;</span> + text));</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    }</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160; </div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    sep = is.get();</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    <span class="keywordflow">if</span> (is.eof())</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    {</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;      c = 1;</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;      <span class="keywordflow">if</span> (is_negative)</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;        b = -b;</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160; </div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;      is_negative = a &gt; b;</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;    }</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    {</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;      <span class="keywordflow">if</span> (sep != <span class="charliteral">&#39;:&#39;</span>)</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;        <span class="keywordflow">throw</span>(<a class="code" href="classloos_1_1ParseError.html">ParseError</a>(<span class="stringliteral">&quot;Could not parse range (2) &quot;</span> + text));</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;      c = b;</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;      <span class="keywordflow">if</span> (is.peek() == <span class="charliteral">&#39;*&#39;</span>)</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;      {</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;        b = endpoint;</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;        is.get();</div>
 <div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;      }</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;    }</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160; </div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    <span class="comment">// Some input validation...</span></div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;    <span class="keywordflow">if</span> (a &gt; b &amp;&amp; !is_negative)</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;      <span class="keywordflow">throw</span>(ParseError(<span class="stringliteral">&quot;You must use a negative step to count down: &quot;</span> + text));</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;    <span class="keywordflow">if</span> (a &lt; b &amp;&amp; is_negative)</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;      <span class="keywordflow">throw</span>(ParseError(<span class="stringliteral">&quot;You must use a postive step to count up: &quot;</span> + text));</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;    <span class="keywordflow">if</span> (c == 0)</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;      <span class="keywordflow">throw</span>(ParseError(<span class="stringliteral">&quot;Thou shalt only use non-zero step sizes: &quot;</span> + text));</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160; </div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;    <span class="keywordflow">if</span> (is_negative) {</div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160; </div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;      T i;</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;      <span class="keywordflow">for</span> (i=a; i &gt; b; i -= c)</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;        indices.push_back(i);</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;      <span class="keywordflow">if</span> (a &lt; -a &amp;&amp; b == 0)     <span class="comment">// If unsigned type, cannot use &gt;= 0 as test</span></div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;        indices.push_back(0);</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;      <span class="keywordflow">else</span> <span class="keywordflow">if</span> (i &gt;= b)</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;        indices.push_back(i);</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160; </div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    } <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;      <span class="keywordflow">for</span> (T i=a; i &lt;= b; i += c)</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;        indices.push_back(i);</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160; </div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;    <span class="keywordflow">return</span>(indices);</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;  }</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160; </div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160; </div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160; </div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160; </div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160; </div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;  std::vector&lt;T&gt; parseRangeList(<span class="keyword">const</span> std::string&amp; text, <span class="keyword">const</span> T endpoint = 0) {</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;    std::vector&lt;std::string&gt; terms;</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;    std::set&lt;T&gt; indices;</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    std::insert_iterator&lt; std::set&lt;T&gt; &gt; ii(indices, indices.begin());</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160; </div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;    boost::split(terms, text, boost::is_any_of(<span class="stringliteral">&quot;,&quot;</span>), boost::token_compress_on);</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    std::vector&lt;std::string&gt;::const_iterator ci;</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    <span class="keywordflow">for</span> (ci = terms.begin(); ci != terms.end(); ci++) {</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;      <span class="keywordflow">if</span> (ci-&gt;empty())</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;        <span class="keywordflow">continue</span>;</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;      std::vector&lt;T&gt; result = parseRange&lt;T&gt;(*ci, endpoint);</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;      std::copy(result.begin(), result.end(), ii);</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    }</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;    std::vector&lt;T&gt; results(indices.size());</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;    std::copy(indices.begin(), indices.end(), results.begin());</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;    <span class="keywordflow">return</span>(results);</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;  }</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160; </div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160; </div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;  std::vector&lt;int&gt; parseRangeList(<span class="keyword">const</span> std::string&amp;, <span class="keyword">const</span> <span class="keywordtype">int</span> endpoint = 0);</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160; </div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;  std::vector&lt;T&gt; parseRangeList(<span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; ranges, <span class="keyword">const</span> T endpoint = 0) {</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;    std::ostringstream os;</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;    std::copy(ranges.begin(), ranges.end(), std::ostream_iterator&lt;std::string&gt;(os, <span class="stringliteral">&quot;,&quot;</span>));</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;    <span class="keywordflow">return</span>(parseRangeList&lt;T&gt;(os.str(), endpoint));</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;  }</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160; </div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;  AtomicGroup selectAtoms(<span class="keyword">const</span> AtomicGroup&amp;, <span class="keyword">const</span> std::string);</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160; </div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160; </div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;      <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;      {</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;        is &gt;&gt; b;</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;        <span class="keywordflow">if</span> (is.fail())</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;          <span class="keywordflow">throw</span>(<a class="code" href="classloos_1_1ParseError.html">ParseError</a>(<span class="stringliteral">&quot;Could not parse range (3) &quot;</span> + text));</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;      }</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    }</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160; </div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    <span class="comment">// Some input validation...</span></div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    <span class="keywordflow">if</span> (a &gt; b &amp;&amp; !is_negative)</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;      <span class="keywordflow">throw</span>(<a class="code" href="classloos_1_1ParseError.html">ParseError</a>(<span class="stringliteral">&quot;You must use a negative step to count down: &quot;</span> + text));</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;    <span class="keywordflow">if</span> (a &lt; b &amp;&amp; is_negative)</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;      <span class="keywordflow">throw</span>(<a class="code" href="classloos_1_1ParseError.html">ParseError</a>(<span class="stringliteral">&quot;You must use a postive step to count up: &quot;</span> + text));</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;    <span class="keywordflow">if</span> (c == 0)</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;      <span class="keywordflow">throw</span>(<a class="code" href="classloos_1_1ParseError.html">ParseError</a>(<span class="stringliteral">&quot;Thou shalt only use non-zero step sizes: &quot;</span> + text));</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160; </div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;    <span class="keywordflow">if</span> (is_negative)</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;    {</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160; </div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;      T i;</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;      <span class="keywordflow">for</span> (i = a; i &gt; b; i -= c)</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;        indices.push_back(i);</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;      <span class="keywordflow">if</span> (a &lt; -a &amp;&amp; b == 0) <span class="comment">// If unsigned type, cannot use &gt;= 0 as test</span></div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;        indices.push_back(0);</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;      <span class="keywordflow">else</span> <span class="keywordflow">if</span> (i &gt;= b)</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        indices.push_back(i);</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;    }</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;    <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;      <span class="keywordflow">for</span> (T i = a; i &lt;= b; i += c)</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;        indices.push_back(i);</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160; </div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;    <span class="keywordflow">return</span> (indices);</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;  }</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160; </div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160; </div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00266"></a><span class="lineno"><a class="line" href="namespaceloos.html#a163ccbfeb984c222e3e50813e47b7b47">  266</a></span>&#160;  std::vector&lt;T&gt; <a class="code" href="namespaceloos.html#a29564cc013233d75648347dba0815f84">parseRangeList</a>(<span class="keyword">const</span> std::string &amp;text, <span class="keyword">const</span> T endpoint = 0)</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;  {</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;    std::vector&lt;std::string&gt; terms;</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    std::set&lt;T&gt; indices;</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    std::insert_iterator&lt;std::set&lt;T&gt;&gt; ii(indices, indices.begin());</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160; </div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;    boost::split(terms, text, boost::is_any_of(<span class="stringliteral">&quot;,&quot;</span>), boost::token_compress_on);</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    std::vector&lt;std::string&gt;::const_iterator ci;</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    <span class="keywordflow">for</span> (ci = terms.begin(); ci != terms.end(); ci++)</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;    {</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;      <span class="keywordflow">if</span> (ci-&gt;empty())</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;        <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;      std::vector&lt;T&gt; result = parseRange&lt;T&gt;(*ci, endpoint);</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;      std::copy(result.begin(), result.end(), ii);</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;    }</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;    std::vector&lt;T&gt; results(indices.size());</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;    std::copy(indices.begin(), indices.end(), results.begin());</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;    <span class="keywordflow">return</span> (results);</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;  }</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160; </div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;  std::vector&lt;int&gt; <a class="code" href="namespaceloos.html#a29564cc013233d75648347dba0815f84">parseRangeList</a>(<span class="keyword">const</span> std::string &amp;, <span class="keyword">const</span> <span class="keywordtype">int</span> endpoint = 0);</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160; </div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00291"></a><span class="lineno"><a class="line" href="namespaceloos.html#a1e0281788c276087db41945cdb097444">  291</a></span>&#160;  std::vector&lt;T&gt; <a class="code" href="namespaceloos.html#a29564cc013233d75648347dba0815f84">parseRangeList</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt; &amp;ranges, <span class="keyword">const</span> T endpoint = 0)</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;  {</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;    std::ostringstream os;</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;    std::copy(ranges.begin(), ranges.end(), std::ostream_iterator&lt;std::string&gt;(os, <span class="stringliteral">&quot;,&quot;</span>));</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;    <span class="keywordflow">return</span> (parseRangeList&lt;T&gt;(os.str(), endpoint));</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;  }</div>
 <div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160; </div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;  T swab(<span class="keyword">const</span> T&amp; datum) {</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    uint size = <span class="keyword">sizeof</span>(T);</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* p = <span class="keyword">reinterpret_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>*<span class="keyword">&gt;</span>(&amp;datum);</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;    T swabbed;</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>* q = <span class="keyword">reinterpret_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">char</span>*<span class="keyword">&gt;</span>(&amp;swabbed);</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    </div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    uint i, j;</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    <span class="keywordflow">for</span> (i=0, j=size-1; i&lt;size; ++i, --j)</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;      q[i] = p[j];</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;    </div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;    <span class="keywordflow">return</span>(swabbed);</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;  }</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160; </div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160; </div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;  std::string timeAsString(<span class="keyword">const</span> <span class="keywordtype">double</span> t, <span class="keyword">const</span> uint precision = 0);</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160; </div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;  T parseStringAs(<span class="keyword">const</span> std::string&amp; source, <span class="keyword">const</span> uint pos =0, <span class="keyword">const</span> uint nelem =0) {</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;    T val(0);</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;  AtomicGroup <a class="code" href="namespaceloos.html#a4fad4000e166dfc752043ab3010bd8a9">selectAtoms</a>(<span class="keyword">const</span> AtomicGroup &amp;, <span class="keyword">const</span> std::string);</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160; </div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160; </div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00306"></a><span class="lineno"><a class="line" href="namespaceloos.html#aee1021d75b06b63e2410636b11179c1a">  306</a></span>&#160;  T <a class="code" href="namespaceloos.html#aee1021d75b06b63e2410636b11179c1a">swab</a>(<span class="keyword">const</span> T &amp;datum)</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;  {</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    uint size = <span class="keyword">sizeof</span>(T);</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *p = <span class="keyword">reinterpret_cast&lt;</span><span class="keyword">const </span><span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *<span class="keyword">&gt;</span>(&amp;datum);</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;    T swabbed;</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *q = <span class="keyword">reinterpret_cast&lt;</span><span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> *<span class="keyword">&gt;</span>(&amp;swabbed);</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160; </div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;    uint i, j;</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;    <span class="keywordflow">for</span> (i = 0, j = size - 1; i &lt; size; ++i, --j)</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;      q[i] = p[j];</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160; </div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;    <span class="keywordflow">return</span> (swabbed);</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;  }</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160; </div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;  std::string <a class="code" href="namespaceloos.html#ace7362e008af0e72a622350006595ec8">timeAsString</a>(<span class="keyword">const</span> <span class="keywordtype">double</span> t, <span class="keyword">const</span> uint precision = 0);</div>
 <div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160; </div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;    <span class="keywordflow">if</span> (pos &gt;= source.size()) {</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;      std::stringstream msg;</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;      msg &lt;&lt; <span class="stringliteral">&quot;Missing Field at position &quot;</span> &lt;&lt; pos &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;      msg &lt;&lt; <span class="stringliteral">&quot;&gt; &quot;</span> &lt;&lt; source &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;      <span class="keywordflow">throw</span>(ParseError(msg.str()));</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    }</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160; </div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    uint n = !nelem ? source.size() - pos : nelem;</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;    <span class="keywordflow">if</span> (pos + n &gt; source.size())</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;      n = source.size() - pos + 1;</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;    </div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;    </div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;    </div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;    std::string element(source.substr(pos, n));</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    std::istringstream iss(element);</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    <span class="keywordflow">if</span> (!(iss &gt;&gt; val)) {</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;      std::stringstream msg;</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;      msg &lt;&lt; <span class="stringliteral">&quot;PARSE ERROR\n&quot;</span> &lt;&lt; source &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;      <span class="keywordflow">for</span> (uint i=0; i&lt;pos; ++i)</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;        msg &lt;&lt; <span class="charliteral">&#39; &#39;</span>;</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;      msg &lt;&lt; <span class="charliteral">&#39;^&#39;</span>;</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;      <span class="keywordflow">if</span> (n &gt; 1)</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;        <span class="keywordflow">for</span> (uint i=1; i&lt;n; ++i)</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;          msg &lt;&lt; <span class="charliteral">&#39;^&#39;</span>;</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;      msg &lt;&lt; std::endl;</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;      <span class="keywordflow">throw</span>(ParseError(msg.str()));</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    }</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160; </div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;    <span class="keywordflow">return</span>(val);</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;  }</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160; </div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;  <span class="keyword">template</span>&lt;&gt; std::string parseStringAs&lt;std::string&gt;(<span class="keyword">const</span> std::string&amp; source, <span class="keyword">const</span> uint pos, <span class="keyword">const</span> uint nelem);</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160; </div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;  std::string fixedSizeFormat(<span class="keyword">const</span> T t, <span class="keyword">const</span> uint n) {</div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;    std::stringstream ss;</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;    ss &lt;&lt; t;</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    std::string s(ss.str());</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    uint m = s.size();</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    <span class="keywordflow">if</span> (m &gt; n)</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;      <span class="keywordflow">return</span>(s.substr(m-n, n));</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    <span class="keywordflow">return</span>(s);</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;  }</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160; </div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;  <span class="keyword">template</span>&lt;&gt; std::string fixedSizeFormat(<span class="keyword">const</span> std::string&amp; s, <span class="keyword">const</span> uint n);</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160; </div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;  <span class="keywordtype">int</span> parseStringAsHybrid36(<span class="keyword">const</span> std::string&amp; source, <span class="keyword">const</span> uint pos =0, <span class="keyword">const</span> uint nelem =0);</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160; </div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;  std::string hybrid36AsString(<span class="keywordtype">int</span> value, uint fieldsize);</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160; </div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;  <span class="comment">// The following are for support of boost::program_options</span></div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160; </div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; std::string vToString(<span class="keyword">const</span> T&amp; x) {</div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;    std::ostringstream oss;</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160; </div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">typename</span> T::const_iterator i = x.begin(); i != x.end(); ++i)</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;      oss &lt;&lt; *i &lt;&lt; ((i == x.end() - 1) ? <span class="stringliteral">&quot;&quot;</span> : <span class="stringliteral">&quot;,&quot;</span>);</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160; </div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    <span class="keywordflow">return</span>(oss.str());</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;  }</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00325"></a><span class="lineno"><a class="line" href="namespaceloos.html#a8810a947ea516380336323ac9f98dc07">  325</a></span>&#160;  T <a class="code" href="namespaceloos.html#a8810a947ea516380336323ac9f98dc07">parseStringAs</a>(<span class="keyword">const</span> std::string &amp;source, <span class="keyword">const</span> uint pos = 0, <span class="keyword">const</span> uint nelem = 0)</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;  {</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    T val(0);</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160; </div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;    <span class="keywordflow">if</span> (pos &gt;= source.size())</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    {</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;      std::stringstream msg;</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;      msg &lt;&lt; <span class="stringliteral">&quot;Missing Field at position &quot;</span> &lt;&lt; pos &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;      msg &lt;&lt; <span class="stringliteral">&quot;&gt; &quot;</span> &lt;&lt; source &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;      <span class="keywordflow">throw</span>(<a class="code" href="classloos_1_1ParseError.html">ParseError</a>(msg.str()));</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;    }</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160; </div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    uint n = !nelem ? source.size() - pos : nelem;</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    <span class="keywordflow">if</span> (pos + n &gt; source.size())</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;      n = source.size() - pos + 1;</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160; </div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;    std::string element(source.substr(pos, n));</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;    std::istringstream iss(element);</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;    <span class="keywordflow">if</span> (!(iss &gt;&gt; val))</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;    {</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;      std::stringstream msg;</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;      msg &lt;&lt; <span class="stringliteral">&quot;PARSE ERROR\n&quot;</span></div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;          &lt;&lt; source &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;      <span class="keywordflow">for</span> (uint i = 0; i &lt; pos; ++i)</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;        msg &lt;&lt; <span class="charliteral">&#39; &#39;</span>;</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;      msg &lt;&lt; <span class="charliteral">&#39;^&#39;</span>;</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;      <span class="keywordflow">if</span> (n &gt; 1)</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;        <span class="keywordflow">for</span> (uint i = 1; i &lt; n; ++i)</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;          msg &lt;&lt; <span class="charliteral">&#39;^&#39;</span>;</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;      msg &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;      <span class="keywordflow">throw</span>(<a class="code" href="classloos_1_1ParseError.html">ParseError</a>(msg.str()));</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;    }</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160; </div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;    <span class="keywordflow">return</span> (val);</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;  }</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160; </div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;  <span class="keyword">template</span> &lt;&gt;</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;  std::string parseStringAs&lt;std::string&gt;(<span class="keyword">const</span> std::string &amp;source, <span class="keyword">const</span> uint pos, <span class="keyword">const</span> uint nelem);</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160; </div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;  std::string fixedSizeFormat(<span class="keyword">const</span> T t, <span class="keyword">const</span> uint n)</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;  {</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    std::stringstream ss;</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    ss &lt;&lt; t;</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    std::string s(ss.str());</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    uint m = s.size();</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    <span class="keywordflow">if</span> (m &gt; n)</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;      <span class="keywordflow">return</span> (s.substr(m - n, n));</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    <span class="keywordflow">return</span> (s);</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;  }</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160; </div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;  <span class="keyword">template</span> &lt;&gt;</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;  std::string fixedSizeFormat(<span class="keyword">const</span> std::string &amp;s, <span class="keyword">const</span> uint n);</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160; </div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;  <span class="keywordtype">int</span> <a class="code" href="namespaceloos.html#a80b38022bca2e81b5b9d103f9591055b">parseStringAsHybrid36</a>(<span class="keyword">const</span> std::string &amp;source, <span class="keyword">const</span> uint pos = 0, <span class="keyword">const</span> uint nelem = 0);</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160; </div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;  std::string <a class="code" href="namespaceloos.html#a9c5b44b25a64655cb72fad1b31041901">hybrid36AsString</a>(<span class="keywordtype">int</span> value, uint fieldsize);</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160; </div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;  <span class="comment">// The following are for support of boost::program_options</span></div>
 <div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160; </div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160; </div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;  std::string sanitizeString(<span class="keyword">const</span> std::string&amp; s);</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160; </div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;  std::string stringsAsComments(<span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; v);</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160; </div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160; </div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;  std::string stringsAsString(<span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; v);</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160; </div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00389"></a><span class="lineno"><a class="line" href="namespaceloos.html#ae63f81614006afb36b456a3e8d69cd02">  389</a></span>&#160;  std::string <a class="code" href="namespaceloos.html#ae63f81614006afb36b456a3e8d69cd02">vToString</a>(<span class="keyword">const</span> T &amp;x)</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;  {</div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;    std::ostringstream oss;</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160; </div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">typename</span> T::const_iterator i = x.begin(); i != x.end(); ++i)</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;      oss &lt;&lt; *i &lt;&lt; ((i == x.end() - 1) ? <span class="stringliteral">&quot;&quot;</span> : <span class="stringliteral">&quot;,&quot;</span>);</div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160; </div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;    <span class="keywordflow">return</span> (oss.str());</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;  }</div>
 <div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160; </div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160; </div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt; std::string vectorAsStringWithCommas(<span class="keyword">const</span> std::vector&lt;T&gt;&amp; v) {</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;    std::ostringstream oss;</div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">typename</span> std::vector&lt;T&gt;::const_iterator i = v.begin(); i != v.end(); ++i) {</div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;      oss &lt;&lt; *i;</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;      <span class="keywordflow">if</span> (i != v.end() - 1)</div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;        oss &lt;&lt; <span class="stringliteral">&quot;,&quot;</span>;</div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;    }</div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;    <span class="keywordflow">return</span>(oss.str());</div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;  }</div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160; </div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;  <span class="keyword">template</span>&lt;&gt; std::string vectorAsStringWithCommas(<span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; v);</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160; </div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160; </div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;  std::vector&lt;T&gt; uniquifyVector(<span class="keyword">const</span> std::vector&lt;T&gt;&amp; list) {</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;    std::set&lt;T&gt; indices;</div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;    std::insert_iterator&lt; std::set&lt;T&gt; &gt; ii(indices, indices.begin());</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;    std::copy(list.begin(), list.end(), ii);</div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160; </div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;    std::vector&lt;T&gt; uniques(indices.size());</div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;    std::copy(indices.begin(), indices.end(), uniques.begin());</div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;    <span class="keywordflow">return</span> uniques;</div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;  }</div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160; </div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160; </div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;  </div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160; </div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;  <span class="keywordtype">long</span> availableMemory();</div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;  </div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;};</div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;  std::string <a class="code" href="namespaceloos.html#ab0d9295e6f345e1cc9fd302036e0ef78">sanitizeString</a>(<span class="keyword">const</span> std::string &amp;s);</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160; </div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;  std::string <a class="code" href="namespaceloos.html#a0a65478ee01d29b72005dab62b4f17bd">stringsAsComments</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt; &amp;v);</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160; </div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;  std::string <a class="code" href="namespaceloos.html#a73ba42a0e7ffa3a60054c59d61c0ad43">stringsAsString</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt; &amp;v);</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160; </div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00410"></a><span class="lineno"><a class="line" href="namespaceloos.html#ac337138d3dd868ff6c78ff7606024425">  410</a></span>&#160;  std::string <a class="code" href="namespaceloos.html#a8783c2b04ba43093b26f20f769d5afae">vectorAsStringWithCommas</a>(<span class="keyword">const</span> std::vector&lt;T&gt; &amp;v)</div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;  {</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;    std::ostringstream oss;</div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">typename</span> std::vector&lt;T&gt;::const_iterator i = v.begin(); i != v.end(); ++i)</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;    {</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;      oss &lt;&lt; *i;</div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;      <span class="keywordflow">if</span> (i != v.end() - 1)</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;        oss &lt;&lt; <span class="stringliteral">&quot;,&quot;</span>;</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;    }</div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;    <span class="keywordflow">return</span> (oss.str());</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;  }</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160; </div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;  <span class="keyword">template</span> &lt;&gt;</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;  std::string <a class="code" href="namespaceloos.html#a8783c2b04ba43093b26f20f769d5afae">vectorAsStringWithCommas</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt; &amp;v);</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160; </div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;  <span class="keyword">template</span> &lt;<span class="keyword">typename</span> T&gt;</div>
+<div class="line"><a name="l00427"></a><span class="lineno"><a class="line" href="namespaceloos.html#a3671a3351a4a71dda3e62ea964d0b08a">  427</a></span>&#160;  std::vector&lt;T&gt; <a class="code" href="namespaceloos.html#a3671a3351a4a71dda3e62ea964d0b08a">uniquifyVector</a>(<span class="keyword">const</span> std::vector&lt;T&gt; &amp;list)</div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;  {</div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;    std::set&lt;T&gt; indices;</div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;    std::insert_iterator&lt;std::set&lt;T&gt;&gt; ii(indices, indices.begin());</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;    std::copy(list.begin(), list.end(), ii);</div>
 <div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160; </div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;    std::vector&lt;T&gt; uniques(indices.size());</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;    std::copy(indices.begin(), indices.end(), uniques.begin());</div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;    <span class="keywordflow">return</span> uniques;</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;  }</div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160; </div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;  <span class="keywordtype">long</span> <a class="code" href="namespaceloos.html#ad34d379cd19a139ee185b55d1e96c724">availableMemory</a>();</div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160; </div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;};</div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160; </div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="aclassloos_1_1LineReader_html"><div class="ttname"><a href="classloos_1_1LineReader.html">loos::LineReader</a></div><div class="ttdoc">Class for reading line-by-line from a file while tracking line numbers and stripping comments.</div><div class="ttdef"><b>Definition:</b> LineReader.hpp:39</div></div>
+<div class="ttc" id="aclassloos_1_1LineReader_html_a42926499cb05af08d27954e60b03a88d"><div class="ttname"><a href="classloos_1_1LineReader.html#a42926499cb05af08d27954e60b03a88d">loos::LineReader::getNext</a></div><div class="ttdeci">virtual bool getNext()</div><div class="ttdoc">Get the next line from the file, returning true if successful.</div><div class="ttdef"><b>Definition:</b> LineReader.cpp:38</div></div>
+<div class="ttc" id="aclassloos_1_1LineReader_html_aad850eb760d2365ebfb61e68c548f1b2"><div class="ttname"><a href="classloos_1_1LineReader.html#aad850eb760d2365ebfb61e68c548f1b2">loos::LineReader::line</a></div><div class="ttdeci">virtual std::string line() const</div><div class="ttdoc">The currently read line.</div><div class="ttdef"><b>Definition:</b> LineReader.cpp:62</div></div>
+<div class="ttc" id="aclassloos_1_1ParseError_html"><div class="ttname"><a href="classloos_1_1ParseError.html">loos.ParseError</a></div><div class="ttdoc">Exception when parsing input data.</div><div class="ttdef"><b>Definition:</b> loos.py:1228</div></div>
+<div class="ttc" id="anamespaceloos_html"><div class="ttname"><a href="namespaceloos.html">loos</a></div><div class="ttdoc">Namespace for most things not already encapsulated within a class.</div><div class="ttdef"><b>Definition:</b> loos.py:1</div></div>
+<div class="ttc" id="anamespaceloos_html_a00c94cd1a8f5f8234001eb57cadb9b48"><div class="ttname"><a href="namespaceloos.html#a00c94cd1a8f5f8234001eb57cadb9b48">loos.invocationHeader</a></div><div class="ttdeci">&quot;std::string&quot; invocationHeader(&quot;int&quot; arg1, &quot;char *[]&quot; arg2)</div><div class="ttdef"><b>Definition:</b> loos.py:3242</div></div>
+<div class="ttc" id="anamespaceloos_html_a01e5fe5f71a7d67df88b19d334483f9d"><div class="ttname"><a href="namespaceloos.html#a01e5fe5f71a7d67df88b19d334483f9d">loos.splitFilename</a></div><div class="ttdeci">&quot;boost::tuple&lt; std::string,std::string &gt;&quot; splitFilename(&quot;std::string const &amp;&quot; filename)</div><div class="ttdef"><b>Definition:</b> loos.py:3234</div></div>
+<div class="ttc" id="anamespaceloos_html_a0a65478ee01d29b72005dab62b4f17bd"><div class="ttname"><a href="namespaceloos.html#a0a65478ee01d29b72005dab62b4f17bd">loos.stringsAsComments</a></div><div class="ttdeci">&quot;std::string&quot; stringsAsComments(&quot;StringVector&quot; v)</div><div class="ttdef"><b>Definition:</b> loos.py:3270</div></div>
+<div class="ttc" id="anamespaceloos_html_a29564cc013233d75648347dba0815f84"><div class="ttname"><a href="namespaceloos.html#a29564cc013233d75648347dba0815f84">loos.parseRangeList</a></div><div class="ttdeci">&quot;std::vector&lt; int,std::allocator&lt; int &gt; &gt;&quot; parseRangeList(&quot;std::string const &amp;&quot; arg1, &quot;int const&quot; endpoint=0)</div><div class="ttdef"><b>Definition:</b> loos.py:3246</div></div>
+<div class="ttc" id="anamespaceloos_html_a3671a3351a4a71dda3e62ea964d0b08a"><div class="ttname"><a href="namespaceloos.html#a3671a3351a4a71dda3e62ea964d0b08a">loos::uniquifyVector</a></div><div class="ttdeci">std::vector&lt; T &gt; uniquifyVector(const std::vector&lt; T &gt; &amp;list)</div><div class="ttdoc">Return a vector containing only the unique elements of the input vector.</div><div class="ttdef"><b>Definition:</b> utils.hpp:427</div></div>
+<div class="ttc" id="anamespaceloos_html_a374040fb573bbe1386dfe3d45fc96f49"><div class="ttname"><a href="namespaceloos.html#a374040fb573bbe1386dfe3d45fc96f49">loos.getNextLine</a></div><div class="ttdeci">&quot;std::string&quot; getNextLine(&quot;std::istream &amp;&quot; _is, &quot;int *&quot; lineno)</div><div class="ttdef"><b>Definition:</b> loos.py:3238</div></div>
+<div class="ttc" id="anamespaceloos_html_a4fad4000e166dfc752043ab3010bd8a9"><div class="ttname"><a href="namespaceloos.html#a4fad4000e166dfc752043ab3010bd8a9">loos.selectAtoms</a></div><div class="ttdeci">&quot;loos::AtomicGroup&quot; selectAtoms(&quot;AtomicGroup&quot; arg1, &quot;std::string const&quot; arg2)</div><div class="ttdef"><b>Definition:</b> loos.py:3250</div></div>
+<div class="ttc" id="anamespaceloos_html_a73ba42a0e7ffa3a60054c59d61c0ad43"><div class="ttname"><a href="namespaceloos.html#a73ba42a0e7ffa3a60054c59d61c0ad43">loos.stringsAsString</a></div><div class="ttdeci">&quot;std::string&quot; stringsAsString(&quot;StringVector&quot; v)</div><div class="ttdef"><b>Definition:</b> loos.py:3274</div></div>
+<div class="ttc" id="anamespaceloos_html_a80b38022bca2e81b5b9d103f9591055b"><div class="ttname"><a href="namespaceloos.html#a80b38022bca2e81b5b9d103f9591055b">loos.parseStringAsHybrid36</a></div><div class="ttdeci">&quot;int&quot; parseStringAsHybrid36(&quot;std::string const &amp;&quot; source, &quot;uint const&quot; pos=0, &quot;uint const&quot; nelem=0)</div><div class="ttdef"><b>Definition:</b> loos.py:3258</div></div>
+<div class="ttc" id="anamespaceloos_html_a8783c2b04ba43093b26f20f769d5afae"><div class="ttname"><a href="namespaceloos.html#a8783c2b04ba43093b26f20f769d5afae">loos::vectorAsStringWithCommas</a></div><div class="ttdeci">std::string vectorAsStringWithCommas(const std::vector&lt; std::string &gt; &amp;v)</div><div class="ttdoc">Specialization for strings that sanitizes the contained strings.</div><div class="ttdef"><b>Definition:</b> utils.cpp:418</div></div>
+<div class="ttc" id="anamespaceloos_html_a8810a947ea516380336323ac9f98dc07"><div class="ttname"><a href="namespaceloos.html#a8810a947ea516380336323ac9f98dc07">loos::parseStringAs</a></div><div class="ttdeci">T parseStringAs(const std::string &amp;source, const uint pos=0, const uint nelem=0)</div><div class="ttdoc">Extracts a field from a string.</div><div class="ttdef"><b>Definition:</b> utils.hpp:325</div></div>
+<div class="ttc" id="anamespaceloos_html_a9c5b44b25a64655cb72fad1b31041901"><div class="ttname"><a href="namespaceloos.html#a9c5b44b25a64655cb72fad1b31041901">loos.hybrid36AsString</a></div><div class="ttdeci">&quot;std::string&quot; hybrid36AsString(&quot;int&quot; value, &quot;uint&quot; fieldsize)</div><div class="ttdef"><b>Definition:</b> loos.py:3262</div></div>
+<div class="ttc" id="anamespaceloos_html_ab0d9295e6f345e1cc9fd302036e0ef78"><div class="ttname"><a href="namespaceloos.html#ab0d9295e6f345e1cc9fd302036e0ef78">loos.sanitizeString</a></div><div class="ttdeci">&quot;std::string&quot; sanitizeString(&quot;std::string const &amp;&quot; s)</div><div class="ttdef"><b>Definition:</b> loos.py:3266</div></div>
+<div class="ttc" id="anamespaceloos_html_ace7362e008af0e72a622350006595ec8"><div class="ttname"><a href="namespaceloos.html#ace7362e008af0e72a622350006595ec8">loos.timeAsString</a></div><div class="ttdeci">&quot;std::string&quot; timeAsString(&quot;double const&quot; t, &quot;uint const&quot; precision=0)</div><div class="ttdef"><b>Definition:</b> loos.py:3254</div></div>
+<div class="ttc" id="anamespaceloos_html_ad2ff567e5068bc5283e57d2992c9565c"><div class="ttname"><a href="namespaceloos.html#ad2ff567e5068bc5283e57d2992c9565c">loos.findBaseName</a></div><div class="ttdeci">&quot;std::string&quot; findBaseName(&quot;std::string const &amp;&quot; arg1)</div><div class="ttdef"><b>Definition:</b> loos.py:3230</div></div>
+<div class="ttc" id="anamespaceloos_html_ad34d379cd19a139ee185b55d1e96c724"><div class="ttname"><a href="namespaceloos.html#ad34d379cd19a139ee185b55d1e96c724">loos.availableMemory</a></div><div class="ttdeci">&quot;long&quot; availableMemory()</div><div class="ttdef"><b>Definition:</b> loos.py:3278</div></div>
+<div class="ttc" id="anamespaceloos_html_ad402d8c3aa16082e4187b60d61f2687c"><div class="ttname"><a href="namespaceloos.html#ad402d8c3aa16082e4187b60d61f2687c">loos::readVector</a></div><div class="ttdeci">std::vector&lt; T &gt; readVector(LineReader &amp;reader)</div><div class="ttdoc">Read a list of items using a LineReader object.</div><div class="ttdef"><b>Definition:</b> utils.hpp:71</div></div>
+<div class="ttc" id="anamespaceloos_html_ad74655d3c84450f5f033942576c73979"><div class="ttname"><a href="namespaceloos.html#ad74655d3c84450f5f033942576c73979">loos::readTable</a></div><div class="ttdeci">std::vector&lt; std::vector&lt; T &gt; &gt; readTable(LineReader &amp;reader)</div><div class="ttdoc">Read in a table of items using a LineReader object.</div><div class="ttdef"><b>Definition:</b> utils.hpp:109</div></div>
+<div class="ttc" id="anamespaceloos_html_ae63f81614006afb36b456a3e8d69cd02"><div class="ttname"><a href="namespaceloos.html#ae63f81614006afb36b456a3e8d69cd02">loos::vToString</a></div><div class="ttdeci">std::string vToString(const T &amp;x)</div><div class="ttdoc">Convert something that can iterate into a string...</div><div class="ttdef"><b>Definition:</b> utils.hpp:389</div></div>
+<div class="ttc" id="anamespaceloos_html_aee1021d75b06b63e2410636b11179c1a"><div class="ttname"><a href="namespaceloos.html#aee1021d75b06b63e2410636b11179c1a">loos::swab</a></div><div class="ttdeci">T swab(const T &amp;datum)</div><div class="ttdoc">Returns a byte-swapped copy of an arbitrary type.</div><div class="ttdef"><b>Definition:</b> utils.hpp:306</div></div>
+<div class="ttc" id="anamespaceloos_html_aef82d7e98c0493c76dfad5621043b43c"><div class="ttname"><a href="namespaceloos.html#aef82d7e98c0493c76dfad5621043b43c">loos::parseRange</a></div><div class="ttdeci">std::vector&lt; T &gt; parseRange(const std::string &amp;text, const T endpoint=0)</div><div class="ttdoc">Parse an Octave/Matlab-style range.</div><div class="ttdef"><b>Definition:</b> utils.hpp:168</div></div>
 </div><!-- fragment --></div><!-- contents -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><b>utils.hpp</b></li>
-    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+</small></address>
 </body>
 </html>

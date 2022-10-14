@@ -1,0 +1,5 @@
+<map id="loos::Math::SharedArray&lt; T &gt;" name="loos::Math::SharedArray&lt; T &gt;">
+<area shape="rect" id="node1" title="Storage policy for a block of memory wrapped in a boost::shared_array pointer." alt="" coords="74,5,290,32"/>
+<area shape="rect" id="node2" href="$classloos_1_1Math_1_1Matrix.html" title=" " alt="" coords="5,80,145,121"/>
+<area shape="rect" id="node3" href="$classloos_1_1Math_1_1Matrix.html" title="Simple matrix template class using policy classes to determine behavior." alt="" coords="170,80,410,121"/>
+</map>

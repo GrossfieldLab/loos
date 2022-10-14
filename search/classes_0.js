@@ -1,22 +1,4 @@
 var searchData=
 [
-  ['abstractobserver_706',['AbstractObserver',['../classloos_1_1_abstract_observer.html',1,'loos']]],
-  ['action_707',['Action',['../classloos_1_1internal_1_1_action.html',1,'loos::internal']]],
-  ['aggregateoptions_708',['AggregateOptions',['../classloos_1_1_options_framework_1_1_aggregate_options.html',1,'loos::OptionsFramework']]],
-  ['alignedvirtualtrajectory_709',['AlignedVirtualTrajectory',['../classloos_1_1pyloos_1_1trajectories_1_1_aligned_virtual_trajectory.html',1,'loos::pyloos::trajectories']]],
-  ['amber_710',['Amber',['../classloos_1_1_amber.html',1,'loos']]],
-  ['ambernetcdf_711',['AmberNetcdf',['../classloos_1_1_amber_netcdf.html',1,'loos']]],
-  ['amberrst_712',['AmberRst',['../classloos_1_1_amber_rst.html',1,'loos']]],
-  ['ambertraj_713',['AmberTraj',['../classloos_1_1_amber_traj.html',1,'loos']]],
-  ['andselector_714',['AndSelector',['../structloos_1_1_and_selector.html',1,'loos']]],
-  ['anm_715',['ANM',['../class_e_n_m_1_1_a_n_m.html',1,'ENM']]],
-  ['ascendingsort_716',['AscendingSort',['../classloos_1_1_ascending_sort.html',1,'loos']]],
-  ['atom_717',['Atom',['../classloos_1_1_atom.html',1,'loos']]],
-  ['atomcoordsequals_718',['AtomCoordsEquals',['../structloos_1_1_atom_coords_equals.html',1,'loos']]],
-  ['atomequals_719',['AtomEquals',['../structloos_1_1_atom_equals.html',1,'loos']]],
-  ['atomicgroup_720',['AtomicGroup',['../classloos_1_1_atomic_group.html',1,'loos']]],
-  ['atomicnumberdeducer_721',['AtomicNumberDeducer',['../classloos_1_1internal_1_1_atomic_number_deducer.html',1,'loos::internal']]],
-  ['atomnameselector_722',['AtomNameSelector',['../structloos_1_1_atom_name_selector.html',1,'loos']]],
-  ['atomselector_723',['AtomSelector',['../structloos_1_1_atom_selector.html',1,'loos']]],
-  ['averagelinkage_724',['AverageLinkage',['../class_clustering_1_1_average_linkage.html',1,'Clustering']]]
+  ['_5fswignondynamicmeta_911',['_SwigNonDynamicMeta',['../classloos_1_1__SwigNonDynamicMeta.html',1,'loos._SwigNonDynamicMeta'],['../classloos_1_1loos_1_1__SwigNonDynamicMeta.html',1,'loos.loos._SwigNonDynamicMeta'],['../classpyloos_1_1__SwigNonDynamicMeta.html',1,'pyloos._SwigNonDynamicMeta']]]
 ];

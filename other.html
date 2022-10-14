@@ -9,10 +9,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -26,8 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LOOS
-   &#160;<span id="projectnumber">v3.3</span>
+   &#160;<span id="projectnumber">4.0</span>
    </div>
+   <div id="projectbrief">The Lightweight Object Oriented Structural analysis library/toolkit</div>
   </td>
  </tr>
  </tbody>
@@ -50,23 +47,6 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
-</div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('other.html',''); initResizable(); });
-/* @license-end */
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -81,14 +61,19 @@ $(document).ready(function(){initNavTree('other.html',''); initResizable(); });
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="index.html">Lightweight Object-Oriented Structure library (LOOS)</a></li><li class="navelem"><a class="el" href="tools.html">Summary of Tools</a></li>  </ul>
+</div>
+</div><!-- top -->
 <div class="PageDoc"><div class="contents">
 <div class="textblock"><h2>General Macromolecule Tools</h2>
 <dl>
-<dt><b><a class="el" href="all__contacts_8py_source.html">all_contacts.py</a></b> </dt>
+<dt><b>all_contacts.py</b> </dt>
 <dd><p class="startdd">Track residue-residue contacts across a trajectory</p>
 <p class="enddd"></p>
 </dd>
-<dt><b><a class="el" href="all__stacking_8py_source.html">all_stacking.py</a></b> </dt>
+<dt><b>all_stacking.py</b> </dt>
 <dd><p class="startdd">Compute stacking interactions, eg. for an RNA molecule, over a trajectory</p>
 <p class="enddd"></p>
 </dd>
@@ -108,7 +93,7 @@ $(document).ready(function(){initNavTree('other.html',''); initResizable(); });
 <dd><p class="startdd">Write out the bounding box for a selection of atoms from a structure file.</p>
 <p class="enddd"></p>
 </dd>
-<dt><b><a class="el" href="contact__distance_8py_source.html">contact_distance.py</a></b> </dt>
+<dt><b>contact_distance.py</b> </dt>
 <dd><p class="startdd">Compute the frame-frame distance matrix for a trajetory in contact space</p>
 <p class="enddd"></p>
 </dd>
@@ -120,11 +105,11 @@ $(document).ready(function(){initNavTree('other.html',''); initResizable(); });
 <dd><p class="startdd">Loop over a trajectory and count the number of contacts between two sets of atoms.</p>
 <p class="enddd"></p>
 </dd>
-<dt><b><a class="el" href="cylindrical-density_8py_source.html">cylindrical-density.py</a></b> </dt>
+<dt><b>cylindrical-density.py</b> </dt>
 <dd><p class="startdd">Compute a 2D radial distribution function in cylindrical coordinates. In Packages/PyLOOS.</p>
 <p class="enddd"></p>
 </dd>
-<dt><b><a class="el" href="cylindrical-thickness_8py_source.html">cylindrical-thickness.py</a></b> </dt>
+<dt><b>cylindrical-thickness.py</b> </dt>
 <dd><p class="startdd">Compute the thickness of the membrane around a centering selection</p>
 <p class="enddd"></p>
 </dd>
@@ -136,7 +121,7 @@ $(document).ready(function(){initNavTree('other.html',''); initResizable(); });
 <dd><p class="startdd">Track dihedrals of sets of chemically connected angles</p>
 <p class="enddd"></p>
 </dd>
-<dt><b><a class="el" href="domain_8py_source.html">domain.py</a></b> </dt>
+<dt><b>domain.py</b> </dt>
 <dd><p class="startdd">Describe the motion of two selections within a single macromolecule, including distance and the angle and torsion formed the their first principal moments. In Packages/PyLOOS.</p>
 <p class="enddd"></p>
 </dd>
@@ -164,11 +149,11 @@ $(document).ready(function(){initNavTree('other.html',''); initResizable(); });
 <dd><p class="startdd">Given two selections and a trajectory, compute the time series of the angle between their principal components. Also useful for measuring domain hinge motions.</p>
 <p class="enddd"></p>
 </dd>
-<dt><b><a class="el" href="helix__axes_8py_source.html">helix_axes.py</a></b> </dt>
+<dt><b>helix_axes.py</b> </dt>
 <dd><p class="startdd">Writes a new trajectory replacing each selection with 3 particles</p>
 <p class="enddd"></p>
 </dd>
-<dt><b><a class="el" href="inside__helices_8py_source.html">inside_helices.py</a></b> </dt>
+<dt><b>inside_helices.py</b> </dt>
 <dd><p class="startdd">Detect lipid chains that have made their way inside a membrane protein</p>
 <p class="enddd"></p>
 </dd>
@@ -204,11 +189,11 @@ $(document).ready(function(){initNavTree('other.html',''); initResizable(); });
 <dd><p class="startdd">Computes the packing score, a measure of the contact between two selections, over the course of a trajectory. Originally defined in Grossfield et al, PNAS, 2006, 103, 4888-4893</p>
 <p class="enddd"></p>
 </dd>
-<dt><b><a class="el" href="packing__score__per__res_8py_source.html">packing_score_per_res.py</a></b> </dt>
+<dt><b>packing_score_per_res.py</b> </dt>
 <dd><p class="startdd">Computes the packing score between a set of ligand molecules and each residue of a macromolecule. Useful for identifying binding sites.</p>
 <p class="enddd"></p>
 </dd>
-<dt><b><a class="el" href="protein__tilt_8py_source.html">protein_tilt.py</a></b> </dt>
+<dt><b>protein_tilt.py</b> </dt>
 <dd><p class="startdd">Compute the overall tilt of a membrane protein relative to the membrane normal by averaging the tilts of the individual transmembrane helices. In Packages/PyLOOS.</p>
 <p class="enddd"></p>
 </dd>
@@ -220,7 +205,7 @@ $(document).ready(function(){initNavTree('other.html',''); initResizable(); });
 <dd><p class="startdd">Computes a ramachandran map for a given selection of a specified range of frames in a trajectory (or all frames). Note that some torsions may be missing for the residues at the ends of the selection. To avoid this, expand your selection by a residue in both directions, then use the "--skip" flag.</p>
 <p class="enddd"></p>
 </dd>
-<dt><b><a class="el" href="rare-event-detection_8py_source.html">rare-event-detection.py</a></b> </dt>
+<dt><b>rare-event-detection.py</b> </dt>
 <dd><p class="startdd">Applies the non-negative matrix factorization algorithm developed by Plante and Weinstein</p>
 <p class="enddd"></p>
 </dd>
@@ -252,15 +237,15 @@ $(document).ready(function(){initNavTree('other.html',''); initResizable(); });
 <dd><p class="startdd">Computes the chi-1 and chi-2 angles for a given selection over an entire trajectory.</p>
 <p class="enddd"></p>
 </dd>
-<dt><b><a class="el" href="set__segids_8py_source.html">set_segids.py</a></b> </dt>
+<dt><b>set_segids.py</b> </dt>
 <dd><p class="startdd">Add segids to a model that lacks them</p>
 <p class="enddd"></p>
 </dd>
-<dt><b><a class="el" href="scattering_8py_source.html">scattering.py</a></b> </dt>
+<dt><b>scattering.py</b> </dt>
 <dd><p class="startdd">Compute X-ray scattering using the spherical scattering approximation</p>
 <p class="enddd"></p>
 </dd>
-<dt><b><a class="el" href="sysinfo_8py_source.html">sysinfo.py</a></b> </dt>
+<dt><b>sysinfo.py</b> </dt>
 <dd><p class="startdd">Print a bunch of useful information about the system to stdout</p>
 <p class="enddd"></p>
 </dd>
@@ -268,7 +253,7 @@ $(document).ready(function(){initNavTree('other.html',''); initResizable(); });
 <dd><p class="startdd">Given 4 selections, compute the torsion angle for their centroids. This program loops over a trajectory and writes the torsion angle time series.</p>
 <p class="enddd"></p>
 </dd>
-<dt><b><a class="el" href="total__charge_8py_source.html">total_charge.py</a></b> </dt>
+<dt><b>total_charge.py</b> </dt>
 <dd><p class="startdd">Print out the total charge of a system</p>
 <p class="enddd"></p>
 </dd>
@@ -279,13 +264,9 @@ $(document).ready(function(){initNavTree('other.html',''); initResizable(); });
 </dl>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="navelem"><a class="el" href="index.html">Lightweight Object-Oriented Structure library (LOOS)</a></li><li class="navelem"><a class="el" href="tools.html">Summary of Tools</a></li>
-    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+</small></address>
 </body>
 </html>

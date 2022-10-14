@@ -1,25 +1,10 @@
 var searchData=
 [
-  ['parseerror_845',['ParseError',['../classloos_1_1_parse_error.html',1,'loos']]],
-  ['parser_846',['Parser',['../classloos_1_1_parser.html',1,'loos']]],
-  ['parserdriver_847',['ParserDriver',['../structloos_1_1_parser_driver.html',1,'loos']]],
-  ['pdb_848',['PDB',['../classloos_1_1_p_d_b.html',1,'loos']]],
-  ['pdbtraj_849',['PDBTraj',['../classloos_1_1_p_d_b_traj.html',1,'loos']]],
-  ['percentprogress_850',['PercentProgress',['../classloos_1_1_percent_progress.html',1,'loos']]],
-  ['percentprogresswithtime_851',['PercentProgressWithTime',['../classloos_1_1_percent_progress_with_time.html',1,'loos']]],
-  ['percenttrigger_852',['PercentTrigger',['../classloos_1_1_percent_trigger.html',1,'loos']]],
-  ['periodicbox_853',['PeriodicBox',['../classloos_1_1_periodic_box.html',1,'loos']]],
-  ['precisematrixformatter_854',['PreciseMatrixFormatter',['../classloos_1_1_precise_matrix_formatter.html',1,'loos']]],
-  ['progresscounter_855',['ProgressCounter',['../classloos_1_1_progress_counter.html',1,'loos']]],
-  ['psf_856',['PSF',['../classloos_1_1_p_s_f.html',1,'loos']]],
-  ['pushatomchainid_857',['pushAtomChainId',['../classloos_1_1internal_1_1push_atom_chain_id.html',1,'loos::internal']]],
-  ['pushatomid_858',['pushAtomId',['../classloos_1_1internal_1_1push_atom_id.html',1,'loos::internal']]],
-  ['pushatomindex_859',['pushAtomIndex',['../classloos_1_1internal_1_1push_atom_index.html',1,'loos::internal']]],
-  ['pushatomname_860',['pushAtomName',['../classloos_1_1internal_1_1push_atom_name.html',1,'loos::internal']]],
-  ['pushatomresid_861',['pushAtomResid',['../classloos_1_1internal_1_1push_atom_resid.html',1,'loos::internal']]],
-  ['pushatomresname_862',['pushAtomResname',['../classloos_1_1internal_1_1push_atom_resname.html',1,'loos::internal']]],
-  ['pushatomsegid_863',['pushAtomSegid',['../classloos_1_1internal_1_1push_atom_segid.html',1,'loos::internal']]],
-  ['pushfloat_864',['pushFloat',['../classloos_1_1internal_1_1push_float.html',1,'loos::internal']]],
-  ['pushint_865',['pushInt',['../classloos_1_1internal_1_1push_int.html',1,'loos::internal']]],
-  ['pushstring_866',['pushString',['../classloos_1_1internal_1_1push_string.html',1,'loos::internal']]]
+  ['optionserror_1057',['OptionsError',['../classloos_1_1loos_1_1OptionsError.html',1,'loos.loos.OptionsError'],['../classloos_1_1OptionsError.html',1,'loos.OptionsError'],['../classpyloos_1_1OptionsError.html',1,'pyloos.OptionsError']]],
+  ['optionspackage_1058',['OptionsPackage',['../classloos_1_1OptionsFramework_1_1OptionsPackage.html',1,'loos::OptionsFramework']]],
+  ['orselector_1059',['OrSelector',['../structloos_1_1OrSelector.html',1,'loos']]],
+  ['outputprefix_1060',['OutputPrefix',['../classloos_1_1OptionsFramework_1_1OutputPrefix.html',1,'loos::OptionsFramework']]],
+  ['outputtrajectorynamebindingtype_1061',['OutputTrajectoryNameBindingType',['../structloos_1_1internal_1_1OutputTrajectoryNameBindingType.html',1,'loos::internal']]],
+  ['outputtrajectoryoptions_1062',['OutputTrajectoryOptions',['../classloos_1_1OptionsFramework_1_1OutputTrajectoryOptions.html',1,'loos::OptionsFramework']]],
+  ['outputtrajectorytypeoptions_1063',['OutputTrajectoryTypeOptions',['../classloos_1_1OptionsFramework_1_1OutputTrajectoryTypeOptions.html',1,'loos::OptionsFramework']]]
 ];

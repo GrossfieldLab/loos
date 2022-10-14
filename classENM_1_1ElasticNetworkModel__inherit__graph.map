@@ -1,0 +1,5 @@
+<map id="ENM::ElasticNetworkModel" name="ENM::ElasticNetworkModel">
+<area shape="rect" id="node1" title="Interface for all ENMs." alt="" coords="7,5,206,32"/>
+<area shape="rect" id="node2" href="$classENM_1_1ANM.html" title="Anisotropic network model." alt="" coords="5,80,96,107"/>
+<area shape="rect" id="node3" href="$classENM_1_1VSA.html" title="Vibrational subsystem analysis ENM." alt="" coords="121,80,207,107"/>
+</map>

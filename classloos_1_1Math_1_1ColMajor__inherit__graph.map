@@ -1,0 +1,5 @@
+<map id="loos::Math::ColMajor" name="loos::Math::ColMajor">
+<area shape="rect" id="node1" title="Class for storing a matrix in column&#45;major order." alt="" coords="104,5,260,32"/>
+<area shape="rect" id="node2" href="$classloos_1_1Math_1_1Matrix.html" title=" " alt="" coords="5,80,145,121"/>
+<area shape="rect" id="node3" href="$classloos_1_1Math_1_1Matrix.html" title="Simple matrix template class using policy classes to determine behavior." alt="" coords="170,80,410,121"/>
+</map>

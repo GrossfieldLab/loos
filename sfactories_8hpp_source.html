@@ -9,10 +9,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -26,8 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LOOS
-   &#160;<span id="projectnumber">v3.3</span>
+   &#160;<span id="projectnumber">4.0</span>
    </div>
+   <div id="projectbrief">The Lightweight Object Oriented Structural analysis library/toolkit</div>
   </td>
  </tr>
  </tbody>
@@ -50,23 +47,6 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
-</div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('sfactories_8hpp_source.html',''); initResizable(); });
-/* @license-end */
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -81,6 +61,11 @@ $(document).ready(function(){initNavTree('sfactories_8hpp_source.html',''); init
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+</div>
+</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">sfactories.hpp</div>  </div>
@@ -121,39 +106,43 @@ $(document).ready(function(){initNavTree('sfactories_8hpp_source.html',''); init
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
 <div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;<span class="preprocessor">#include &lt;loos_defs.hpp&gt;</span></div>
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160; </div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">namespace </span>loos {</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceloos.html">loos</a> {</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  std::string availableSystemFileTypes(<span class="keyword">const</span> std::string&amp; prefix = <span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  std::string availableTrajectoryFileTypes(<span class="keyword">const</span> std::string&amp; prefix = <span class="stringliteral">&quot;&quot;</span>);</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  std::string availableOutputTrajectoryFileTypes(<span class="keyword">const</span> std::string&amp; prefix = <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  std::string <a class="code" href="namespaceloos.html#a56300376ebc5cc870e8a5591d2427273">availableSystemFileTypes</a>(<span class="keyword">const</span> std::string&amp; prefix = <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  std::string <a class="code" href="namespaceloos.html#a01cee9c252f469cc2e01ce3b13ed0e72">availableTrajectoryFileTypes</a>(<span class="keyword">const</span> std::string&amp; prefix = <span class="stringliteral">&quot;&quot;</span>);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  std::string <a class="code" href="namespaceloos.html#a160a926706be69e8fac631533454ab9c">availableOutputTrajectoryFileTypes</a>(<span class="keyword">const</span> std::string&amp; prefix = <span class="stringliteral">&quot;&quot;</span>);</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  pAtomicGroup createSystemPtr(<span class="keyword">const</span> std::string&amp; filename, <span class="keyword">const</span> std::string&amp; filetype);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  pAtomicGroup createSystemPtr(<span class="keyword">const</span> std::string&amp; filename);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  pAtomicGroup <a class="code" href="namespaceloos.html#a66083f3fe5a655431acacfdb906722d2">createSystemPtr</a>(<span class="keyword">const</span> std::string&amp; filename, <span class="keyword">const</span> std::string&amp; filetype);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  pAtomicGroup <a class="code" href="namespaceloos.html#a66083f3fe5a655431acacfdb906722d2">createSystemPtr</a>(<span class="keyword">const</span> std::string&amp; filename);</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  AtomicGroup createSystem(<span class="keyword">const</span> std::string&amp; filename);</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  AtomicGroup createSystem(<span class="keyword">const</span> std::string&amp; filename, <span class="keyword">const</span> std::string&amp; filetype);</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;  AtomicGroup <a class="code" href="namespaceloos.html#ab5aee41b2c324eb5e060a247b182363f">createSystem</a>(<span class="keyword">const</span> std::string&amp; filename);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  AtomicGroup <a class="code" href="namespaceloos.html#ab5aee41b2c324eb5e060a247b182363f">createSystem</a>(<span class="keyword">const</span> std::string&amp; filename, <span class="keyword">const</span> std::string&amp; filetype);</div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  pTraj createTrajectory(<span class="keyword">const</span> std::string&amp;, <span class="keyword">const</span> AtomicGroup&amp;);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  pTraj createTrajectory(<span class="keyword">const</span> std::string&amp;, <span class="keyword">const</span> std::string&amp;, <span class="keyword">const</span> AtomicGroup&amp;);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  pTraj <a class="code" href="namespaceloos.html#aae203d767e2cd26965bfb3d5e20b9e1e">createTrajectory</a>(<span class="keyword">const</span> std::string&amp;, <span class="keyword">const</span> AtomicGroup&amp;);</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  pTraj <a class="code" href="namespaceloos.html#aae203d767e2cd26965bfb3d5e20b9e1e">createTrajectory</a>(<span class="keyword">const</span> std::string&amp;, <span class="keyword">const</span> std::string&amp;, <span class="keyword">const</span> AtomicGroup&amp;);</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160; </div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  pTrajectoryWriter createOutputTrajectory(<span class="keyword">const</span> std::string&amp; filename, <span class="keyword">const</span> std::string&amp; type, <span class="keyword">const</span> <span class="keywordtype">bool</span> append = <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  pTrajectoryWriter createOutputTrajectory(<span class="keyword">const</span> std::string&amp; filename, <span class="keyword">const</span> <span class="keywordtype">bool</span> append = <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  pTrajectoryWriter <a class="code" href="namespaceloos.html#a3569905b955158e4e08c1ecbedc697ed">createOutputTrajectory</a>(<span class="keyword">const</span> std::string&amp; filename, <span class="keyword">const</span> std::string&amp; type, <span class="keyword">const</span> <span class="keywordtype">bool</span> append = <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  pTrajectoryWriter <a class="code" href="namespaceloos.html#a3569905b955158e4e08c1ecbedc697ed">createOutputTrajectory</a>(<span class="keyword">const</span> std::string&amp; filename, <span class="keyword">const</span> <span class="keywordtype">bool</span> append = <span class="keyword">false</span>);</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;};</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="preprocessor">#endif</span></div>
+<div class="ttc" id="anamespaceloos_html"><div class="ttname"><a href="namespaceloos.html">loos</a></div><div class="ttdoc">Namespace for most things not already encapsulated within a class.</div><div class="ttdef"><b>Definition:</b> loos.py:1</div></div>
+<div class="ttc" id="anamespaceloos_html_a01cee9c252f469cc2e01ce3b13ed0e72"><div class="ttname"><a href="namespaceloos.html#a01cee9c252f469cc2e01ce3b13ed0e72">loos.availableTrajectoryFileTypes</a></div><div class="ttdeci">&quot;std::string&quot; availableTrajectoryFileTypes(*args)</div><div class="ttdef"><b>Definition:</b> loos.py:3859</div></div>
+<div class="ttc" id="anamespaceloos_html_a160a926706be69e8fac631533454ab9c"><div class="ttname"><a href="namespaceloos.html#a160a926706be69e8fac631533454ab9c">loos.availableOutputTrajectoryFileTypes</a></div><div class="ttdeci">&quot;std::string&quot; availableOutputTrajectoryFileTypes(*args)</div><div class="ttdef"><b>Definition:</b> loos.py:3863</div></div>
+<div class="ttc" id="anamespaceloos_html_a3569905b955158e4e08c1ecbedc697ed"><div class="ttname"><a href="namespaceloos.html#a3569905b955158e4e08c1ecbedc697ed">loos.createOutputTrajectory</a></div><div class="ttdeci">&quot;loos::pTrajectoryWriter&quot; createOutputTrajectory(*args)</div><div class="ttdef"><b>Definition:</b> loos.py:3888</div></div>
+<div class="ttc" id="anamespaceloos_html_a56300376ebc5cc870e8a5591d2427273"><div class="ttname"><a href="namespaceloos.html#a56300376ebc5cc870e8a5591d2427273">loos.availableSystemFileTypes</a></div><div class="ttdeci">&quot;std::string&quot; availableSystemFileTypes(*args)</div><div class="ttdef"><b>Definition:</b> loos.py:3855</div></div>
+<div class="ttc" id="anamespaceloos_html_a66083f3fe5a655431acacfdb906722d2"><div class="ttname"><a href="namespaceloos.html#a66083f3fe5a655431acacfdb906722d2">loos.createSystemPtr</a></div><div class="ttdeci">&quot;loos::pAtomicGroup&quot; createSystemPtr(*args)</div><div class="ttdef"><b>Definition:</b> loos.py:3867</div></div>
+<div class="ttc" id="anamespaceloos_html_aae203d767e2cd26965bfb3d5e20b9e1e"><div class="ttname"><a href="namespaceloos.html#aae203d767e2cd26965bfb3d5e20b9e1e">loos.createTrajectory</a></div><div class="ttdeci">&quot;loos::pTraj&quot; createTrajectory(*args)</div><div class="ttdef"><b>Definition:</b> loos.py:3881</div></div>
+<div class="ttc" id="anamespaceloos_html_ab5aee41b2c324eb5e060a247b182363f"><div class="ttname"><a href="namespaceloos.html#ab5aee41b2c324eb5e060a247b182363f">loos.createSystem</a></div><div class="ttdeci">&quot;loos::AtomicGroup&quot; createSystem(*args)</div><div class="ttdef"><b>Definition:</b> loos.py:3874</div></div>
 </div><!-- fragment --></div><!-- contents -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><b>sfactories.hpp</b></li>
-    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+</small></address>
 </body>
 </html>

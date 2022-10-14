@@ -9,10 +9,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -26,8 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LOOS
-   &#160;<span id="projectnumber">v3.3</span>
+   &#160;<span id="projectnumber">4.0</span>
    </div>
+   <div id="projectbrief">The Lightweight Object Oriented Structural analysis library/toolkit</div>
   </td>
  </tr>
  </tbody>
@@ -50,23 +47,6 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
-</div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('loos__timer_8hpp_source.html',''); initResizable(); });
-/* @license-end */
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -81,6 +61,11 @@ $(document).ready(function(){initNavTree('loos__timer_8hpp_source.html',''); ini
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+</div>
+</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">loos_timer.hpp</div>  </div>
@@ -124,9 +109,9 @@ $(document).ready(function(){initNavTree('loos__timer_8hpp_source.html',''); ini
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;<span class="preprocessor">#include &lt;loos_defs.hpp&gt;</span></div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
 <div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">namespace </span>loos {</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceloos.html">loos</a> {</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classloos_1_1_wall_timer.html">   42</a></span>&#160;  <span class="keyword">class </span><a class="code" href="classloos_1_1_wall_timer.html">WallTimer</a> {</div>
+<div class="line"><a name="l00042"></a><span class="lineno"><a class="line" href="classloos_1_1WallTimer.html">   42</a></span>&#160;  <span class="keyword">class </span><a class="code" href="classloos_1_1WallTimer.html">WallTimer</a> {</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordtype">double</span> currentTime(<span class="keywordtype">void</span>)<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;      <span class="keyword">struct </span>timeval tv;</div>
@@ -138,7 +123,7 @@ $(document).ready(function(){initNavTree('loos__timer_8hpp_source.html',''); ini
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    }</div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  };</div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  </div>
-<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classloos_1_1_user_timer.html">   55</a></span>&#160;  <span class="keyword">class </span><a class="code" href="classloos_1_1_user_timer.html">UserTimer</a> {</div>
+<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="classloos_1_1UserTimer.html">   55</a></span>&#160;  <span class="keyword">class </span><a class="code" href="classloos_1_1UserTimer.html">UserTimer</a> {</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    <span class="keywordtype">double</span> currentTime(<span class="keywordtype">void</span>)<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;      <span class="keyword">struct </span>rusage ru;</div>
@@ -152,11 +137,11 @@ $(document).ready(function(){initNavTree('loos__timer_8hpp_source.html',''); ini
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160; </div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">class</span> TimerType = WallTimer&gt;</div>
-<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="classloos_1_1_timer.html">   80</a></span>&#160;  <span class="keyword">class </span><a class="code" href="classloos_1_1_timer.html">Timer</a> : <span class="keyword">public</span> TimerType {</div>
+<div class="line"><a name="l00080"></a><span class="lineno"><a class="line" href="classloos_1_1Timer.html">   80</a></span>&#160;  <span class="keyword">class </span><a class="code" href="classloos_1_1Timer.html">Timer</a> : <span class="keyword">public</span> TimerType {</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;  <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <a class="code" href="classloos_1_1_timer.html">Timer</a>() : t0(0), t1(0), avg(0), lapt(0), n(0), running(<span class="keyword">false</span>) { }</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <a class="code" href="classloos_1_1Timer.html">Timer</a>() : t0(0), t1(0), avg(0), lapt(0), n(0), running(<span class="keyword">false</span>) { }</div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="classloos_1_1_timer.html#a25cbbcee65902f58f1e753239e12cdd5">   85</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classloos_1_1_timer.html#a25cbbcee65902f58f1e753239e12cdd5">start</a>(<span class="keywordtype">void</span>) {</div>
+<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="classloos_1_1Timer.html#a25cbbcee65902f58f1e753239e12cdd5">   85</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classloos_1_1Timer.html#a25cbbcee65902f58f1e753239e12cdd5">start</a>(<span class="keywordtype">void</span>) {</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;      lapt = t0 = TimerType::currentTime();</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;      n=0;</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;      avg = 0.0;</div>
@@ -164,7 +149,7 @@ $(document).ready(function(){initNavTree('loos__timer_8hpp_source.html',''); ini
 <div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    }</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="comment">// Automatically adds a lap...</span></div>
-<div class="line"><a name="l00094"></a><span class="lineno"><a class="line" href="classloos_1_1_timer.html#a77b7598d801175348a3326f124863c4a">   94</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="classloos_1_1_timer.html#a77b7598d801175348a3326f124863c4a">stop</a>(<span class="keywordtype">void</span>) {</div>
+<div class="line"><a name="l00094"></a><span class="lineno"><a class="line" href="classloos_1_1Timer.html#a77b7598d801175348a3326f124863c4a">   94</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="classloos_1_1Timer.html#a77b7598d801175348a3326f124863c4a">stop</a>(<span class="keywordtype">void</span>) {</div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;      t1 = TimerType::currentTime();</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;      avg += (t1 - lapt);</div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;      ++n;</div>
@@ -173,10 +158,10 @@ $(document).ready(function(){initNavTree('loos__timer_8hpp_source.html',''); ini
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    }</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
-<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="classloos_1_1_timer.html#a9ce0500f779cf4adb77320c05798499e">  109</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="classloos_1_1_timer.html#a9ce0500f779cf4adb77320c05798499e">elapsed</a>(<span class="keywordtype">void</span>)<span class="keyword"> const </span>{ <span class="keywordflow">return</span>( running ? TimerType::currentTime() - t0 : t1 - t0 ); }</div>
+<div class="line"><a name="l00109"></a><span class="lineno"><a class="line" href="classloos_1_1Timer.html#a9ce0500f779cf4adb77320c05798499e">  109</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="classloos_1_1Timer.html#a9ce0500f779cf4adb77320c05798499e">elapsed</a>(<span class="keywordtype">void</span>)<span class="keyword"> const </span>{ <span class="keywordflow">return</span>( running ? TimerType::currentTime() - t0 : t1 - t0 ); }</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
-<div class="line"><a name="l00118"></a><span class="lineno"><a class="line" href="classloos_1_1_timer.html#ac83b4313b193370f653d98e90570010d">  118</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="classloos_1_1_timer.html#ac83b4313b193370f653d98e90570010d">lap</a>(<span class="keywordtype">void</span>) {</div>
+<div class="line"><a name="l00118"></a><span class="lineno"><a class="line" href="classloos_1_1Timer.html#ac83b4313b193370f653d98e90570010d">  118</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="classloos_1_1Timer.html#ac83b4313b193370f653d98e90570010d">lap</a>(<span class="keywordtype">void</span>) {</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;      <span class="keywordflow">if</span> (!running)    <span class="comment">// Don&#39;t adjust lap time if the timer ain&#39;t running...</span></div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        <span class="keywordflow">return</span>(0.0);</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
@@ -187,7 +172,7 @@ $(document).ready(function(){initNavTree('loos__timer_8hpp_source.html',''); ini
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;      ++n;</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;    }</div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
-<div class="line"><a name="l00130"></a><span class="lineno"><a class="line" href="classloos_1_1_timer.html#aac6d50e2b4754d77fb0da01c80a325f1">  130</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="classloos_1_1_timer.html#aac6d50e2b4754d77fb0da01c80a325f1">averageLapTime</a>(<span class="keywordtype">void</span>) { <span class="keywordflow">return</span>(avg / n); }</div>
+<div class="line"><a name="l00130"></a><span class="lineno"><a class="line" href="classloos_1_1Timer.html#aac6d50e2b4754d77fb0da01c80a325f1">  130</a></span>&#160;    <span class="keywordtype">double</span> <a class="code" href="classloos_1_1Timer.html#aac6d50e2b4754d77fb0da01c80a325f1">averageLapTime</a>(<span class="keywordtype">void</span>) { <span class="keywordflow">return</span>(avg / n); }</div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    </div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;  <span class="keyword">private</span>:</div>
 <div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;    <span class="keywordtype">double</span> t0, t1, avg, lapt;</div>
@@ -197,7 +182,7 @@ $(document).ready(function(){initNavTree('loos__timer_8hpp_source.html',''); ini
 <div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
 <div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;  <span class="keyword">template</span>&lt;<span class="keyword">class</span> T&gt;</div>
 <div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;  std::ostream&amp; operator&lt;&lt;(std::ostream&amp; os, <span class="keyword">const</span> Timer&lt;T&gt;&amp; t) {</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    std::string s = timeAsString(t.elapsed());</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    std::string s = <a class="code" href="namespaceloos.html#ace7362e008af0e72a622350006595ec8">timeAsString</a>(t.elapsed());</div>
 <div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    os &lt;&lt; <span class="stringliteral">&quot;Elapsed time &quot;</span> &lt;&lt; s;</div>
 <div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="keywordflow">return</span>(os);</div>
 <div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;  }</div>
@@ -207,22 +192,20 @@ $(document).ready(function(){initNavTree('loos__timer_8hpp_source.html',''); ini
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclassloos_1_1_timer_html"><div class="ttname"><a href="classloos_1_1_timer.html">loos::Timer</a></div><div class="ttdoc">Class for tracking time.</div><div class="ttdef"><b>Definition:</b> <a href="loos__timer_8hpp_source.html#l00080">loos_timer.hpp:80</a></div></div>
-<div class="ttc" id="aclassloos_1_1_timer_html_a25cbbcee65902f58f1e753239e12cdd5"><div class="ttname"><a href="classloos_1_1_timer.html#a25cbbcee65902f58f1e753239e12cdd5">loos::Timer::start</a></div><div class="ttdeci">void start(void)</div><div class="ttdoc">Starts the timer.</div><div class="ttdef"><b>Definition:</b> <a href="loos__timer_8hpp_source.html#l00085">loos_timer.hpp:85</a></div></div>
-<div class="ttc" id="aclassloos_1_1_timer_html_a77b7598d801175348a3326f124863c4a"><div class="ttname"><a href="classloos_1_1_timer.html#a77b7598d801175348a3326f124863c4a">loos::Timer::stop</a></div><div class="ttdeci">double stop(void)</div><div class="ttdoc">Stops the timer.</div><div class="ttdef"><b>Definition:</b> <a href="loos__timer_8hpp_source.html#l00094">loos_timer.hpp:94</a></div></div>
-<div class="ttc" id="aclassloos_1_1_timer_html_a9ce0500f779cf4adb77320c05798499e"><div class="ttname"><a href="classloos_1_1_timer.html#a9ce0500f779cf4adb77320c05798499e">loos::Timer::elapsed</a></div><div class="ttdeci">double elapsed(void) const</div><div class="ttdoc">Return the elapsed time.</div><div class="ttdef"><b>Definition:</b> <a href="loos__timer_8hpp_source.html#l00109">loos_timer.hpp:109</a></div></div>
-<div class="ttc" id="aclassloos_1_1_timer_html_aac6d50e2b4754d77fb0da01c80a325f1"><div class="ttname"><a href="classloos_1_1_timer.html#aac6d50e2b4754d77fb0da01c80a325f1">loos::Timer::averageLapTime</a></div><div class="ttdeci">double averageLapTime(void)</div><div class="ttdoc">Return the current average lap-time...</div><div class="ttdef"><b>Definition:</b> <a href="loos__timer_8hpp_source.html#l00130">loos_timer.hpp:130</a></div></div>
-<div class="ttc" id="aclassloos_1_1_timer_html_ac83b4313b193370f653d98e90570010d"><div class="ttname"><a href="classloos_1_1_timer.html#ac83b4313b193370f653d98e90570010d">loos::Timer::lap</a></div><div class="ttdeci">double lap(void)</div><div class="ttdoc">Returns the current lap time.</div><div class="ttdef"><b>Definition:</b> <a href="loos__timer_8hpp_source.html#l00118">loos_timer.hpp:118</a></div></div>
-<div class="ttc" id="aclassloos_1_1_user_timer_html"><div class="ttname"><a href="classloos_1_1_user_timer.html">loos::UserTimer</a></div><div class="ttdoc">Policy class for tracking only user process time.</div><div class="ttdef"><b>Definition:</b> <a href="loos__timer_8hpp_source.html#l00055">loos_timer.hpp:55</a></div></div>
-<div class="ttc" id="aclassloos_1_1_wall_timer_html"><div class="ttname"><a href="classloos_1_1_wall_timer.html">loos::WallTimer</a></div><div class="ttdoc">Policy class for tracking wall-time.</div><div class="ttdef"><b>Definition:</b> <a href="loos__timer_8hpp_source.html#l00042">loos_timer.hpp:42</a></div></div>
+<div class="ttc" id="aclassloos_1_1Timer_html"><div class="ttname"><a href="classloos_1_1Timer.html">loos::Timer</a></div><div class="ttdoc">Class for tracking time.</div><div class="ttdef"><b>Definition:</b> loos_timer.hpp:80</div></div>
+<div class="ttc" id="aclassloos_1_1Timer_html_a25cbbcee65902f58f1e753239e12cdd5"><div class="ttname"><a href="classloos_1_1Timer.html#a25cbbcee65902f58f1e753239e12cdd5">loos::Timer::start</a></div><div class="ttdeci">void start(void)</div><div class="ttdoc">Starts the timer.</div><div class="ttdef"><b>Definition:</b> loos_timer.hpp:85</div></div>
+<div class="ttc" id="aclassloos_1_1Timer_html_a77b7598d801175348a3326f124863c4a"><div class="ttname"><a href="classloos_1_1Timer.html#a77b7598d801175348a3326f124863c4a">loos::Timer::stop</a></div><div class="ttdeci">double stop(void)</div><div class="ttdoc">Stops the timer.</div><div class="ttdef"><b>Definition:</b> loos_timer.hpp:94</div></div>
+<div class="ttc" id="aclassloos_1_1Timer_html_a9ce0500f779cf4adb77320c05798499e"><div class="ttname"><a href="classloos_1_1Timer.html#a9ce0500f779cf4adb77320c05798499e">loos::Timer::elapsed</a></div><div class="ttdeci">double elapsed(void) const</div><div class="ttdoc">Return the elapsed time.</div><div class="ttdef"><b>Definition:</b> loos_timer.hpp:109</div></div>
+<div class="ttc" id="aclassloos_1_1Timer_html_aac6d50e2b4754d77fb0da01c80a325f1"><div class="ttname"><a href="classloos_1_1Timer.html#aac6d50e2b4754d77fb0da01c80a325f1">loos::Timer::averageLapTime</a></div><div class="ttdeci">double averageLapTime(void)</div><div class="ttdoc">Return the current average lap-time...</div><div class="ttdef"><b>Definition:</b> loos_timer.hpp:130</div></div>
+<div class="ttc" id="aclassloos_1_1Timer_html_ac83b4313b193370f653d98e90570010d"><div class="ttname"><a href="classloos_1_1Timer.html#ac83b4313b193370f653d98e90570010d">loos::Timer::lap</a></div><div class="ttdeci">double lap(void)</div><div class="ttdoc">Returns the current lap time.</div><div class="ttdef"><b>Definition:</b> loos_timer.hpp:118</div></div>
+<div class="ttc" id="aclassloos_1_1UserTimer_html"><div class="ttname"><a href="classloos_1_1UserTimer.html">loos::UserTimer</a></div><div class="ttdoc">Policy class for tracking only user process time.</div><div class="ttdef"><b>Definition:</b> loos_timer.hpp:55</div></div>
+<div class="ttc" id="aclassloos_1_1WallTimer_html"><div class="ttname"><a href="classloos_1_1WallTimer.html">loos::WallTimer</a></div><div class="ttdoc">Policy class for tracking wall-time.</div><div class="ttdef"><b>Definition:</b> loos_timer.hpp:42</div></div>
+<div class="ttc" id="anamespaceloos_html"><div class="ttname"><a href="namespaceloos.html">loos</a></div><div class="ttdoc">Namespace for most things not already encapsulated within a class.</div><div class="ttdef"><b>Definition:</b> loos.py:1</div></div>
+<div class="ttc" id="anamespaceloos_html_ace7362e008af0e72a622350006595ec8"><div class="ttname"><a href="namespaceloos.html#ace7362e008af0e72a622350006595ec8">loos.timeAsString</a></div><div class="ttdeci">&quot;std::string&quot; timeAsString(&quot;double const&quot; t, &quot;uint const&quot; precision=0)</div><div class="ttdef"><b>Definition:</b> loos.py:3254</div></div>
 </div><!-- fragment --></div><!-- contents -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><b>loos_timer.hpp</b></li>
-    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+</small></address>
 </body>
 </html>

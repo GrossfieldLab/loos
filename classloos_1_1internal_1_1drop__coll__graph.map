@@ -1,7 +1,6 @@
 <map id="loos::internal::drop" name="loos::internal::drop">
-<area shape="rect" id="node1" title="Drop the top item from the stack." alt="" coords="79,261,209,288"/>
-<area shape="rect" id="node2" href="$classloos_1_1internal_1_1_action.html" title="Base class for all commands..." alt="" coords="73,185,215,212"/>
-<area shape="rect" id="node3" href="$classloos_1_1internal_1_1_value_stack.html" title=" " alt="" coords="5,96,176,123"/>
-<area shape="rect" id="node4" title=" " alt="" coords="200,96,280,123"/>
-<area shape="rect" id="node5" title=" " alt="" coords="177,5,303,47"/>
+<area shape="rect" id="node1" title="Drop the top item from the stack." alt="" coords="100,171,244,197"/>
+<area shape="rect" id="node2" href="$classloos_1_1internal_1_1Action.html" title="Base class for all commands..." alt="" coords="94,95,250,121"/>
+<area shape="rect" id="node3" href="$classloos_1_1internal_1_1ValueStack.html" title=" " alt="" coords="5,5,192,32"/>
+<area shape="rect" id="node4" title=" " alt="" coords="216,5,275,32"/>
 </map>

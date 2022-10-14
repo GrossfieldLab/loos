@@ -1,20 +1,3 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classloos_1_1_options_framework_1_1_options_package.html" title="Base class for options." alt="" coords="5,499,169,541"/>
-<area shape="rect" id="node2" href="$class_clustering_1_1_clustering_options.html" title=" " alt="" coords="221,5,414,32"/>
-<area shape="rect" id="node3" href="$class_tool_options.html" title=" " alt="" coords="272,56,363,83"/>
-<area shape="rect" id="node4" href="$classloos_1_1_options_framework_1_1_basic_convergence.html" title=" " alt="" coords="235,107,399,149"/>
-<area shape="rect" id="node5" href="$classloos_1_1_options_framework_1_1_basic_options.html" title="Options common to all tools (including –fullhelp)" alt="" coords="235,173,399,214"/>
-<area shape="rect" id="node6" href="$classloos_1_1_options_framework_1_1_basic_selection.html" title="Provides a single LOOS selection (–selection)" alt="" coords="235,238,399,279"/>
-<area shape="rect" id="node7" href="$classloos_1_1_options_framework_1_1_basic_split_by.html" title="Provides a mechanism for controlling how to split an AtomicGroup." alt="" coords="235,303,399,345"/>
-<area shape="rect" id="node8" href="$classloos_1_1_options_framework_1_1_basic_trajectory.html" title="Basic trajectory with a –skip option." alt="" coords="235,369,399,410"/>
-<area shape="rect" id="node9" href="$classloos_1_1_options_framework_1_1_basic_water.html" title="Options specific to tools that work with water/internal&#45;water." alt="" coords="235,434,399,475"/>
-<area shape="rect" id="node10" href="$classloos_1_1_options_framework_1_1_model_with_coords.html" title="Request a model with coordinates." alt="" coords="235,499,399,541"/>
-<area shape="rect" id="node11" href="$classloos_1_1_options_framework_1_1_multi_traj_options.html" title="Multiple trajectories as one trajectory via MultiTrajectory." alt="" coords="235,565,399,606"/>
-<area shape="rect" id="node12" href="$classloos_1_1_options_framework_1_1_output_prefix.html" title="Gets a string as prefix for output files (–prefix)" alt="" coords="235,630,399,671"/>
-<area shape="rect" id="node13" href="$classloos_1_1_options_framework_1_1_output_trajectory_options.html" title=" " alt="" coords="231,695,403,737"/>
-<area shape="rect" id="node14" href="$classloos_1_1_options_framework_1_1_output_trajectory_type_options.html" title=" " alt="" coords="217,761,417,802"/>
-<area shape="rect" id="node15" href="$classloos_1_1_options_framework_1_1_required_arguments.html" title="Provides simple way to add command&#45;line arguments (required options)" alt="" coords="235,826,399,867"/>
-<area shape="rect" id="node16" href="$classloos_1_1_options_framework_1_1_trajectory_with_frame_indices.html" title="Trajectory with either a –range or –skip." alt="" coords="220,891,415,933"/>
-<area shape="rect" id="node17" href="$classloos_1_1_options_framework_1_1_two_models_with_coords.html" title="Request Two models with coordinates." alt="" coords="235,957,399,998"/>
-<area shape="rect" id="node18" href="$classloos_1_1_options_framework_1_1_weights_options.html" title=" " alt="" coords="235,1022,399,1063"/>
+<area shape="rect" id="node1" href="$structloos_1_1MatrixWriteImpl_3_01T_00_01P_00_01Math_1_1SparseArray_00_01F_01_4.html" title="Write out a sparse matrix." alt="" coords="5,5,225,47"/>
 </map>

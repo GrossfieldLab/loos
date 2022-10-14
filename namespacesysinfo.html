@@ -9,10 +9,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -26,8 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LOOS
-   &#160;<span id="projectnumber">v3.3</span>
+   &#160;<span id="projectnumber">4.0</span>
    </div>
+   <div id="projectbrief">The Lightweight Object Oriented Structural analysis library/toolkit</div>
   </td>
  </tr>
  </tbody>
@@ -50,23 +47,6 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
-</div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('namespacesysinfo.html',''); initResizable(); });
-/* @license-end */
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -81,6 +61,7 @@ $(document).ready(function(){initNavTree('namespacesysinfo.html',''); initResiza
 </iframe>
 </div>
 
+</div><!-- top -->
 <div class="header">
   <div class="summary">
 <a href="#var-members">Variables</a>  </div>
@@ -91,9 +72,42 @@ $(document).ready(function(){initNavTree('namespacesysinfo.html',''); initResiza
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
+<tr class="memitem:a68f6ee3626d26911162e2e16e6870689"><td class="memItemLeft" align="right" valign="top"><a id="a68f6ee3626d26911162e2e16e6870689"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>parser</b> = argparse.ArgumentParser(description=&quot;Print system information&quot;)</td></tr>
+<tr class="separator:a68f6ee3626d26911162e2e16e6870689"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af2aaf6b9e3b77cc386669e1b155e6160"><td class="memItemLeft" align="right" valign="top"><a id="af2aaf6b9e3b77cc386669e1b155e6160"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>help</b></td></tr>
+<tr class="separator:af2aaf6b9e3b77cc386669e1b155e6160"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a11431ceeb1e68286e45f0d07ed774a7e"><td class="memItemLeft" align="right" valign="top"><a id="a11431ceeb1e68286e45f0d07ed774a7e"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>default</b></td></tr>
+<tr class="separator:a11431ceeb1e68286e45f0d07ed774a7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f3fae2ca1363357add02316d4bf95ba"><td class="memItemLeft" align="right" valign="top"><a id="a8f3fae2ca1363357add02316d4bf95ba"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>args</b> = parser.parse_args()</td></tr>
 <tr class="separator:a8f3fae2ca1363357add02316d4bf95ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abd3dedf173b45c5895e204a73edfcba9"><td class="memItemLeft" align="right" valign="top"><a id="abd3dedf173b45c5895e204a73edfcba9"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>system</b> = <a class="el" href="namespaceloos.html#ab5aee41b2c324eb5e060a247b182363f">loos.createSystem</a>(args.system_file)</td></tr>
+<tr class="separator:abd3dedf173b45c5895e204a73edfcba9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a54bf7ed98e3592e835c0c6503789981c"><td class="memItemLeft" align="right" valign="top"><a id="a54bf7ed98e3592e835c0c6503789981c"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>num_atoms</b> = len(system)</td></tr>
+<tr class="separator:a54bf7ed98e3592e835c0c6503789981c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a59f9f5bcaa8a34f6d41ba5bd7adafa3e"><td class="memItemLeft" align="right" valign="top"><a id="a59f9f5bcaa8a34f6d41ba5bd7adafa3e"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>has_coords</b> = system.hasCoords()</td></tr>
+<tr class="separator:a59f9f5bcaa8a34f6d41ba5bd7adafa3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa6ae7556de8cee79ad04ddc037678103"><td class="memItemLeft" align="right" valign="top"><a id="aa6ae7556de8cee79ad04ddc037678103"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>has_charge</b> = system[0].checkProperty(loos.Atom.chargebit)</td></tr>
+<tr class="separator:aa6ae7556de8cee79ad04ddc037678103"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afb9017449f1f96fa3d54af7aeb147fa3"><td class="memItemLeft" align="right" valign="top"><a id="afb9017449f1f96fa3d54af7aeb147fa3"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>total_charge</b> = system.totalCharge()</td></tr>
+<tr class="separator:afb9017449f1f96fa3d54af7aeb147fa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5d022a733cc7937dfeea8c3562d53880"><td class="memItemLeft" align="right" valign="top"><a id="a5d022a733cc7937dfeea8c3562d53880"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>has_mass</b> = system[0].checkProperty(loos.Atom.massbit)</td></tr>
+<tr class="separator:a5d022a733cc7937dfeea8c3562d53880"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a05052952e2f4e2bb295d846ea463727b"><td class="memItemLeft" align="right" valign="top"><a id="a05052952e2f4e2bb295d846ea463727b"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>has_bonds</b> = system.hasBonds()</td></tr>
+<tr class="separator:a05052952e2f4e2bb295d846ea463727b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab241709dfda4f597f5ed314c89fe86bc"><td class="memItemLeft" align="right" valign="top"><a id="ab241709dfda4f597f5ed314c89fe86bc"></a>
+&#160;</td><td class="memItemRight" valign="bottom"><b>is_periodic</b> = system.isPeriodic()</td></tr>
+<tr class="separator:ab241709dfda4f597f5ed314c89fe86bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa1630a1b18a8081f23bc544a89868066"><td class="memItemLeft" align="right" valign="top"><a id="aa1630a1b18a8081f23bc544a89868066"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>box</b> = system.periodicBox()</td></tr>
 <tr class="separator:aa1630a1b18a8081f23bc544a89868066"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -103,58 +117,21 @@ Variables</h2></td></tr>
 <tr class="memitem:afca3984fbd7304dc774d4aa2c2279540"><td class="memItemLeft" align="right" valign="top"><a id="afca3984fbd7304dc774d4aa2c2279540"></a>
 dictionary&#160;</td><td class="memItemRight" valign="bottom"><b>d</b> = {}</td></tr>
 <tr class="separator:afca3984fbd7304dc774d4aa2c2279540"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a11431ceeb1e68286e45f0d07ed774a7e"><td class="memItemLeft" align="right" valign="top"><a id="a11431ceeb1e68286e45f0d07ed774a7e"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>default</b></td></tr>
-<tr class="separator:a11431ceeb1e68286e45f0d07ed774a7e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a05052952e2f4e2bb295d846ea463727b"><td class="memItemLeft" align="right" valign="top"><a id="a05052952e2f4e2bb295d846ea463727b"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>has_bonds</b> = system.hasBonds()</td></tr>
-<tr class="separator:a05052952e2f4e2bb295d846ea463727b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa6ae7556de8cee79ad04ddc037678103"><td class="memItemLeft" align="right" valign="top"><a id="aa6ae7556de8cee79ad04ddc037678103"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>has_charge</b> = system[0].checkProperty(loos.Atom.chargebit)</td></tr>
-<tr class="separator:aa6ae7556de8cee79ad04ddc037678103"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a59f9f5bcaa8a34f6d41ba5bd7adafa3e"><td class="memItemLeft" align="right" valign="top"><a id="a59f9f5bcaa8a34f6d41ba5bd7adafa3e"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>has_coords</b> = system.hasCoords()</td></tr>
-<tr class="separator:a59f9f5bcaa8a34f6d41ba5bd7adafa3e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a5d022a733cc7937dfeea8c3562d53880"><td class="memItemLeft" align="right" valign="top"><a id="a5d022a733cc7937dfeea8c3562d53880"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>has_mass</b> = system[0].checkProperty(loos.Atom.massbit)</td></tr>
-<tr class="separator:a5d022a733cc7937dfeea8c3562d53880"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af2aaf6b9e3b77cc386669e1b155e6160"><td class="memItemLeft" align="right" valign="top"><a id="af2aaf6b9e3b77cc386669e1b155e6160"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>help</b></td></tr>
-<tr class="separator:af2aaf6b9e3b77cc386669e1b155e6160"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab241709dfda4f597f5ed314c89fe86bc"><td class="memItemLeft" align="right" valign="top"><a id="ab241709dfda4f597f5ed314c89fe86bc"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>is_periodic</b> = system.isPeriodic()</td></tr>
-<tr class="separator:ab241709dfda4f597f5ed314c89fe86bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a774bcd2a412c51bd3663abde129dc6de"><td class="memItemLeft" align="right" valign="top"><a id="a774bcd2a412c51bd3663abde129dc6de"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>json_file</b></td></tr>
 <tr class="separator:a774bcd2a412c51bd3663abde129dc6de"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a54bf7ed98e3592e835c0c6503789981c"><td class="memItemLeft" align="right" valign="top"><a id="a54bf7ed98e3592e835c0c6503789981c"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>num_atoms</b> = len(system)</td></tr>
-<tr class="separator:a54bf7ed98e3592e835c0c6503789981c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a68f6ee3626d26911162e2e16e6870689"><td class="memItemLeft" align="right" valign="top"><a id="a68f6ee3626d26911162e2e16e6870689"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>parser</b> = argparse.ArgumentParser(description=&quot;Print system information&quot;)</td></tr>
-<tr class="separator:a68f6ee3626d26911162e2e16e6870689"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0e2fc9ee2549d7870f93642cbd81899e"><td class="memItemLeft" align="right" valign="top"><a id="a0e2fc9ee2549d7870f93642cbd81899e"></a>
 &#160;</td><td class="memItemRight" valign="bottom"><b>sort_keys</b></td></tr>
 <tr class="separator:a0e2fc9ee2549d7870f93642cbd81899e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:abd3dedf173b45c5895e204a73edfcba9"><td class="memItemLeft" align="right" valign="top"><a id="abd3dedf173b45c5895e204a73edfcba9"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>system</b> = loos.createSystem(args.system_file)</td></tr>
-<tr class="separator:abd3dedf173b45c5895e204a73edfcba9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb9017449f1f96fa3d54af7aeb147fa3"><td class="memItemLeft" align="right" valign="top"><a id="afb9017449f1f96fa3d54af7aeb147fa3"></a>
-&#160;</td><td class="memItemRight" valign="bottom"><b>total_charge</b> = system.totalCharge()</td></tr>
-<tr class="separator:afb9017449f1f96fa3d54af7aeb147fa3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><pre class="fragment">Print a bunch of useful information about the system to stdout
 
 Alan Grossfield, 2021
 </pre> </div></div><!-- contents -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="navelem"><a class="el" href="namespacesysinfo.html">sysinfo</a></li>
-    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+</small></address>
 </body>
 </html>

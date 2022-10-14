@@ -1,0 +1,5 @@
+<map id="loos::SimpleCounter" name="loos::SimpleCounter">
+<area shape="rect" id="node1" title="Basic progress counter object, defining the interface..." alt="" coords="115,5,269,32"/>
+<area shape="rect" id="node2" href="$classloos_1_1EstimatingCounter.html" title="A progress counter that can estimate how much time is left." alt="" coords="5,87,184,114"/>
+<area shape="rect" id="node3" href="$classloos_1_1ProgressCounter.html" title="The progress counter front&#45;end." alt="" coords="209,80,373,121"/>
+</map>

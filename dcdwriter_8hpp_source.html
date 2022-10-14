@@ -9,10 +9,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -26,8 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LOOS
-   &#160;<span id="projectnumber">v3.3</span>
+   &#160;<span id="projectnumber">4.0</span>
    </div>
+   <div id="projectbrief">The Lightweight Object Oriented Structural analysis library/toolkit</div>
   </td>
  </tr>
  </tbody>
@@ -50,23 +47,6 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
-</div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('dcdwriter_8hpp_source.html',''); initResizable(); });
-/* @license-end */
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -81,6 +61,11 @@ $(document).ready(function(){initNavTree('dcdwriter_8hpp_source.html',''); initR
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li>  </ul>
+</div>
+</div><!-- top -->
 <div class="header">
   <div class="headertitle">
 <div class="title">dcdwriter.hpp</div>  </div>
@@ -130,46 +115,46 @@ $(document).ready(function(){initNavTree('dcdwriter_8hpp_source.html',''); initR
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="preprocessor">#include &lt;dcd.hpp&gt;</span></div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="preprocessor">#include &lt;trajwriter.hpp&gt;</span></div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">namespace </span>loos {</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceloos.html">loos</a> {</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00048"></a><span class="lineno"><a class="line" href="classloos_1_1_d_c_d_writer.html">   48</a></span>&#160;  <span class="keyword">class </span><a class="code" href="classloos_1_1_d_c_d_writer.html">DCDWriter</a> : <span class="keyword">public</span> <a class="code" href="classloos_1_1_trajectory_writer.html">TrajectoryWriter</a> {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  <span class="keyword">class </span>DCDWriter : <span class="keyword">public</span> TrajectoryWriter {</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="comment">// Use a union to convert data to appropriate type...</span></div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">typedef</span> <span class="keyword">union </span>{ <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> ui; <span class="keywordtype">int</span> i; <span class="keywordtype">char</span> c[4]; <span class="keywordtype">float</span> f; } DataOverlay; </div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
 <div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  <span class="keyword">public</span>:</div>
 <div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keyword">static</span> pTrajectoryWriter create(<span class="keyword">const</span> std::string&amp; s, <span class="keyword">const</span> <span class="keywordtype">bool</span> append = <span class="keyword">false</span>) {</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;      <span class="keywordflow">return</span>(pTrajectoryWriter(<span class="keyword">new</span> <a class="code" href="classloos_1_1_d_c_d_writer.html#a5291233bafde487f5000355eb90bec8e">DCDWriter</a>(s, append)));</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;    <span class="keyword">static</span> pTrajectoryWriter <a class="code" href="classloos_1_1DCDWriter.html#a59bb69cb17d82fe000ed3f6963d5ef3e">create</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keyword">const</span> <span class="keywordtype">bool</span> append = <span class="keyword">false</span>) {</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;      <span class="keywordflow">return</span>(pTrajectoryWriter(<span class="keyword">new</span> <a class="code" href="classloos_1_1DCDWriter.html#aa01498d706fa9f9a187da57d24b52d7d">DCDWriter</a>(s, append)));</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    }</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160; </div>
-<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="classloos_1_1_d_c_d_writer.html#a5291233bafde487f5000355eb90bec8e">   70</a></span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classloos_1_1_d_c_d_writer.html#a5291233bafde487f5000355eb90bec8e">DCDWriter</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keyword">const</span> <span class="keywordtype">bool</span> append = <span class="keyword">false</span>) :</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;      <a class="code" href="classloos_1_1_trajectory_writer.html">TrajectoryWriter</a>(s, append),</div>
+<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="classloos_1_1DCDWriter.html#aa01498d706fa9f9a187da57d24b52d7d">   70</a></span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classloos_1_1DCDWriter.html#aa01498d706fa9f9a187da57d24b52d7d">DCDWriter</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keyword">const</span> <span class="keywordtype">bool</span> append = <span class="keyword">false</span>) :</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;      <a class="code" href="classloos_1_1TrajectoryWriter.html">TrajectoryWriter</a>(s, append),</div>
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;      _natoms(0), _nsteps(0),</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;      _timestep(0.001), _current(0),</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;      _has_box(false),</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;      _header_written(false)</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    {</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;      <span class="keywordflow">if</span> (appending_)</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        prepareToAppend();</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    prepareToAppend();</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;      <span class="keywordflow">else</span></div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        _titles.push_back(<span class="stringliteral">&quot;AUTO GENERATED BY LOOS&quot;</span>);</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    }</div>
 <div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="classloos_1_1_d_c_d_writer.html#ab6fde9aff3b1e256df24425b89fdb17a">   84</a></span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classloos_1_1_d_c_d_writer.html#ab6fde9aff3b1e256df24425b89fdb17a">DCDWriter</a>(std::iostream&amp; fs, <span class="keyword">const</span> <span class="keywordtype">bool</span> append = <span class="keyword">false</span>) : </div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;      <a class="code" href="classloos_1_1_trajectory_writer.html">TrajectoryWriter</a>(&amp;fs, append),</div>
+<div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="classloos_1_1DCDWriter.html#ac7c61e3d2e79696481907d0324b3ce30">   84</a></span>&#160;    <span class="keyword">explicit</span> <a class="code" href="classloos_1_1DCDWriter.html#ac7c61e3d2e79696481907d0324b3ce30">DCDWriter</a>(std::iostream&amp; fs, <span class="keyword">const</span> <span class="keywordtype">bool</span> append = <span class="keyword">false</span>) : </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;      <a class="code" href="classloos_1_1TrajectoryWriter.html">TrajectoryWriter</a>(&amp;fs, append),</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;      _natoms(0), _nsteps(0), _timestep(0.001), _current(0),</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;      _has_box(false), _header_written(false)</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    {</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;      <span class="keywordflow">if</span> (appending_)</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        prepareToAppend();</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    prepareToAppend();</div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;      <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        _titles.push_back(<span class="stringliteral">&quot;AUTO GENERATED BY LOOS&quot;</span>);</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    _titles.push_back(<span class="stringliteral">&quot;AUTO GENERATED BY LOOS&quot;</span>);</div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    }</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
-<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="classloos_1_1_d_c_d_writer.html#aa958cf37e9470f8d248b4c50ba50905c">   96</a></span>&#160;    <a class="code" href="classloos_1_1_d_c_d_writer.html#aa958cf37e9470f8d248b4c50ba50905c">DCDWriter</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keyword">const</span> std::vector&lt;AtomicGroup&gt;&amp; grps, <span class="keyword">const</span> <span class="keywordtype">bool</span> append = <span class="keyword">false</span>) :</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;      <a class="code" href="classloos_1_1_trajectory_writer.html">TrajectoryWriter</a>(s, append),</div>
+<div class="line"><a name="l00096"></a><span class="lineno"><a class="line" href="classloos_1_1DCDWriter.html#a92f2018b1dc8280e607ac416278d0548">   96</a></span>&#160;    <a class="code" href="classloos_1_1DCDWriter.html#a92f2018b1dc8280e607ac416278d0548">DCDWriter</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keyword">const</span> std::vector&lt;AtomicGroup&gt;&amp; grps, <span class="keyword">const</span> <span class="keywordtype">bool</span> append = <span class="keyword">false</span>) :</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;      <a class="code" href="classloos_1_1TrajectoryWriter.html">TrajectoryWriter</a>(s, append),</div>
 <div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;      _natoms(grps[0].size()),</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;      _nsteps(grps.size()),</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;      _timestep(1e-3),</div>
@@ -178,16 +163,16 @@ $(document).ready(function(){initNavTree('dcdwriter_8hpp_source.html',''); initR
 <div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;      _header_written(false)</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    {</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;      <span class="keywordflow">if</span> (appending_)</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;        prepareToAppend();</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    prepareToAppend();</div>
 <div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;      <span class="keywordflow">else</span></div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;        _titles.push_back(<span class="stringliteral">&quot;AUTO GENERATED BY LOOS&quot;</span>);</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    </div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;      writeHeader();</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;      <a class="code" href="classloos_1_1_d_c_d_writer.html#a1fa8d67521ae30cd42114cc2ed4f1fe3">writeFrames</a>(grps);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;      <a class="code" href="classloos_1_1DCDWriter.html#a49a8661937c3615e12b8038ebb71b0fe">writeHeader</a>();</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;      <a class="code" href="classloos_1_1DCDWriter.html#a67aaa7ebee87b9b411ffce5d5e2b9777">writeFrames</a>(grps);</div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    }</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160; </div>
-<div class="line"><a name="l00115"></a><span class="lineno"><a class="line" href="classloos_1_1_d_c_d_writer.html#a9d59892e922577ee78647f8672632746">  115</a></span>&#160;    <a class="code" href="classloos_1_1_d_c_d_writer.html#a9d59892e922577ee78647f8672632746">DCDWriter</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keyword">const</span> std::vector&lt;AtomicGroup&gt;&amp; grps, <span class="keyword">const</span> std::string&amp; comment, <span class="keyword">const</span> <span class="keywordtype">bool</span> append = <span class="keyword">false</span>) :</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;      <a class="code" href="classloos_1_1_trajectory_writer.html">TrajectoryWriter</a>(s, append),</div>
+<div class="line"><a name="l00115"></a><span class="lineno"><a class="line" href="classloos_1_1DCDWriter.html#a99515583c984150405c55efcb5238240">  115</a></span>&#160;    <a class="code" href="classloos_1_1DCDWriter.html#a99515583c984150405c55efcb5238240">DCDWriter</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keyword">const</span> std::vector&lt;AtomicGroup&gt;&amp; grps, <span class="keyword">const</span> std::string&amp; comment, <span class="keyword">const</span> <span class="keywordtype">bool</span> append = <span class="keyword">false</span>) :</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;      <a class="code" href="classloos_1_1TrajectoryWriter.html">TrajectoryWriter</a>(s, append),</div>
 <div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;      _natoms(grps[0].size()),</div>
 <div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;      _nsteps(grps.size()),</div>
 <div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;      _timestep(1e-3),</div>
@@ -196,16 +181,16 @@ $(document).ready(function(){initNavTree('dcdwriter_8hpp_source.html',''); initR
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;      _header_written(false)</div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    {</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;      <span class="keywordflow">if</span> (appending_)</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;        prepareToAppend();</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    prepareToAppend();</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;      <span class="keywordflow">else</span></div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        _titles.push_back(comment);</div>
 <div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    </div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;      writeHeader();</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;      <a class="code" href="classloos_1_1_d_c_d_writer.html#a1fa8d67521ae30cd42114cc2ed4f1fe3">writeFrames</a>(grps);</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;      <a class="code" href="classloos_1_1DCDWriter.html#a49a8661937c3615e12b8038ebb71b0fe">writeHeader</a>();</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;      <a class="code" href="classloos_1_1DCDWriter.html#a67aaa7ebee87b9b411ffce5d5e2b9777">writeFrames</a>(grps);</div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    }</div>
 <div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160; </div>
-<div class="line"><a name="l00134"></a><span class="lineno"><a class="line" href="classloos_1_1_d_c_d_writer.html#a6b6058ff206155f76c61b225f23f51e1">  134</a></span>&#160;    <a class="code" href="classloos_1_1_d_c_d_writer.html#a6b6058ff206155f76c61b225f23f51e1">DCDWriter</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keyword">const</span> std::vector&lt;AtomicGroup&gt;&amp; grps, <span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; comments, <span class="keyword">const</span> <span class="keywordtype">bool</span> append = <span class="keyword">false</span>) :</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;      <a class="code" href="classloos_1_1_trajectory_writer.html">TrajectoryWriter</a>(s, append),</div>
+<div class="line"><a name="l00134"></a><span class="lineno"><a class="line" href="classloos_1_1DCDWriter.html#a6441398ca5ddd7d7f0bde47f31561e5c">  134</a></span>&#160;    <a class="code" href="classloos_1_1DCDWriter.html#a6441398ca5ddd7d7f0bde47f31561e5c">DCDWriter</a>(<span class="keyword">const</span> std::string&amp; s, <span class="keyword">const</span> std::vector&lt;AtomicGroup&gt;&amp; grps, <span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; comments, <span class="keyword">const</span> <span class="keywordtype">bool</span> append = <span class="keyword">false</span>) :</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;      <a class="code" href="classloos_1_1TrajectoryWriter.html">TrajectoryWriter</a>(s, append),</div>
 <div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;      _natoms(grps[0].size()),</div>
 <div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;      _nsteps(grps.size()),</div>
 <div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;      _timestep(1e-3),</div>
@@ -215,16 +200,16 @@ $(document).ready(function(){initNavTree('dcdwriter_8hpp_source.html',''); initR
 <div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    {</div>
 <div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;      _titles = comments;</div>
 <div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;      writeHeader();</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;      <a class="code" href="classloos_1_1_d_c_d_writer.html#a1fa8d67521ae30cd42114cc2ed4f1fe3">writeFrames</a>(grps);</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;      <a class="code" href="classloos_1_1DCDWriter.html#a49a8661937c3615e12b8038ebb71b0fe">writeHeader</a>();</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;      <a class="code" href="classloos_1_1DCDWriter.html#a67aaa7ebee87b9b411ffce5d5e2b9777">writeFrames</a>(grps);</div>
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    }</div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    ~<a class="code" href="classloos_1_1_d_c_d_writer.html">DCDWriter</a>() {</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    ~<a class="code" href="classloos_1_1DCDWriter.html">DCDWriter</a>() {</div>
 <div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    }</div>
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160; </div>
 <div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
 <div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
-<div class="line"><a name="l00162"></a><span class="lineno"><a class="line" href="classloos_1_1_d_c_d_writer.html#a68c9448f6583ab7047426afc50ee2ab1">  162</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classloos_1_1_d_c_d_writer.html#a68c9448f6583ab7047426afc50ee2ab1">setHeader</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> na, <span class="keyword">const</span> <span class="keywordtype">int</span> ns, <span class="keyword">const</span> greal ts, <span class="keyword">const</span> <span class="keywordtype">bool</span> bf) {</div>
+<div class="line"><a name="l00162"></a><span class="lineno"><a class="line" href="classloos_1_1DCDWriter.html#abdd45864e1dcd700f44ed7ae0793e4cf">  162</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classloos_1_1DCDWriter.html#abdd45864e1dcd700f44ed7ae0793e4cf">setHeader</a>(<span class="keyword">const</span> <span class="keywordtype">int</span> na, <span class="keyword">const</span> <span class="keywordtype">int</span> ns, <span class="keyword">const</span> greal ts, <span class="keyword">const</span> <span class="keywordtype">bool</span> bf) {</div>
 <div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;      <span class="keywordflow">if</span> (_header_written)</div>
 <div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;        <span class="keywordflow">throw</span>(std::logic_error(<span class="stringliteral">&quot;Cannot set header after having written it&quot;</span>));</div>
 <div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
@@ -234,41 +219,41 @@ $(document).ready(function(){initNavTree('dcdwriter_8hpp_source.html',''); initR
 <div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;      _has_box = bf;</div>
 <div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    }</div>
 <div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160; </div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="keywordtype">void</span> setTitles(<span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; titles) {</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classloos_1_1DCDWriter.html#a0d68b5c5af32c91e48c93714620f515a">setTitles</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; titles) {</div>
 <div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;      <span class="keywordflow">if</span> (_header_written)</div>
 <div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;        <span class="keywordflow">throw</span>(std::logic_error(<span class="stringliteral">&quot;Cannot set header after having written it&quot;</span>));</div>
 <div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;      _titles = titles;</div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    }</div>
 <div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160; </div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    <span class="keywordtype">void</span> setTitle(<span class="keyword">const</span> std::string&amp; s) {</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classloos_1_1DCDWriter.html#a5fe2df87091052eb5d6187700f429a93">setTitle</a>(<span class="keyword">const</span> std::string&amp; s) {</div>
 <div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;      <span class="keywordflow">if</span> (_header_written)</div>
 <div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;        <span class="keywordflow">throw</span>(std::logic_error(<span class="stringliteral">&quot;Cannot set header after having written it&quot;</span>));</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;      _titles.clear(); addTitle(s);</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;      _titles.clear(); <a class="code" href="classloos_1_1DCDWriter.html#ae450e87444ae9f3194c56ff46f78f74c">addTitle</a>(s);</div>
 <div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    }</div>
 <div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160; </div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    <span class="keywordtype">void</span> addTitle(<span class="keyword">const</span> std::string&amp; s) {</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classloos_1_1DCDWriter.html#ae450e87444ae9f3194c56ff46f78f74c">addTitle</a>(<span class="keyword">const</span> std::string&amp; s) {</div>
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;      <span class="keywordflow">if</span> (_header_written)</div>
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        <span class="keywordflow">throw</span>(std::logic_error(<span class="stringliteral">&quot;Cannot set header after having written it&quot;</span>));</div>
 <div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;      _titles.push_back(s);</div>
 <div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;    }</div>
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160; </div>
-<div class="line"><a name="l00190"></a><span class="lineno"><a class="line" href="classloos_1_1_d_c_d_writer.html#a3b2c60ddc3f22fddddf2089bc8ca3a5a">  190</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classloos_1_1_d_c_d_writer.html#a3b2c60ddc3f22fddddf2089bc8ca3a5a">setComments</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; comments) { setTitles(comments); }</div>
-<div class="line"><a name="l00191"></a><span class="lineno"><a class="line" href="classloos_1_1_d_c_d_writer.html#a53a77df6d177e9b3da79c056a1750905">  191</a></span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classloos_1_1_d_c_d_writer.html#a53a77df6d177e9b3da79c056a1750905">hasComments</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span>(<span class="keyword">true</span>); }</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classloos_1_1DCDWriter.html#a70b84329cc9a2fc7f71ee46e1388e535">setComments</a>(<span class="keyword">const</span> std::vector&lt;std::string&gt;&amp; comments) { <a class="code" href="classloos_1_1DCDWriter.html#a0d68b5c5af32c91e48c93714620f515a">setTitles</a>(comments); }</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    <span class="keywordtype">bool</span> <a class="code" href="classloos_1_1DCDWriter.html#afe16a78c39476c29934fc7c054fc5bc5">hasComments</a>()<span class="keyword"> const </span>{ <span class="keywordflow">return</span>(<span class="keyword">true</span>); }</div>
 <div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    </div>
 <div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160; </div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classloos_1_1_d_c_d_writer.html#af4a2493a73f4ab007ec7efd127bf84d6">writeFrame</a>(<span class="keyword">const</span> <a class="code" href="classloos_1_1_atomic_group.html">AtomicGroup</a>&amp; grp);</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classloos_1_1DCDWriter.html#a8006009fb389af37c6224ef8eb0f1b45">writeFrame</a>(<span class="keyword">const</span> AtomicGroup&amp; grp);</div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
 <div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160; </div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classloos_1_1_d_c_d_writer.html#a1fa8d67521ae30cd42114cc2ed4f1fe3">writeFrames</a>(<span class="keyword">const</span> std::vector&lt;AtomicGroup&gt;&amp; grps);</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classloos_1_1DCDWriter.html#a67aaa7ebee87b9b411ffce5d5e2b9777">writeFrames</a>(<span class="keyword">const</span> std::vector&lt;AtomicGroup&gt;&amp; grps);</div>
 <div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160; </div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    <span class="keywordtype">void</span> writeHeader(<span class="keywordtype">void</span>);</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classloos_1_1DCDWriter.html#a49a8661937c3615e12b8038ebb71b0fe">writeHeader</a>(<span class="keywordtype">void</span>);</div>
 <div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
-<div class="line"><a name="l00209"></a><span class="lineno"><a class="line" href="classloos_1_1_d_c_d_writer.html#ad96497ef4a41818fc2afa98f1fda2e88">  209</a></span>&#160;    uint <a class="code" href="classloos_1_1_d_c_d_writer.html#ad96497ef4a41818fc2afa98f1fda2e88">framesWritten</a>(<span class="keywordtype">void</span>)<span class="keyword"> const </span>{ <span class="keywordflow">return</span>(_current); }</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    uint <a class="code" href="classloos_1_1DCDWriter.html#a73b408823370a380cb60f9ae6468520d">framesWritten</a>(<span class="keywordtype">void</span>)<span class="keyword"> const </span>{ <span class="keywordflow">return</span>(_current); }</div>
 <div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160; </div>
 <div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;  <span class="keyword">private</span>:</div>
 <div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;    <span class="keywordtype">void</span> writeF77Line(<span class="keyword">const</span> <span class="keywordtype">char</span>* <span class="keyword">const</span> data, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> len); </div>
 <div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    std::string fixStringSize(<span class="keyword">const</span> std::string&amp; s, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> <span class="keywordtype">int</span> size);</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    <span class="keywordtype">void</span> writeBox(<span class="keyword">const</span> <a class="code" href="classloos_1_1_coord.html">GCoord</a>&amp; box);</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    <span class="keywordtype">void</span> writeBox(<span class="keyword">const</span> GCoord&amp; box);</div>
 <div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160; </div>
 <div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;    <span class="keywordtype">void</span> prepareToAppend();</div>
 <div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160; </div>
@@ -286,29 +271,29 @@ $(document).ready(function(){initNavTree('dcdwriter_8hpp_source.html',''); initR
 <div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160; </div>
 <div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160; </div>
 <div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;<span class="preprocessor">#endif</span></div>
-<div class="ttc" id="aclassloos_1_1_atomic_group_html"><div class="ttname"><a href="classloos_1_1_atomic_group.html">loos::AtomicGroup</a></div><div class="ttdoc">Class for handling groups of Atoms (pAtoms, actually)</div><div class="ttdef"><b>Definition:</b> <a href="_atomic_group_8hpp_source.html#l00112">AtomicGroup.hpp:112</a></div></div>
-<div class="ttc" id="aclassloos_1_1_coord_html"><div class="ttname"><a href="classloos_1_1_coord.html">loos::Coord&lt; double &gt;</a></div></div>
-<div class="ttc" id="aclassloos_1_1_d_c_d_writer_html"><div class="ttname"><a href="classloos_1_1_d_c_d_writer.html">loos::DCDWriter</a></div><div class="ttdoc">A very lightweight class for writing simple DCDs.</div><div class="ttdef"><b>Definition:</b> <a href="dcdwriter_8hpp_source.html#l00048">dcdwriter.hpp:48</a></div></div>
-<div class="ttc" id="aclassloos_1_1_d_c_d_writer_html_a1fa8d67521ae30cd42114cc2ed4f1fe3"><div class="ttname"><a href="classloos_1_1_d_c_d_writer.html#a1fa8d67521ae30cd42114cc2ed4f1fe3">loos::DCDWriter::writeFrames</a></div><div class="ttdeci">void writeFrames(const std::vector&lt; AtomicGroup &gt; &amp;grps)</div><div class="ttdoc">Same as writeFrame(), but writes out the vector of frames...</div><div class="ttdef"><b>Definition:</b> <a href="dcdwriter_8cpp_source.html#l00157">dcdwriter.cpp:157</a></div></div>
-<div class="ttc" id="aclassloos_1_1_d_c_d_writer_html_a3b2c60ddc3f22fddddf2089bc8ca3a5a"><div class="ttname"><a href="classloos_1_1_d_c_d_writer.html#a3b2c60ddc3f22fddddf2089bc8ca3a5a">loos::DCDWriter::setComments</a></div><div class="ttdeci">void setComments(const std::vector&lt; std::string &gt; &amp;comments)</div><div class="ttdoc">Set comments in metadata (not all formats support)</div><div class="ttdef"><b>Definition:</b> <a href="dcdwriter_8hpp_source.html#l00190">dcdwriter.hpp:190</a></div></div>
-<div class="ttc" id="aclassloos_1_1_d_c_d_writer_html_a5291233bafde487f5000355eb90bec8e"><div class="ttname"><a href="classloos_1_1_d_c_d_writer.html#a5291233bafde487f5000355eb90bec8e">loos::DCDWriter::DCDWriter</a></div><div class="ttdeci">DCDWriter(const std::string &amp;s, const bool append=false)</div><div class="ttdoc">Setup for writing to a file named by s.</div><div class="ttdef"><b>Definition:</b> <a href="dcdwriter_8hpp_source.html#l00070">dcdwriter.hpp:70</a></div></div>
-<div class="ttc" id="aclassloos_1_1_d_c_d_writer_html_a53a77df6d177e9b3da79c056a1750905"><div class="ttname"><a href="classloos_1_1_d_c_d_writer.html#a53a77df6d177e9b3da79c056a1750905">loos::DCDWriter::hasComments</a></div><div class="ttdeci">bool hasComments() const</div><div class="ttdoc">Does format support comments in metadata?</div><div class="ttdef"><b>Definition:</b> <a href="dcdwriter_8hpp_source.html#l00191">dcdwriter.hpp:191</a></div></div>
-<div class="ttc" id="aclassloos_1_1_d_c_d_writer_html_a68c9448f6583ab7047426afc50ee2ab1"><div class="ttname"><a href="classloos_1_1_d_c_d_writer.html#a68c9448f6583ab7047426afc50ee2ab1">loos::DCDWriter::setHeader</a></div><div class="ttdeci">void setHeader(const int na, const int ns, const greal ts, const bool bf)</div><div class="ttdoc">Sets header parameters.</div><div class="ttdef"><b>Definition:</b> <a href="dcdwriter_8hpp_source.html#l00162">dcdwriter.hpp:162</a></div></div>
-<div class="ttc" id="aclassloos_1_1_d_c_d_writer_html_a6b6058ff206155f76c61b225f23f51e1"><div class="ttname"><a href="classloos_1_1_d_c_d_writer.html#a6b6058ff206155f76c61b225f23f51e1">loos::DCDWriter::DCDWriter</a></div><div class="ttdeci">DCDWriter(const std::string &amp;s, const std::vector&lt; AtomicGroup &gt; &amp;grps, const std::vector&lt; std::string &gt; &amp;comments, const bool append=false)</div><div class="ttdoc">Writes coordinates of grps adding comments as TITLE records.</div><div class="ttdef"><b>Definition:</b> <a href="dcdwriter_8hpp_source.html#l00134">dcdwriter.hpp:134</a></div></div>
-<div class="ttc" id="aclassloos_1_1_d_c_d_writer_html_a9d59892e922577ee78647f8672632746"><div class="ttname"><a href="classloos_1_1_d_c_d_writer.html#a9d59892e922577ee78647f8672632746">loos::DCDWriter::DCDWriter</a></div><div class="ttdeci">DCDWriter(const std::string &amp;s, const std::vector&lt; AtomicGroup &gt; &amp;grps, const std::string &amp;comment, const bool append=false)</div><div class="ttdoc">Writes coordinates of grps adding comment as a TITLE record.</div><div class="ttdef"><b>Definition:</b> <a href="dcdwriter_8hpp_source.html#l00115">dcdwriter.hpp:115</a></div></div>
-<div class="ttc" id="aclassloos_1_1_d_c_d_writer_html_aa958cf37e9470f8d248b4c50ba50905c"><div class="ttname"><a href="classloos_1_1_d_c_d_writer.html#aa958cf37e9470f8d248b4c50ba50905c">loos::DCDWriter::DCDWriter</a></div><div class="ttdeci">DCDWriter(const std::string &amp;s, const std::vector&lt; AtomicGroup &gt; &amp;grps, const bool append=false)</div><div class="ttdoc">Writes the coordinates of grps to file s as a DCD.</div><div class="ttdef"><b>Definition:</b> <a href="dcdwriter_8hpp_source.html#l00096">dcdwriter.hpp:96</a></div></div>
-<div class="ttc" id="aclassloos_1_1_d_c_d_writer_html_ab6fde9aff3b1e256df24425b89fdb17a"><div class="ttname"><a href="classloos_1_1_d_c_d_writer.html#ab6fde9aff3b1e256df24425b89fdb17a">loos::DCDWriter::DCDWriter</a></div><div class="ttdeci">DCDWriter(std::iostream &amp;fs, const bool append=false)</div><div class="ttdoc">Setup for writing to a stream.</div><div class="ttdef"><b>Definition:</b> <a href="dcdwriter_8hpp_source.html#l00084">dcdwriter.hpp:84</a></div></div>
-<div class="ttc" id="aclassloos_1_1_d_c_d_writer_html_ad96497ef4a41818fc2afa98f1fda2e88"><div class="ttname"><a href="classloos_1_1_d_c_d_writer.html#ad96497ef4a41818fc2afa98f1fda2e88">loos::DCDWriter::framesWritten</a></div><div class="ttdeci">uint framesWritten(void) const</div><div class="ttdoc">Total frames in output file.</div><div class="ttdef"><b>Definition:</b> <a href="dcdwriter_8hpp_source.html#l00209">dcdwriter.hpp:209</a></div></div>
-<div class="ttc" id="aclassloos_1_1_d_c_d_writer_html_af4a2493a73f4ab007ec7efd127bf84d6"><div class="ttname"><a href="classloos_1_1_d_c_d_writer.html#af4a2493a73f4ab007ec7efd127bf84d6">loos::DCDWriter::writeFrame</a></div><div class="ttdeci">void writeFrame(const AtomicGroup &amp;grp)</div><div class="ttdoc">Writes a frame to a growing DCD.</div><div class="ttdef"><b>Definition:</b> <a href="dcdwriter_8cpp_source.html#l00109">dcdwriter.cpp:109</a></div></div>
-<div class="ttc" id="aclassloos_1_1_trajectory_writer_html"><div class="ttname"><a href="classloos_1_1_trajectory_writer.html">loos::TrajectoryWriter</a></div><div class="ttdoc">Base class for writing trajectories.</div><div class="ttdef"><b>Definition:</b> <a href="trajwriter_8hpp_source.html#l00053">trajwriter.hpp:53</a></div></div>
+<div class="ttc" id="aclassloos_1_1DCDWriter_html"><div class="ttname"><a href="classloos_1_1DCDWriter.html">loos.DCDWriter</a></div><div class="ttdoc">A very lightweight class for writing simple DCDs.</div><div class="ttdef"><b>Definition:</b> loos.py:3726</div></div>
+<div class="ttc" id="aclassloos_1_1DCDWriter_html_a0d68b5c5af32c91e48c93714620f515a"><div class="ttname"><a href="classloos_1_1DCDWriter.html#a0d68b5c5af32c91e48c93714620f515a">loos.DCDWriter.setTitles</a></div><div class="ttdeci">&quot;void&quot; setTitles(self, &quot;StringVector&quot; titles)</div><div class="ttdef"><b>Definition:</b> loos.py:3752</div></div>
+<div class="ttc" id="aclassloos_1_1DCDWriter_html_a49a8661937c3615e12b8038ebb71b0fe"><div class="ttname"><a href="classloos_1_1DCDWriter.html#a49a8661937c3615e12b8038ebb71b0fe">loos.DCDWriter.writeHeader</a></div><div class="ttdeci">&quot;void&quot; writeHeader(self)</div><div class="ttdef"><b>Definition:</b> loos.py:3780</div></div>
+<div class="ttc" id="aclassloos_1_1DCDWriter_html_a59bb69cb17d82fe000ed3f6963d5ef3e"><div class="ttname"><a href="classloos_1_1DCDWriter.html#a59bb69cb17d82fe000ed3f6963d5ef3e">loos.DCDWriter.create</a></div><div class="ttdeci">&quot;loos::pTrajectoryWriter&quot; create(&quot;std::string const &amp;&quot; s, &quot;bool const&quot; append=False)</div><div class="ttdef"><b>Definition:</b> loos.py:3733</div></div>
+<div class="ttc" id="aclassloos_1_1DCDWriter_html_a5fe2df87091052eb5d6187700f429a93"><div class="ttname"><a href="classloos_1_1DCDWriter.html#a5fe2df87091052eb5d6187700f429a93">loos.DCDWriter.setTitle</a></div><div class="ttdeci">&quot;void&quot; setTitle(self, &quot;std::string const &amp;&quot; s)</div><div class="ttdef"><b>Definition:</b> loos.py:3756</div></div>
+<div class="ttc" id="aclassloos_1_1DCDWriter_html_a6441398ca5ddd7d7f0bde47f31561e5c"><div class="ttname"><a href="classloos_1_1DCDWriter.html#a6441398ca5ddd7d7f0bde47f31561e5c">loos.DCDWriter::DCDWriter</a></div><div class="ttdeci">DCDWriter(const std::string &amp;s, const std::vector&lt; AtomicGroup &gt; &amp;grps, const std::vector&lt; std::string &gt; &amp;comments, const bool append=false)</div><div class="ttdoc">Writes coordinates of grps adding comments as TITLE records.</div><div class="ttdef"><b>Definition:</b> dcdwriter.hpp:134</div></div>
+<div class="ttc" id="aclassloos_1_1DCDWriter_html_a67aaa7ebee87b9b411ffce5d5e2b9777"><div class="ttname"><a href="classloos_1_1DCDWriter.html#a67aaa7ebee87b9b411ffce5d5e2b9777">loos.DCDWriter.writeFrames</a></div><div class="ttdeci">&quot;void&quot; writeFrames(self, &quot;AtomicGroupVector&quot; grps)</div><div class="ttdef"><b>Definition:</b> loos.py:3776</div></div>
+<div class="ttc" id="aclassloos_1_1DCDWriter_html_a70b84329cc9a2fc7f71ee46e1388e535"><div class="ttname"><a href="classloos_1_1DCDWriter.html#a70b84329cc9a2fc7f71ee46e1388e535">loos.DCDWriter.setComments</a></div><div class="ttdeci">&quot;void&quot; setComments(self, &quot;StringVector&quot; comments)</div><div class="ttdef"><b>Definition:</b> loos.py:3764</div></div>
+<div class="ttc" id="aclassloos_1_1DCDWriter_html_a73b408823370a380cb60f9ae6468520d"><div class="ttname"><a href="classloos_1_1DCDWriter.html#a73b408823370a380cb60f9ae6468520d">loos.DCDWriter.framesWritten</a></div><div class="ttdeci">&quot;uint&quot; framesWritten(self)</div><div class="ttdef"><b>Definition:</b> loos.py:3784</div></div>
+<div class="ttc" id="aclassloos_1_1DCDWriter_html_a8006009fb389af37c6224ef8eb0f1b45"><div class="ttname"><a href="classloos_1_1DCDWriter.html#a8006009fb389af37c6224ef8eb0f1b45">loos.DCDWriter.writeFrame</a></div><div class="ttdeci">&quot;void&quot; writeFrame(self, &quot;AtomicGroup&quot; grp)</div><div class="ttdef"><b>Definition:</b> loos.py:3772</div></div>
+<div class="ttc" id="aclassloos_1_1DCDWriter_html_a92f2018b1dc8280e607ac416278d0548"><div class="ttname"><a href="classloos_1_1DCDWriter.html#a92f2018b1dc8280e607ac416278d0548">loos.DCDWriter::DCDWriter</a></div><div class="ttdeci">DCDWriter(const std::string &amp;s, const std::vector&lt; AtomicGroup &gt; &amp;grps, const bool append=false)</div><div class="ttdoc">Writes the coordinates of grps to file s as a DCD.</div><div class="ttdef"><b>Definition:</b> dcdwriter.hpp:96</div></div>
+<div class="ttc" id="aclassloos_1_1DCDWriter_html_a99515583c984150405c55efcb5238240"><div class="ttname"><a href="classloos_1_1DCDWriter.html#a99515583c984150405c55efcb5238240">loos.DCDWriter::DCDWriter</a></div><div class="ttdeci">DCDWriter(const std::string &amp;s, const std::vector&lt; AtomicGroup &gt; &amp;grps, const std::string &amp;comment, const bool append=false)</div><div class="ttdoc">Writes coordinates of grps adding comment as a TITLE record.</div><div class="ttdef"><b>Definition:</b> dcdwriter.hpp:115</div></div>
+<div class="ttc" id="aclassloos_1_1DCDWriter_html_aa01498d706fa9f9a187da57d24b52d7d"><div class="ttname"><a href="classloos_1_1DCDWriter.html#aa01498d706fa9f9a187da57d24b52d7d">loos.DCDWriter::DCDWriter</a></div><div class="ttdeci">DCDWriter(const std::string &amp;s, const bool append=false)</div><div class="ttdoc">Setup for writing to a file named by s.</div><div class="ttdef"><b>Definition:</b> dcdwriter.hpp:70</div></div>
+<div class="ttc" id="aclassloos_1_1DCDWriter_html_abdd45864e1dcd700f44ed7ae0793e4cf"><div class="ttname"><a href="classloos_1_1DCDWriter.html#abdd45864e1dcd700f44ed7ae0793e4cf">loos.DCDWriter::setHeader</a></div><div class="ttdeci">void setHeader(const int na, const int ns, const greal ts, const bool bf)</div><div class="ttdoc">Sets header parameters.</div><div class="ttdef"><b>Definition:</b> dcdwriter.hpp:162</div></div>
+<div class="ttc" id="aclassloos_1_1DCDWriter_html_ac7c61e3d2e79696481907d0324b3ce30"><div class="ttname"><a href="classloos_1_1DCDWriter.html#ac7c61e3d2e79696481907d0324b3ce30">loos.DCDWriter::DCDWriter</a></div><div class="ttdeci">DCDWriter(std::iostream &amp;fs, const bool append=false)</div><div class="ttdoc">Setup for writing to a stream.</div><div class="ttdef"><b>Definition:</b> dcdwriter.hpp:84</div></div>
+<div class="ttc" id="aclassloos_1_1DCDWriter_html_ae450e87444ae9f3194c56ff46f78f74c"><div class="ttname"><a href="classloos_1_1DCDWriter.html#ae450e87444ae9f3194c56ff46f78f74c">loos.DCDWriter.addTitle</a></div><div class="ttdeci">&quot;void&quot; addTitle(self, &quot;std::string const &amp;&quot; s)</div><div class="ttdef"><b>Definition:</b> loos.py:3760</div></div>
+<div class="ttc" id="aclassloos_1_1DCDWriter_html_afe16a78c39476c29934fc7c054fc5bc5"><div class="ttname"><a href="classloos_1_1DCDWriter.html#afe16a78c39476c29934fc7c054fc5bc5">loos.DCDWriter.hasComments</a></div><div class="ttdeci">&quot;bool&quot; hasComments(self)</div><div class="ttdef"><b>Definition:</b> loos.py:3768</div></div>
+<div class="ttc" id="aclassloos_1_1TrajectoryWriter_html"><div class="ttname"><a href="classloos_1_1TrajectoryWriter.html">loos.TrajectoryWriter</a></div><div class="ttdoc">Base class for writing trajectories.</div><div class="ttdef"><b>Definition:</b> loos.py:3679</div></div>
+<div class="ttc" id="anamespaceloos_html"><div class="ttname"><a href="namespaceloos.html">loos</a></div><div class="ttdoc">Namespace for most things not already encapsulated within a class.</div><div class="ttdef"><b>Definition:</b> loos.py:1</div></div>
 </div><!-- fragment --></div><!-- contents -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><b>dcdwriter.hpp</b></li>
-    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+</small></address>
 </body>
 </html>

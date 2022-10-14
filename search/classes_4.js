@@ -1,11 +1,19 @@
 var searchData=
 [
-  ['edge_774',['Edge',['../class_voronoi_1_1_voronoi_1_1_edge.html',1,'Voronoi::Voronoi']]],
-  ['elasticnetworkmodel_775',['ElasticNetworkModel',['../class_e_n_m_1_1_elastic_network_model.html',1,'ENM']]],
-  ['endoffile_776',['EndOfFile',['../classloos_1_1_d_c_d_1_1_end_of_file.html',1,'loos::DCD']]],
-  ['equals_777',['equals',['../classloos_1_1internal_1_1equals.html',1,'loos::internal']]],
-  ['errorwithatom_778',['ErrorWithAtom',['../structloos_1_1_h_bonds_1_1_error_with_atom.html',1,'loos::HBonds']]],
-  ['estimatingcounter_779',['EstimatingCounter',['../classloos_1_1_estimating_counter.html',1,'loos']]],
-  ['exponentialdistance_780',['ExponentialDistance',['../class_e_n_m_1_1_exponential_distance.html',1,'ENM']]],
-  ['extractnumber_781',['extractNumber',['../classloos_1_1internal_1_1extract_number.html',1,'loos::internal']]]
+  ['dcd_970',['DCD',['../classloos_1_1DCD.html',1,'loos']]],
+  ['dcdwriter_971',['DCDWriter',['../classloos_1_1DCDWriter.html',1,'loos.DCDWriter'],['../classloos_1_1loos_1_1DCDWriter.html',1,'loos.loos.DCDWriter'],['../classpyloos_1_1DCDWriter.html',1,'pyloos.DCDWriter']]],
+  ['densitygrid_972',['DensityGrid',['../classloos_1_1DensityTools_1_1DensityGrid.html',1,'loos::DensityTools']]],
+  ['densitygrid_3c_20double_20_3e_973',['DensityGrid&lt; double &gt;',['../classloos_1_1DensityTools_1_1DensityGrid.html',1,'loos::DensityTools']]],
+  ['densitygrid_3c_20int_20_3e_974',['DensityGrid&lt; int &gt;',['../classloos_1_1DensityTools_1_1DensityGrid.html',1,'loos::DensityTools']]],
+  ['densitygriditerator_975',['DensityGridIterator',['../classloos_1_1DensityTools_1_1DensityGridIterator.html',1,'loos::DensityTools']]],
+  ['densitygridplane_976',['DensityGridPlane',['../classloos_1_1DensityTools_1_1DensityGridPlane.html',1,'loos::DensityTools']]],
+  ['densitygridrow_977',['DensityGridRow',['../classloos_1_1DensityTools_1_1DensityGridRow.html',1,'loos::DensityTools']]],
+  ['descendingsort_978',['DescendingSort',['../classloos_1_1DescendingSort.html',1,'loos']]],
+  ['distancecutoff_979',['DistanceCutoff',['../classENM_1_1DistanceCutoff.html',1,'ENM']]],
+  ['distanceweight_980',['DistanceWeight',['../classENM_1_1DistanceWeight.html',1,'ENM']]],
+  ['doublevector_981',['DoubleVector',['../classloos_1_1DoubleVector.html',1,'loos.DoubleVector'],['../classloos_1_1loos_1_1DoubleVector.html',1,'loos.loos.DoubleVector'],['../classpyloos_1_1DoubleVector.html',1,'pyloos.DoubleVector']]],
+  ['doublevectormatrix_982',['DoubleVectorMatrix',['../classloos_1_1DoubleVectorMatrix.html',1,'loos.DoubleVectorMatrix'],['../classloos_1_1loos_1_1DoubleVectorMatrix.html',1,'loos.loos.DoubleVectorMatrix'],['../classpyloos_1_1DoubleVectorMatrix.html',1,'pyloos.DoubleVectorMatrix']]],
+  ['drop_983',['drop',['../classloos_1_1internal_1_1drop.html',1,'loos::internal']]],
+  ['dualworker_984',['DualWorker',['../classDualWorker.html',1,'']]],
+  ['dup_985',['dup',['../classloos_1_1internal_1_1dup.html',1,'loos::internal']]]
 ];

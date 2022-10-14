@@ -9,10 +9,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -26,8 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LOOS
-   &#160;<span id="projectnumber">v3.3</span>
+   &#160;<span id="projectnumber">4.0</span>
    </div>
+   <div id="projectbrief">The Lightweight Object Oriented Structural analysis library/toolkit</div>
   </td>
  </tr>
  </tbody>
@@ -51,22 +48,6 @@ $(function() {
 /* @license-end */</script>
 <div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('functions_m.html',''); initResizable(); });
-/* @license-end */
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -86,52 +67,80 @@ $(document).ready(function(){initNavTree('functions_m.html',''); initResizable()
 
 <h3><a id="index_m"></a>- m -</h3><ul>
 <li>mappedCoords()
-: <a class="el" href="classloos_1_1_d_c_d.html#aad1a86fb9f4bc04d83e89cc23725a439">loos::DCD</a>
+: <a class="el" href="classloos_1_1DCD.html#aad1a86fb9f4bc04d83e89cc23725a439">loos::DCD</a>
+</li>
+<li>mass()
+: <a class="el" href="classloos_1_1Atom.html#ad5c4278e91e546f79c020c6c6d6a0a46">loos.Atom</a>
+, <a class="el" href="classloos_1_1loos_1_1Atom.html#a6abf8ebfdcfb1b746bb375f0526c7dd6">loos.loos.Atom</a>
+, <a class="el" href="classpyloos_1_1Atom.html#a279eca32c1e4cfea693cb8a4fd2c19b5">pyloos.Atom</a>
 </li>
 <li>Matrix()
-: <a class="el" href="classloos_1_1_math_1_1_matrix.html#a41fd964667734df58317f06f951dd513">loos::Math::Matrix&lt; T, OrderPolicy, StoragePolicy &gt;</a>
+: <a class="el" href="classloos_1_1Math_1_1Matrix.html#a41fd964667734df58317f06f951dd513">loos::Math::Matrix&lt; T, OrderPolicy, StoragePolicy &gt;</a>
 </li>
 <li>Matrix44()
-: <a class="el" href="classloos_1_1_matrix44.html#a25281f162b320b7e84c610c48fe357f3">loos::Matrix44&lt; T &gt;</a>
+: <a class="el" href="classloos_1_1Matrix44.html#aec5a44a02a32f4a7c112ea3beba61296">loos::Matrix44&lt; T &gt;</a>
+</li>
+<li>maxId()
+: <a class="el" href="classloos_1_1AtomicGroup.html#a0e87d467d5dd0ea9ed82174410e60bc4">loos.AtomicGroup</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroup.html#a398f97d9ef7130002b30252f57cce9c7">loos.loos.AtomicGroup</a>
+, <a class="el" href="classpyloos_1_1AtomicGroup.html#ad17263fa67f60f34bcdba15f45137f29">pyloos.AtomicGroup</a>
 </li>
 <li>maximumIterations()
-: <a class="el" href="class_simplex.html#a58597f6b3bb4a373fcaf57ded0058a96">Simplex&lt; T &gt;</a>
+: <a class="el" href="classSimplex.html#a58597f6b3bb4a373fcaf57ded0058a96">Simplex&lt; T &gt;</a>
+</li>
+<li>maxResid()
+: <a class="el" href="classloos_1_1AtomicGroup.html#aaaec698fb04b38afd0de6353fe0fa36d">loos.AtomicGroup</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroup.html#ae07f7d23d74ff9d2452705ecb0481738">loos.loos.AtomicGroup</a>
+, <a class="el" href="classpyloos_1_1AtomicGroup.html#a9a04b749cb5d53c1d94d4fc00fc7431e">pyloos.AtomicGroup</a>
 </li>
 <li>merge()
-: <a class="el" href="classloos_1_1_atomic_group.html#a565774cc283d8e5e65fc486330c744f9">loos::AtomicGroup</a>
+: <a class="el" href="classloos_1_1AtomicGroup.html#adf39c4c77eac00c0c01d67f2f727d205">loos.AtomicGroup</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroup.html#ae90ac75f836b4c9b0c174b3d3d4bddbb">loos.loos.AtomicGroup</a>
+, <a class="el" href="classpyloos_1_1AtomicGroup.html#af2adfdbde3523e7c6eeb365a25e988a3">pyloos.AtomicGroup</a>
 </li>
 <li>mergeImage()
-: <a class="el" href="classloos_1_1_atomic_group.html#a4b136bf681b267e113c35a6651cbfe51">loos::AtomicGroup</a>
+: <a class="el" href="classloos_1_1AtomicGroup.html#a3e87e176114eebaebb47e478da5beaf8">loos.AtomicGroup</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroup.html#a63d4ea5ba07adcf3e3075e6d7e96157f">loos.loos.AtomicGroup</a>
+, <a class="el" href="classpyloos_1_1AtomicGroup.html#a2d2bbe9e8a95332122a56e2929a2dc82">pyloos.AtomicGroup</a>
 </li>
 <li>meta()
-: <a class="el" href="class_e_n_m_1_1_elastic_network_model.html#a31082048f88f5b77a269656089abf66b">ENM::ElasticNetworkModel</a>
+: <a class="el" href="classENM_1_1ElasticNetworkModel.html#a31082048f88f5b77a269656089abf66b">ENM::ElasticNetworkModel</a>
+</li>
+<li>minId()
+: <a class="el" href="classloos_1_1AtomicGroup.html#a161a2d36d44c36ec133345ea207a9f2b">loos.AtomicGroup</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroup.html#ad287807af4cc7e8d0881b9716b2c271e">loos.loos.AtomicGroup</a>
+, <a class="el" href="classpyloos_1_1AtomicGroup.html#a28ce4c58e34d95f797b17c316fa59630">pyloos.AtomicGroup</a>
+</li>
+<li>minResid()
+: <a class="el" href="classloos_1_1AtomicGroup.html#a0399e5f632eb49a3ccd6daed245da259">loos.AtomicGroup</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroup.html#a4a2d36cc01896cad56dde435cbe8de62">loos.loos.AtomicGroup</a>
+, <a class="el" href="classpyloos_1_1AtomicGroup.html#ac5074a1c95f5ecb149e9e39c8c80ff6d">pyloos.AtomicGroup</a>
 </li>
 <li>model()
-: <a class="el" href="classloos_1_1pyloos_1_1trajectories_1_1_trajectory.html#a185e90c1c7d9f05fdcf4a2afaa535b2e">loos.pyloos.trajectories.Trajectory</a>
-, <a class="el" href="classloos_1_1_options_framework_1_1_basic_trajectory.html#a9539b7ef672b1a57472ca7b8f080e6a3">loos::OptionsFramework::BasicTrajectory</a>
-, <a class="el" href="classloos_1_1_options_framework_1_1_multi_traj_options.html#a6d689398875786bd925dea9b6f7b268d">loos::OptionsFramework::MultiTrajOptions</a>
-, <a class="el" href="classloos_1_1_options_framework_1_1_trajectory_with_frame_indices.html#ad8f6730d1dd1198749eb208ae104846d">loos::OptionsFramework::TrajectoryWithFrameIndices</a>
+: <a class="el" href="classloos_1_1pyloos_1_1trajectories_1_1Trajectory.html#a185e90c1c7d9f05fdcf4a2afaa535b2e">loos.pyloos.trajectories.Trajectory</a>
+, <a class="el" href="classloos_1_1OptionsFramework_1_1BasicTrajectory.html#a9539b7ef672b1a57472ca7b8f080e6a3">loos::OptionsFramework::BasicTrajectory</a>
+, <a class="el" href="classloos_1_1OptionsFramework_1_1MultiTrajOptions.html#a6d689398875786bd925dea9b6f7b268d">loos::OptionsFramework::MultiTrajOptions</a>
+, <a class="el" href="classloos_1_1OptionsFramework_1_1TrajectoryWithFrameIndices.html#ad8f6730d1dd1198749eb208ae104846d">loos::OptionsFramework::TrajectoryWithFrameIndices</a>
 </li>
 <li>momentsOfInertia()
-: <a class="el" href="classloos_1_1_atomic_group.html#a8b6aa6394b1759104d8cadb2518061bf">loos::AtomicGroup</a>
+: <a class="el" href="classloos_1_1AtomicGroup.html#ade61e21723f714fa1f0d9a108bec5982">loos.AtomicGroup</a>
+, <a class="el" href="classloos_1_1loos_1_1AtomicGroup.html#a895857f39c9f8b98f8b0c5e4dd34b566">loos.loos.AtomicGroup</a>
+, <a class="el" href="classpyloos_1_1AtomicGroup.html#a9ba7918447a9bc2fe9cadd402ca22123">pyloos.AtomicGroup</a>
 </li>
 <li>mtraj
-: <a class="el" href="classloos_1_1_options_framework_1_1_multi_traj_options.html#a52d99e88306d167f713b312a14b67a0b">loos::OptionsFramework::MultiTrajOptions</a>
+: <a class="el" href="classloos_1_1OptionsFramework_1_1MultiTrajOptions.html#a52d99e88306d167f713b312a14b67a0b">loos::OptionsFramework::MultiTrajOptions</a>
 </li>
 <li>MultiTrajectory()
-: <a class="el" href="classloos_1_1_multi_trajectory.html#a7af16fa7408561b035daed2b05711332">loos::MultiTrajectory</a>
+: <a class="el" href="classloos_1_1MultiTrajectory.html#a7af16fa7408561b035daed2b05711332">loos::MultiTrajectory</a>
 </li>
 <li>my_name
-: <a class="el" href="classloos_1_1internal_1_1_action.html#a5a78264f2f69e7521613c6174ed28304">loos::internal::Action</a>
+: <a class="el" href="classloos_1_1internal_1_1Action.html#a5a78264f2f69e7521613c6174ed28304">loos::internal::Action</a>
 </li>
 </ul>
 </div><!-- contents -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+</small></address>
 </body>
 </html>

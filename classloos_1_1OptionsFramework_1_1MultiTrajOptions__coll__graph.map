@@ -1,0 +1,9 @@
+<map id="loos::OptionsFramework::MultiTrajOptions" name="loos::OptionsFramework::MultiTrajOptions">
+<area shape="rect" id="node1" title="Multiple trajectories as one trajectory via MultiTrajectory." alt="" coords="835,83,1015,124"/>
+<area shape="rect" id="node2" href="$classloos_1_1OptionsFramework_1_1OptionsPackage.html" title="Base class for options." alt="" coords="483,5,663,47"/>
+<area shape="rect" id="node3" href="$classloos_1_1loos_1_1AtomicGroup.html" title=" " alt="" coords="289,74,459,101"/>
+<area shape="rect" id="node4" title=" " alt="" coords="5,99,68,126"/>
+<area shape="rect" id="node6" href="$classloos_1_1loos_1_1Trajectory.html" title=" " alt="" coords="117,126,265,153"/>
+<area shape="rect" id="node5" href="$classloos_1_1MultiTrajectory.html" title="Combine multiple trajectories (pTraj&#39;s) into one large virtual trajectory." alt="" coords="495,134,650,161"/>
+<area shape="rect" id="node7" title=" " alt="" coords="543,185,602,211"/>
+</map>

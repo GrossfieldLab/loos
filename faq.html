@@ -9,10 +9,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -26,8 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LOOS
-   &#160;<span id="projectnumber">v3.3</span>
+   &#160;<span id="projectnumber">4.0</span>
    </div>
+   <div id="projectbrief">The Lightweight Object Oriented Structural analysis library/toolkit</div>
   </td>
  </tr>
  </tbody>
@@ -50,23 +47,6 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
-</div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('faq.html',''); initResizable(); });
-/* @license-end */
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -81,6 +61,11 @@ $(document).ready(function(){initNavTree('faq.html',''); initResizable(); });
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="index.html">Lightweight Object-Oriented Structure library (LOOS)</a></li>  </ul>
+</div>
+</div><!-- top -->
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
 <div class="title">Frequently Asked Questions </div>  </div>
@@ -134,18 +119,18 @@ Using LOOS Tools</h2>
 <p class="enddd"></p>
 </dd>
 <dt>How does LOOS write out the connectivity information? </dt>
-<dd><p class="startdd">LOOS places the model's connectivity into the CONECT records of the output <a class="el" href="classloos_1_1_p_d_b.html" title="PDB reading/writing class.">PDB</a>. Connectivity is written out for all atoms for which there is connectivity present.</p>
+<dd><p class="startdd">LOOS places the model's connectivity into the CONECT records of the output <a class="el" href="classloos_1_1PDB.html" title="PDB reading/writing class.">PDB</a>. Connectivity is written out for all atoms for which there is connectivity present.</p>
 <p class="enddd"></p>
 </dd>
 <dt>Using LOOS tools with large systems </dt>
-<dd><p class="startdd">LOOS should have no problem with large systems, although some care is required when using <a class="el" href="classloos_1_1_p_d_b.html" title="PDB reading/writing class.">PDB</a> files. There are several different approaches to reading and writing <a class="el" href="classloos_1_1_p_d_b.html" title="PDB reading/writing class.">PDB</a> files that contain more than 100,000 atoms or 10,000 residues. LOOS uses the Hybrid-36 scheme for encoding large numbers in the atom serial numbers (atomids) and residue id's (resids). While LOOS can read <a class="el" href="classloos_1_1_p_d_b.html" title="PDB reading/writing class.">PDB</a>'s written in other conventions, it is best to canonicalize them into LOOS's hybrid-36 scheme. One way to do this is to use the renum-pdb tool, </p><div class="fragment"><div class="line"><a class="code" href="namespacerenum.html">renum</a>-pdb bigmodel.pdb all 1 1 &gt;loos_bigmodel.pdb</div>
+<dd><p class="startdd">LOOS should have no problem with large systems, although some care is required when using <a class="el" href="classloos_1_1PDB.html" title="PDB reading/writing class.">PDB</a> files. There are several different approaches to reading and writing <a class="el" href="classloos_1_1PDB.html" title="PDB reading/writing class.">PDB</a> files that contain more than 100,000 atoms or 10,000 residues. LOOS uses the Hybrid-36 scheme for encoding large numbers in the atom serial numbers (atomids) and residue id's (resids). While LOOS can read <a class="el" href="classloos_1_1PDB.html" title="PDB reading/writing class.">PDB</a>'s written in other conventions, it is best to canonicalize them into LOOS's hybrid-36 scheme. One way to do this is to use the renum-pdb tool, </p><div class="fragment"><div class="line"><a class="code" href="namespacerenum.html">renum</a>-pdb bigmodel.pdb all 1 1 &gt;loos_bigmodel.pdb</div>
 <div class="ttc" id="anamespacerenum_html"><div class="ttname"><a href="namespacerenum.html">renum</a></div><div class="ttdoc">-by-mol</div></div>
-</div><!-- fragment --><p class="interdd">Alternatively, stick with a <a class="el" href="classloos_1_1_p_s_f.html" title="Class for reading a subset of the PSF format.">PSF</a>. If you need coordinates in a model, you can extract the first frame of your trajectory using frame2pdb, </p><div class="fragment"><div class="line">frame2pdb bigmodel.psf bigmodel.dcd 0 &gt;loos_bigmodel.pdb</div>
-</div><!-- fragment --><p class="interdd">Alternatively, since <a class="el" href="classloos_1_1_p_s_f.html" title="Class for reading a subset of the PSF format.">PSF</a> files are space delimited, field overflow is not an issue. You can convert a PDB+PSF to a <a class="el" href="classloos_1_1_p_d_b.html" title="PDB reading/writing class.">PDB</a> without renumbering by using the convert2pdb tool, i.e. </p><div class="fragment"><div class="line">convert2pdb --coords bigmodel.pdb bigmodel.psf &gt;loos_bigmodel.pdb</div>
+</div><!-- fragment --><p class="interdd">Alternatively, stick with a <a class="el" href="classloos_1_1PSF.html" title="Class for reading a subset of the PSF format.">PSF</a>. If you need coordinates in a model, you can extract the first frame of your trajectory using frame2pdb, </p><div class="fragment"><div class="line">frame2pdb bigmodel.psf bigmodel.dcd 0 &gt;loos_bigmodel.pdb</div>
+</div><!-- fragment --><p class="interdd">Alternatively, since <a class="el" href="classloos_1_1PSF.html" title="Class for reading a subset of the PSF format.">PSF</a> files are space delimited, field overflow is not an issue. You can convert a PDB+PSF to a <a class="el" href="classloos_1_1PDB.html" title="PDB reading/writing class.">PDB</a> without renumbering by using the convert2pdb tool, i.e. </p><div class="fragment"><div class="line">convert2pdb --coords bigmodel.pdb bigmodel.psf &gt;loos_bigmodel.pdb</div>
 </div><!-- fragment --><p class="enddd"></p>
 </dd>
-<dt>My <a class="el" href="classloos_1_1_d_c_d.html" title="Class for reading DCD files.">DCD</a> says it has 0 frames (or too many frames) </dt>
-<dd><p class="startdd">LOOS relies on the <a class="el" href="classloos_1_1_d_c_d.html" title="Class for reading DCD files.">DCD</a> header to know how may frames are in a trajectory, but sometimes the header may be incorrect. For example, a ptraj conversion my result in a 0 frame count in the header, or if a write to a trajectory was interrupted, the header may list more frames than were actually written. Two tools can be used to check the integrity of a trajectory: trajinfo and dcdinfo. Both tools will scan the trajectory and count the number of frames actually present. The latter will also dump the inctrl block from the <a class="el" href="classloos_1_1_d_c_d.html" title="Class for reading DCD files.">DCD</a> header. If there is a problem with the frame count in the <a class="el" href="classloos_1_1_d_c_d.html" title="Class for reading DCD files.">DCD</a> header, use the fixdcd tool to correct it. </p><div class="fragment"><div class="line">fixdcd simulation.dcd</div>
+<dt>My <a class="el" href="classloos_1_1DCD.html" title="Class for reading DCD files.">DCD</a> says it has 0 frames (or too many frames) </dt>
+<dd><p class="startdd">LOOS relies on the <a class="el" href="classloos_1_1DCD.html" title="Class for reading DCD files.">DCD</a> header to know how may frames are in a trajectory, but sometimes the header may be incorrect. For example, a ptraj conversion my result in a 0 frame count in the header, or if a write to a trajectory was interrupted, the header may list more frames than were actually written. Two tools can be used to check the integrity of a trajectory: trajinfo and dcdinfo. Both tools will scan the trajectory and count the number of frames actually present. The latter will also dump the inctrl block from the <a class="el" href="classloos_1_1DCD.html" title="Class for reading DCD files.">DCD</a> header. If there is a problem with the frame count in the <a class="el" href="classloos_1_1DCD.html" title="Class for reading DCD files.">DCD</a> header, use the fixdcd tool to correct it. </p><div class="fragment"><div class="line">fixdcd simulation.dcd</div>
 </div><!-- fragment --><p class="enddd"></p>
 </dd>
 </dl>
@@ -153,19 +138,21 @@ Using LOOS Tools</h2>
 Using the LOOS Library</h2>
 <dl>
 <dt>How does LOOS handle connectivity/bonds? </dt>
-<dd><p class="startdd">Bonds are represented in LOOS by a list of atom id's that are bound to a given atom. This means that connectivity can be maintained even when the bound atoms are no longer stored. However, it also means that atom id's are assumed to be unique. If you are having trouble with connectivity because of fragmenting groups of atoms, you can use <a class="el" href="classloos_1_1_atomic_group.html#a207734a7387d8aadd0ded48652ca12ea" title="Remove any bonding information present in contained atoms.">AtomicGroup::clearBonds()</a> to remove all connectivity in a group, or <a class="el" href="classloos_1_1_atomic_group.html#ab682d7a74a46a65d920f0e362bc72c5a" title="Attempt to prune connectivity (only retain bonds to atoms within this AtomicGroup)">AtomicGroup::pruneBonds()</a> to remove bonds to any atom not contained in the given group.</p>
+<dd><p class="startdd">Bonds are represented in LOOS by a list of atom id's that are bound to a given atom. This means that connectivity can be maintained even when the bound atoms are no longer stored. However, it also means that atom id's are assumed to be unique. If you are having trouble with connectivity because of fragmenting groups of atoms, you can use <a class="el" href="classloos_1_1AtomicGroup.html#a374996471c40ed70a4c5c637a1cc5522" title="Remove any bonding information present in contained atoms.">AtomicGroup::clearBonds()</a> to remove all connectivity in a group, or <a class="el" href="classloos_1_1AtomicGroup.html#abdbcd279f0355aa58e7325a8ee0432dc" title="Attempt to prune connectivity (only retain bonds to atoms within this AtomicGroup)">AtomicGroup::pruneBonds()</a> to remove bonds to any atom not contained in the given group.</p>
 <p class="enddd"></p>
 </dd>
-<dt>How do I make a copy of an <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a>? Why do changes in one group affect another? </dt>
-<dd><p class="startdd">Atoms are typically shared between <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a>'s in LOOS. For example, select just the alpha-carbons from a model, </p><div class="fragment"><div class="line">AtomicGroup model = createSystem(<span class="stringliteral">&quot;protein.pdb&quot;</span>);</div>
-<div class="line">AtomicGroup ca = selectAtoms(model, <span class="stringliteral">&quot;name == &#39;CA&#39;&quot;</span>);</div>
+<dt>How do I make a copy of an <a class="el" href="classloos_1_1AtomicGroup.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a>? Why do changes in one group affect another? </dt>
+<dd><p class="startdd">Atoms are typically shared between <a class="el" href="classloos_1_1AtomicGroup.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a>'s in LOOS. For example, select just the alpha-carbons from a model, </p><div class="fragment"><div class="line">AtomicGroup model = <a class="code" href="namespaceloos.html#ab5aee41b2c324eb5e060a247b182363f">createSystem</a>(<span class="stringliteral">&quot;protein.pdb&quot;</span>);</div>
+<div class="line">AtomicGroup ca = <a class="code" href="namespaceloos.html#a4fad4000e166dfc752043ab3010bd8a9">selectAtoms</a>(model, <span class="stringliteral">&quot;name == &#39;CA&#39;&quot;</span>);</div>
+<div class="ttc" id="anamespaceloos_html_a4fad4000e166dfc752043ab3010bd8a9"><div class="ttname"><a href="namespaceloos.html#a4fad4000e166dfc752043ab3010bd8a9">loos.selectAtoms</a></div><div class="ttdeci">&quot;loos::AtomicGroup&quot; selectAtoms(&quot;AtomicGroup&quot; arg1, &quot;std::string const&quot; arg2)</div><div class="ttdef"><b>Definition:</b> loos.py:3250</div></div>
+<div class="ttc" id="anamespaceloos_html_ab5aee41b2c324eb5e060a247b182363f"><div class="ttname"><a href="namespaceloos.html#ab5aee41b2c324eb5e060a247b182363f">loos.createSystem</a></div><div class="ttdeci">&quot;loos::AtomicGroup&quot; createSystem(*args)</div><div class="ttdef"><b>Definition:</b> loos.py:3874</div></div>
 </div><!-- fragment --><p> The atoms in ca will be shared with the corresponding atoms in model. Changes to an atom in one group will result in changes to the other group because the atoms are shared. </p><div class="fragment"><div class="line">ca[0]-&gt;coords(ca[0]-&gt;coords() + translation_vector);</div>
-</div><!-- fragment --><p> Will translate the first alpha-carbon in both ca and model. Making a copy of an <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a>, </p><div class="fragment"><div class="line">AtomicGroup duplicate = model;</div>
+</div><!-- fragment --><p> Will translate the first alpha-carbon in both ca and model. Making a copy of an <a class="el" href="classloos_1_1AtomicGroup.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a>, </p><div class="fragment"><div class="line">AtomicGroup duplicate = model;</div>
 <div class="line">AtomicGroup duplicate(model);</div>
 </div><!-- fragment --><p> results in the copy sharing the same atoms. Also of note here are the two idioms for making a copy of a group. Both result in what is called a "shallow copy" of model. The atoms are shared, but the lists of atoms in the group are different. For example, </p><div class="fragment"><div class="line">duplicate.remove(ca);</div>
 </div><!-- fragment --><p> will remove all alpha-carbons from the list of atoms in duplicate, but they will still be present in model.</p>
 <p class="interdd"></p>
-<p class="interdd">In order to make a copy of an <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a> where the atoms are <em>not</em> shared, a "deep copy" must be made. Here, each atom is copied into a new, separate atom, and then stored in the copy of the group. The <a class="el" href="classloos_1_1_atomic_group.html#a0dcd01a7efbe31915470ff25dd337d3f" title="Creates a deep copy of this group.">AtomicGroup::copy()</a> function does this, </p><div class="fragment"><div class="line">AtomicGroup duplicate = ca.copy();</div>
+<p class="interdd">In order to make a copy of an <a class="el" href="classloos_1_1AtomicGroup.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a> where the atoms are <em>not</em> shared, a "deep copy" must be made. Here, each atom is copied into a new, separate atom, and then stored in the copy of the group. The <a class="el" href="classloos_1_1AtomicGroup.html#abbfcce4e1111fa7a84cfff05f3e38723">AtomicGroup::copy()</a> function does this, </p><div class="fragment"><div class="line">AtomicGroup duplicate = ca.copy();</div>
 </div><!-- fragment --><p> Now, not only are the lists of atoms distinct, but so are the atoms... </p><div class="fragment"><div class="line">duplicate[0]-&gt;coords(duplicate[0]-&gt;coords() + translation_vector);</div>
 </div><!-- fragment --><p> Here, the changes to the first alpha-carbon in duplicate does <em>not</em> change the coordinates of the first alpha-carbon in ca since they are no longer shared.</p>
 <p class="enddd"></p>
@@ -179,13 +166,13 @@ Using the LOOS Library</h2>
 <dt>How have atomid's changed in LOOS in release 2.1.0? </dt>
 <dd><p class="startdd">Previously, LOOS treated atomid's as special when reading a trajectory. The atomid was the index into the trajectory frame for the corresponding atom. This required models to have contiguous atomid's that began with 1. This is no longer the case. Atomid's should still be unique, otherwise features like searching for atoms and following bonds may give erroneous results.</p>
 <p class="interdd"></p>
-<p class="interdd">Additionally, some trajectory format classes have special cases of </p><div class="fragment"><div class="line"><a class="code" href="classloos_1_1_trajectory.html#a2d1304fd897a2b96dc17478a4c6c6e19">Trajectory::updateGroupCoords</a>(AtomicGroup&amp; g)</div>
-<div class="ttc" id="aclassloos_1_1_trajectory_html_a2d1304fd897a2b96dc17478a4c6c6e19"><div class="ttname"><a href="classloos_1_1_trajectory.html#a2d1304fd897a2b96dc17478a4c6c6e19">loos::Trajectory::updateGroupCoords</a></div><div class="ttdeci">void updateGroupCoords(AtomicGroup &amp;g)</div><div class="ttdoc">Update the coordinates in an AtomicGroup with the current frame.</div><div class="ttdef"><b>Definition:</b> <a href="_trajectory_8hpp_source.html#l00161">Trajectory.hpp:161</a></div></div>
-</div><!-- fragment --><p> If the number of atoms in g is the same as the trajectory frame, then the coordinates are copied <em>in order</em> into g, irrespective of the atomid's. This is no longer the case. <a class="el" href="classloos_1_1_atom.html" title="Basic Atom class for handling atom properties.">Atom</a> indices will always be honored.</p>
+<p class="interdd">Additionally, some trajectory format classes have special cases of </p><div class="fragment"><div class="line"><a class="code" href="classloos_1_1Trajectory.html#a049d9af54a16984b7c98227cb21a3a2d">Trajectory::updateGroupCoords</a>(AtomicGroup&amp; g)</div>
+<div class="ttc" id="aclassloos_1_1Trajectory_html_a049d9af54a16984b7c98227cb21a3a2d"><div class="ttname"><a href="classloos_1_1Trajectory.html#a049d9af54a16984b7c98227cb21a3a2d">loos.Trajectory.updateGroupCoords</a></div><div class="ttdeci">&quot;void&quot; updateGroupCoords(self, &quot;AtomicGroup&quot; g)</div><div class="ttdef"><b>Definition:</b> loos.py:3183</div></div>
+</div><!-- fragment --><p> If the number of atoms in g is the same as the trajectory frame, then the coordinates are copied <em>in order</em> into g, irrespective of the atomid's. This is no longer the case. <a class="el" href="classloos_1_1Atom.html" title="Basic Atom class for handling atom properties.">Atom</a> indices will always be honored.</p>
 <p class="enddd"></p>
 </dd>
 <dt>What if I need to renumber the atom indices? </dt>
-<dd><p class="startdd">This should rarely happen. If it does, you can set the indices directly by using Atom::index(), or use <a class="el" href="classloos_1_1_atomic_group.html#a6b461aac137353d384db9098e8e2433b" title="Reset the atom indices (used for interfacing with trajectories)">AtomicGroup::resetAtomIndices()</a> which will make all indices in a given group sequential and beginning with 0.</p>
+<dd><p class="startdd">This should rarely happen. If it does, you can set the indices directly by using Atom::index(), or use <a class="el" href="classloos_1_1AtomicGroup.html#aa073479d519b2978e7307a68f36f73f9" title="Reset the atom indices (used for interfacing with trajectories)">AtomicGroup::resetAtomIndices()</a> which will make all indices in a given group sequential and beginning with 0.</p>
 <p class="enddd"></p>
 </dd>
 </dl>
@@ -247,47 +234,47 @@ Using PyLOOS</h2>
 <dt>Making copies of LOOS objects </dt>
 <dd><p class="startdd">Remember that in Python, saying "a = b" does not actually copy b. Python has a "copy" package which supports a shallow copy using the copy() function and a deep copy using the deepcopy() function. A shallow copy is similar to how a LOOS object would normally be copied in C++. For example, </p><div class="fragment"><div class="line">AtomicGroup A;</div>
 <div class="line">AtomicGroup B = A;</div>
-</div><!-- fragment --> <pre class="fragment">    In this case, B is a shallow copy of A.  That is, the atoms
-    are shared between A and B.  However, B can contain a
-    different set of atoms from A, e.g.
+</div><!-- fragment --> <pre class="fragment">In this case, B is a shallow copy of A.  That is, the atoms
+are shared between A and B.  However, B can contain a
+different set of atoms from A, e.g.
 </pre> <div class="fragment"><div class="line">B.append(another_atom);</div>
 </div><!-- fragment --><p> Now B will have an extra atom that A will be lacking, but existing atoms will still be shared between A and B. In contrast, in the PyLOOS equivalent, </p><div class="fragment"><div class="line">A = AtomicGroup()</div>
 <div class="line">B = A</div>
 <div class="line">B.append(another_atom)</div>
-</div><!-- fragment --><p> A and B are the same and now both have the extra atom. To make a copy of A that behaves like the C++ copy, use Python's copy package to make a shallow copy, </p><div class="fragment"><div class="line"><span class="keyword">import</span> copy</div>
+</div><!-- fragment --><p> A and B are the same and now both have the extra atom. To make a copy of A that behaves like the C++ copy, use Python's copy package to make a shallow copy, </p><div class="fragment"><div class="line">    <span class="keyword">import</span> copy</div>
 <div class="line">A = AtomicGroup()</div>
 <div class="line">B = copy.copy(A)</div>
 <div class="line">B.append(another_atom)</div>
 </div><!-- fragment --><p> Now, B has an extra atom and existing atoms are shared. Note that the C++ idiom, </p><div class="fragment"><div class="line">A = AtomicGroup()</div>
 <div class="line">B = AtomicGroup(A)</div>
 </div><!-- fragment --><p> will also work for creating a shallow copy.</p>
-<p class="interdd">Since atoms are shared in a shallow copy of an <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a>, modifying the atom in one group will modify the atom in all groups that contain that atom. </p><div class="fragment"><div class="line"><span class="keyword">import</span> copy</div>
+<p class="interdd">Since atoms are shared in a shallow copy of an <a class="el" href="classloos_1_1AtomicGroup.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a>, modifying the atom in one group will modify the atom in all groups that contain that atom. </p><div class="fragment"><div class="line">    <span class="keyword">import</span> copy</div>
 <div class="line">an_atom = Atom(1, <span class="stringliteral">&quot;CA&quot;</span>, GCoord(1,2,3))</div>
-<div class="line">A = AtomicGroup()</div>
+<div class="line">    A = AtomicGroup()</div>
 <div class="line">A.append(an_atom)</div>
 <div class="line"> </div>
 <div class="line">B = copy.copy(A)</div>
 <div class="line">B[0].id(42)</div>
-</div><!-- fragment --><p> Here, we've created an atom, appended it to <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a> A, then made a shallow copy into <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a> B. However, atoms are shared between AtomicGroups that have been shallow-copied. Therefore, when the atomid of the first atom in B is changed, since the atom is shared between A and B, both groups see the change. Sometimes, it is necessary to have a separate copy of a group so that changes to the atom in group B will not affect group A. This requires a deep copy, </p><div class="fragment"><div class="line"><span class="keyword">import</span> copy</div>
+</div><!-- fragment --><p> Here, we've created an atom, appended it to <a class="el" href="classloos_1_1AtomicGroup.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a> A, then made a shallow copy into <a class="el" href="classloos_1_1AtomicGroup.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a> B. However, atoms are shared between AtomicGroups that have been shallow-copied. Therefore, when the atomid of the first atom in B is changed, since the atom is shared between A and B, both groups see the change. Sometimes, it is necessary to have a separate copy of a group so that changes to the atom in group B will not affect group A. This requires a deep copy, </p><div class="fragment"><div class="line">    <span class="keyword">import</span> copy</div>
 <div class="line">an_atom = Atom(1, <span class="stringliteral">&quot;CA&quot;</span>, GCoord(1,2,3))</div>
 <div class="line">A = AtomicGroup()</div>
 <div class="line">A.append(an_atom)</div>
 <div class="line"> </div>
 <div class="line">B = copy.deepcopy(A)</div>
 <div class="line">B[0].id(42)</div>
-</div><!-- fragment --><p> Here, the atoms are no longer shared...each group has its own copy of the atom. Therefore, changing the atomid of the first atom in group B does NOT change the first atom in group A. This is equivalent to using the <a class="el" href="classloos_1_1_atomic_group.html#a0dcd01a7efbe31915470ff25dd337d3f" title="Creates a deep copy of this group.">AtomicGroup::copy()</a> function in C++.</p>
+</div><!-- fragment --><p> Here, the atoms are no longer shared...each group has its own copy of the atom. Therefore, changing the atomid of the first atom in group B does NOT change the first atom in group A. This is equivalent to using the <a class="el" href="classloos_1_1AtomicGroup.html#abbfcce4e1111fa7a84cfff05f3e38723">AtomicGroup::copy()</a> function in C++.</p>
 <p class="enddd"></p>
 </dd>
 <dt>Why are my GCoords changing on me? </dt>
-<dd><p class="startdd">See above... Remember that saying "a = b" in Python does NOT copy the GCoord so when you change a, you're also changing b. Use "a = copy(b)" to get a new GCoord that's a copy of the existing one.</p>
+<dd><p class="startdd">See above... Remember that saying "a = b" in Python does NOT copy the <a class="el" href="classloos_1_1GCoord.html">GCoord</a> so when you change a, you're also changing b. Use "a = copy(b)" to get a new <a class="el" href="classloos_1_1GCoord.html">GCoord</a> that's a copy of the existing one.</p>
 <p class="enddd"></p>
 </dd>
 <dt>What objects support copying? </dt>
-<dd><p class="startdd">Currently, <a class="el" href="classloos_1_1_atom.html" title="Basic Atom class for handling atom properties.">Atom</a>, GCoord, and <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a> support copying. For <a class="el" href="classloos_1_1_atom.html" title="Basic Atom class for handling atom properties.">Atom</a> and GCoord, copy() and deepcopy() are functionally equivalent.</p>
+<dd><p class="startdd">Currently, <a class="el" href="classloos_1_1Atom.html" title="Basic Atom class for handling atom properties.">Atom</a>, <a class="el" href="classloos_1_1GCoord.html">GCoord</a>, and <a class="el" href="classloos_1_1AtomicGroup.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a> support copying. For <a class="el" href="classloos_1_1Atom.html" title="Basic Atom class for handling atom properties.">Atom</a> and <a class="el" href="classloos_1_1GCoord.html">GCoord</a>, copy() and deepcopy() are functionally equivalent.</p>
 <p class="enddd"></p>
 </dd>
 <dt>Where did pAtoms go in PyLOOS? </dt>
-<dd><p class="startdd">Swig maps the boost shared pointer (pAtom) into the name "Atom". So, wherever you would use a pAtom in the C++ version of your code, simply use <a class="el" href="classloos_1_1_atom.html" title="Basic Atom class for handling atom properties.">Atom</a> in PyLOOS.</p>
+<dd><p class="startdd">Swig maps the boost shared pointer (pAtom) into the name "Atom". So, wherever you would use a pAtom in the C++ version of your code, simply use <a class="el" href="classloos_1_1Atom.html" title="Basic Atom class for handling atom properties.">Atom</a> in PyLOOS.</p>
 <p class="enddd"></p>
 </dd>
 <dt>Are there any examples of using PyLOOS? </dt>
@@ -299,7 +286,7 @@ Using PyLOOS</h2>
 <p class="enddd"></p>
 </dd>
 <dt>Why is PyLOOS so slow? </dt>
-<dd>A frequent problem with PyLOOS performance is a result of looping using Python. For example, to find an <a class="el" href="classloos_1_1_atom.html" title="Basic Atom class for handling atom properties.">Atom</a> in an <a class="el" href="classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a>, the following will be slow, <div class="fragment"><div class="line">found = 0</div>
+<dd>A frequent problem with PyLOOS performance is a result of looping using Python. For example, to find an <a class="el" href="classloos_1_1Atom.html" title="Basic Atom class for handling atom properties.">Atom</a> in an <a class="el" href="classloos_1_1AtomicGroup.html" title="Class for handling groups of Atoms (pAtoms, actually)">AtomicGroup</a>, the following will be slow, <div class="fragment"><div class="line">found = 0</div>
 <div class="line"><span class="keywordflow">for</span> x <span class="keywordflow">in</span> range(system.size()):</div>
 <div class="line">    <span class="keywordflow">if</span> (system[x] == an_atom):</div>
 <div class="line">       found = 1</div>
@@ -307,28 +294,24 @@ Using PyLOOS</h2>
 <div class="line"> </div>
 <div class="line"><span class="keywordflow">if</span> (found):</div>
 <div class="line">   do_something()</div>
-</div><!-- fragment --> <pre class="fragment">    Instead of using loops, try first to get Python to do the
-    looping internally, i.e.
+</div><!-- fragment --> <pre class="fragment">Instead of using loops, try first to get Python to do the
+looping internally, i.e.
 </pre> <div class="fragment"><div class="line"><span class="keywordflow">if</span> (an_atom <span class="keywordflow">in</span> system):</div>
 <div class="line">   do_something()</div>
-</div><!-- fragment --> <pre class="fragment">    Alternatively, look for LOOS functions that will perform the
-    same operation, such as:
+</div><!-- fragment --> <pre class="fragment">Alternatively, look for LOOS functions that will perform the
+same operation, such as:
 </pre> <div class="fragment"><div class="line"><span class="keywordflow">if</span> (system.contains(an_atom)):</div>
 <div class="line">   do_something()</div>
-</div><!-- fragment --> <pre class="fragment">    Finally, consider rewriting the loop in C++ and adding it to
-    AtomicGroup (remembering to update the SWIG interface file,
-    AtomicGroup.i).
+</div><!-- fragment --> <pre class="fragment">Finally, consider rewriting the loop in C++ and adding it to
+AtomicGroup (remembering to update the SWIG interface file,
+AtomicGroup.i).
 </pre> </dd>
 </dl>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="navelem"><a class="el" href="index.html">Lightweight Object-Oriented Structure library (LOOS)</a></li>
-    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+</small></address>
 </body>
 </html>

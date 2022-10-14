@@ -1,0 +1,13 @@
+<map id="loos.loos.FileError" name="loos.loos.FileError">
+<area shape="rect" id="node1" title=" " alt="" coords="339,56,477,83"/>
+<area shape="rect" id="node4" href="$classloos_1_1FileOpenError.html" title="Error while opening a file." alt="" coords="541,5,683,32"/>
+<area shape="rect" id="node5" href="$classloos_1_1FileReadError.html" title="Errors that occur while reading a file." alt="" coords="542,56,682,83"/>
+<area shape="rect" id="node6" href="$classloos_1_1FileWriteError.html" title="Errors while writing to files." alt="" coords="541,107,683,133"/>
+<area shape="rect" id="node7" href="$classloos_1_1loos_1_1FileOpenError.html" title=" " alt="" coords="526,157,698,184"/>
+<area shape="rect" id="node8" href="$classloos_1_1loos_1_1FileReadError.html" title=" " alt="" coords="527,208,697,235"/>
+<area shape="rect" id="node11" href="$classloos_1_1loos_1_1FileWriteError.html" title=" " alt="" coords="525,259,699,285"/>
+<area shape="rect" id="node2" href="$classloos_1_1loos_1_1LOOSError.html" title=" " alt="" coords="140,56,291,83"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,56,92,83"/>
+<area shape="rect" id="node9" href="$classloos_1_1FileReadErrorWithLine.html" title="Errors that occur while reading a text file (where lines are tracked)" alt="" coords="762,208,959,235"/>
+<area shape="rect" id="node10" href="$classloos_1_1loos_1_1FileReadErrorWithLine.html" title=" " alt="" coords="747,259,975,285"/>
+</map>

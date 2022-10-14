@@ -9,10 +9,6 @@
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
-<link href="navtree.css" rel="stylesheet" type="text/css"/>
-<script type="text/javascript" src="resize.js"></script>
-<script type="text/javascript" src="navtreedata.js"></script>
-<script type="text/javascript" src="navtree.js"></script>
 <link href="search/search.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="search/searchdata.js"></script>
 <script type="text/javascript" src="search/search.js"></script>
@@ -26,8 +22,9 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">LOOS
-   &#160;<span id="projectnumber">v3.3</span>
+   &#160;<span id="projectnumber">4.0</span>
    </div>
+   <div id="projectbrief">The Lightweight Object Oriented Structural analysis library/toolkit</div>
   </td>
  </tr>
  </tbody>
@@ -51,22 +48,6 @@ $(function() {
 /* @license-end */</script>
 <div id="main-nav"></div>
 </div><!-- top -->
-<div id="side-nav" class="ui-resizable side-nav-resizable">
-  <div id="nav-tree">
-    <div id="nav-tree-contents">
-      <div id="nav-sync" class="sync"></div>
-    </div>
-  </div>
-  <div id="splitbar" style="-moz-user-select:none;" 
-       class="ui-resizable-handle">
-  </div>
-</div>
-<script type="text/javascript">
-/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
-$(document).ready(function(){initNavTree('functions_vars.html',''); initResizable(); });
-/* @license-end */
-</script>
-<div id="doc-content">
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -84,59 +65,65 @@ $(document).ready(function(){initNavTree('functions_vars.html',''); initResizabl
 <div class="contents">
 &#160;<ul>
 <li>atom
-: <a class="el" href="classloos_1_1internal_1_1_action.html#accbf64f640fa5bc18cf77fb8a4a8c316">loos::internal::Action</a>
+: <a class="el" href="classloos_1_1internal_1_1Action.html#accbf64f640fa5bc18cf77fb8a4a8c316">loos::internal::Action</a>
 </li>
 <li>bulked_spec
-: <a class="el" href="classloos_1_1_options_framework_1_1_basic_water.html#a0b8af2e719711d45146ebc62417f5a7c">loos::OptionsFramework::BasicWater</a>
+: <a class="el" href="classloos_1_1OptionsFramework_1_1BasicWater.html#a0b8af2e719711d45146ebc62417f5a7c">loos::OptionsFramework::BasicWater</a>
 </li>
 <li>eltCount
-: <a class="el" href="class_clustering_1_1_h_a_c.html#a7fff2b3623656d321e841740730e21dc">Clustering::HAC</a>
+: <a class="el" href="classClustering_1_1HAC.html#a7fff2b3623656d321e841740730e21dc">Clustering::HAC</a>
 </li>
 <li>filter_func
-: <a class="el" href="classloos_1_1_options_framework_1_1_basic_water.html#aa7f836bccfa5dbb88bd33f225160acda">loos::OptionsFramework::BasicWater</a>
+: <a class="el" href="classloos_1_1OptionsFramework_1_1BasicWater.html#aa7f836bccfa5dbb88bd33f225160acda">loos::OptionsFramework::BasicWater</a>
 </li>
 <li>model
-: <a class="el" href="classloos_1_1_options_framework_1_1_basic_trajectory.html#a9539b7ef672b1a57472ca7b8f080e6a3">loos::OptionsFramework::BasicTrajectory</a>
-, <a class="el" href="classloos_1_1_options_framework_1_1_multi_traj_options.html#a6d689398875786bd925dea9b6f7b268d">loos::OptionsFramework::MultiTrajOptions</a>
-, <a class="el" href="classloos_1_1_options_framework_1_1_trajectory_with_frame_indices.html#ad8f6730d1dd1198749eb208ae104846d">loos::OptionsFramework::TrajectoryWithFrameIndices</a>
+: <a class="el" href="classloos_1_1OptionsFramework_1_1BasicTrajectory.html#a9539b7ef672b1a57472ca7b8f080e6a3">loos::OptionsFramework::BasicTrajectory</a>
+, <a class="el" href="classloos_1_1OptionsFramework_1_1MultiTrajOptions.html#a6d689398875786bd925dea9b6f7b268d">loos::OptionsFramework::MultiTrajOptions</a>
+, <a class="el" href="classloos_1_1OptionsFramework_1_1TrajectoryWithFrameIndices.html#ad8f6730d1dd1198749eb208ae104846d">loos::OptionsFramework::TrajectoryWithFrameIndices</a>
 </li>
 <li>mtraj
-: <a class="el" href="classloos_1_1_options_framework_1_1_multi_traj_options.html#a52d99e88306d167f713b312a14b67a0b">loos::OptionsFramework::MultiTrajOptions</a>
+: <a class="el" href="classloos_1_1OptionsFramework_1_1MultiTrajOptions.html#a52d99e88306d167f713b312a14b67a0b">loos::OptionsFramework::MultiTrajOptions</a>
 </li>
 <li>my_name
-: <a class="el" href="classloos_1_1internal_1_1_action.html#a5a78264f2f69e7521613c6174ed28304">loos::internal::Action</a>
+: <a class="el" href="classloos_1_1internal_1_1Action.html#a5a78264f2f69e7521613c6174ed28304">loos::internal::Action</a>
 </li>
 <li>pad
-: <a class="el" href="classloos_1_1_options_framework_1_1_basic_water.html#a52ba55e195420134469909825e29be61">loos::OptionsFramework::BasicWater</a>
+: <a class="el" href="classloos_1_1OptionsFramework_1_1BasicWater.html#a52ba55e195420134469909825e29be61">loos::OptionsFramework::BasicWater</a>
 </li>
 <li>radius
-: <a class="el" href="classloos_1_1_options_framework_1_1_basic_water.html#af005f1969686a952f1a3c433024d4cd6">loos::OptionsFramework::BasicWater</a>
+: <a class="el" href="classloos_1_1OptionsFramework_1_1BasicWater.html#af005f1969686a952f1a3c433024d4cd6">loos::OptionsFramework::BasicWater</a>
 </li>
 <li>stack
-: <a class="el" href="classloos_1_1internal_1_1_action.html#ae5297f2f6e554ffac1785c84eae8e493">loos::internal::Action</a>
+: <a class="el" href="classloos_1_1internal_1_1Action.html#ae5297f2f6e554ffac1785c84eae8e493">loos::internal::Action</a>
 </li>
 <li>the_grid
-: <a class="el" href="classloos_1_1_options_framework_1_1_basic_water.html#abf1ad5e9c24f74eb1b65fbb81e4c054f">loos::OptionsFramework::BasicWater</a>
+: <a class="el" href="classloos_1_1OptionsFramework_1_1BasicWater.html#abf1ad5e9c24f74eb1b65fbb81e4c054f">loos::OptionsFramework::BasicWater</a>
 </li>
 <li>trajectory
-: <a class="el" href="classloos_1_1_options_framework_1_1_basic_trajectory.html#a149259d2e0c426aa825f9cd02f95d08e">loos::OptionsFramework::BasicTrajectory</a>
-, <a class="el" href="classloos_1_1_options_framework_1_1_multi_traj_options.html#a1ba5c1171ffba0c1b9c0703a2a9dc131">loos::OptionsFramework::MultiTrajOptions</a>
-, <a class="el" href="classloos_1_1_options_framework_1_1_trajectory_with_frame_indices.html#a53877aaff96103f3702f79ee9f736b4a">loos::OptionsFramework::TrajectoryWithFrameIndices</a>
+: <a class="el" href="classloos_1_1OptionsFramework_1_1BasicTrajectory.html#a149259d2e0c426aa825f9cd02f95d08e">loos::OptionsFramework::BasicTrajectory</a>
+, <a class="el" href="classloos_1_1OptionsFramework_1_1MultiTrajOptions.html#a1ba5c1171ffba0c1b9c0703a2a9dc131">loos::OptionsFramework::MultiTrajOptions</a>
+, <a class="el" href="classloos_1_1OptionsFramework_1_1TrajectoryWithFrameIndices.html#a53877aaff96103f3702f79ee9f736b4a">loos::OptionsFramework::TrajectoryWithFrameIndices</a>
 </li>
 <li>water_string
-: <a class="el" href="classloos_1_1_options_framework_1_1_basic_water.html#a31f592dfe78104ba6d3e4a2fce1d93bd">loos::OptionsFramework::BasicWater</a>
+: <a class="el" href="classloos_1_1OptionsFramework_1_1BasicWater.html#a31f592dfe78104ba6d3e4a2fce1d93bd">loos::OptionsFramework::BasicWater</a>
+</li>
+<li>yy_buffer_stack
+: <a class="el" href="classyyFlexLexer.html#ae4914f003bda6f0dfc20e30703673bea">yyFlexLexer</a>
+</li>
+<li>yy_buffer_stack_max
+: <a class="el" href="classyyFlexLexer.html#ad94e6d3987eb9dad09041a5cb006da7b">yyFlexLexer</a>
+</li>
+<li>yy_buffer_stack_top
+: <a class="el" href="classyyFlexLexer.html#ad30ce09b0f06b749463bb1ddc8f74877">yyFlexLexer</a>
 </li>
 <li>zmin
-: <a class="el" href="classloos_1_1_options_framework_1_1_basic_water.html#a0fe00eb0d60f04966a33996455c639f8">loos::OptionsFramework::BasicWater</a>
+: <a class="el" href="classloos_1_1OptionsFramework_1_1BasicWater.html#a0fe00eb0d60f04966a33996455c639f8">loos::OptionsFramework::BasicWater</a>
 </li>
 </ul>
 </div><!-- contents -->
-</div><!-- doc-content -->
 <!-- start footer part -->
-<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
-  <ul>
-    <li class="footer">Generated by <a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1 </li>
-  </ul>
-</div>
+<hr class="footer"/><address class="footer"><small>
+Generated by&#160;<a href="https://www.doxygen.org/index.html"><img class="footer" src="doxygen.svg" width="104" height="31" alt="doxygen"/></a> 1.9.1
+</small></address>
 </body>
 </html>

@@ -1,0 +1,12 @@
+<map id="loos.loos.AtomicGroup" name="loos.loos.AtomicGroup">
+<area shape="rect" id="node1" title=" " alt="" coords="116,157,285,184"/>
+<area shape="rect" id="node3" href="$classloos_1_1Amber.html" title="Class for reading in AMBER parmtop/coord files..." alt="" coords="355,5,455,32"/>
+<area shape="rect" id="node4" href="$classloos_1_1CHARMM.html" title="Class for reading a CHARMM coordinate file." alt="" coords="345,56,464,83"/>
+<area shape="rect" id="node5" href="$classloos_1_1Gromacs.html" title="Implements a GROMACS model file (.gro)" alt="" coords="349,107,460,133"/>
+<area shape="rect" id="node6" href="$classloos_1_1PDB.html" title="PDB reading/writing class." alt="" coords="365,157,445,184"/>
+<area shape="rect" id="node7" href="$classloos_1_1PSF.html" title="Class for reading a subset of the PSF format." alt="" coords="364,208,445,235"/>
+<area shape="rect" id="node8" href="$classloos_1_1TinkerXYZ.html" title="Class for reading a subset of the TinkerXYZ format." alt="" coords="343,259,466,285"/>
+<area shape="rect" id="node9" href="$classloos_1_1loos_1_1Gromacs.html" title=" " alt="" coords="333,309,476,336"/>
+<area shape="rect" id="node10" href="$classloos_1_1loos_1_1PDB.html" title=" " alt="" coords="349,360,460,387"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,157,68,184"/>
+</map>

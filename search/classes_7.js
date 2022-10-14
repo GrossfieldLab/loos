@@ -1,11 +1,9 @@
 var searchData=
 [
-  ['hac_795',['HAC',['../class_clustering_1_1_h_a_c.html',1,'Clustering']]],
-  ['hbonddetector_796',['HBondDetector',['../classloos_1_1_h_bond_detector.html',1,'loos']]],
-  ['hca_797',['HCA',['../class_e_n_m_1_1_h_c_a.html',1,'ENM']]],
-  ['header_798',['Header',['../struct_header.html',1,'']]],
-  ['heavyatomselector_799',['HeavyAtomSelector',['../structloos_1_1_heavy_atom_selector.html',1,'loos']]],
-  ['heavysolventselector_800',['HeavySolventSelector',['../structloos_1_1_heavy_solvent_selector.html',1,'loos']]],
-  ['hydrogen_801',['Hydrogen',['../classloos_1_1internal_1_1_hydrogen.html',1,'loos::internal']]],
-  ['hydrogenselector_802',['HydrogenSelector',['../structloos_1_1_hydrogen_selector.html',1,'loos']]]
+  ['gcoord_1005',['GCoord',['../classloos_1_1GCoord.html',1,'loos.GCoord'],['../classloos_1_1loos_1_1GCoord.html',1,'loos.loos.GCoord'],['../classpyloos_1_1GCoord.html',1,'pyloos.GCoord']]],
+  ['gcoordvector_1006',['GCoordVector',['../classloos_1_1GCoordVector.html',1,'loos.GCoordVector'],['../classloos_1_1loos_1_1GCoordVector.html',1,'loos.loos.GCoordVector'],['../classpyloos_1_1GCoordVector.html',1,'pyloos.GCoordVector']]],
+  ['gmatrix_1007',['GMatrix',['../classloos_1_1GMatrix.html',1,'loos.GMatrix'],['../classloos_1_1loos_1_1GMatrix.html',1,'loos.loos.GMatrix'],['../classpyloos_1_1GMatrix.html',1,'pyloos.GMatrix']]],
+  ['greaterthan_1008',['greaterThan',['../classloos_1_1internal_1_1greaterThan.html',1,'loos::internal']]],
+  ['greaterthanequals_1009',['greaterThanEquals',['../classloos_1_1internal_1_1greaterThanEquals.html',1,'loos::internal']]],
+  ['gromacs_1010',['Gromacs',['../classloos_1_1Gromacs.html',1,'loos.Gromacs'],['../classloos_1_1loos_1_1Gromacs.html',1,'loos.loos.Gromacs'],['../classpyloos_1_1Gromacs.html',1,'pyloos.Gromacs']]]
 ];
