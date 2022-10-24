@@ -71,7 +71,7 @@
 
      pAtom __next__()  {
        if (_idx >= _ag->size())
-	 throw(loos::StopIteration());
+	 throw(StopIteration());
        return((*_ag)[_idx++]);
      }
 
@@ -85,6 +85,7 @@
 
 %}
 
+%catches(loos::StopIteration) loos::AtomicGroupPythonIterator::__next__();
 
 // Translate C++ exception into Python's
 %typemap(throws) loos::StopIteration %{
