@@ -155,7 +155,7 @@ you're switching from a local build to the new conda-forge binaries if you are
 trying to re-use your env.
 
 If you accidentally installed the cmake build overtop of an older loos build in the same env, one of us managed to get to a working environment by:
-1. Following the 4.x uninstall instructions above.
+1. Follow the 4.x [uninstall instructions](#Uninstalling).
 2. Checking out tagged release 3.3, then running `scons -c; scons -c config`.
 3. Manually inspecting the contents of the `/path/to/miniconda3/envs/my-old-loos-env` to make sure this 'got' everything (for example, using `find` to look for files with `loos` or `scons` somewhere in the name). There may not be any, but an ounce of prevention...
 4. Returning to the loos repo, checking out the version you wanted to build in the first place, and proceeding with the cmake install.
@@ -181,10 +181,6 @@ If you want to remove loos from your environment, you can run,
 ```
 pip uninstall loos
 ```
-
-## Upgrading
-
-If you are upgrading from a 3.x version, and you would like to retain your conda env, follow the uninstall instructions for your current `scons` built version:
 
 ## Working with the build (i.e. not installing)
 
