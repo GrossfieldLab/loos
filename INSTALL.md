@@ -170,17 +170,22 @@ prefix=$CONDA_PREFIX  # Change to your build prefix, if not active conda env.
 scons -c; scons -c config
 # capture output from install since paths are printed to stdout
 scons install -j $(nproc) PREFIX=$prefix > build-output.txt
+# Get all the lines beginning with 'Install', filter out install path, rm.
 rm -v $(awk --field=\" '/^Install/ {print $4}' build-output.txt)
+# Get all the lines beginning with 'Copy', filter out copy dest. path, rm.
 rm -v $(awk --field=\" '/^Copy/ {print $2}' build-output.txt)
 ``` 
 If you're confident everything in that block ran correctly, you can remove
 `build-output.txt`, since you shouldn't need it for anything else.
 
-If you accidentally installed the cmake build overtop of an older loos build in the same env, one of us managed to get to a working environment by:
-1. Following the 4.x instructions for removing an install from your env.
-2. `git checkout loos-3.3` or whichever commit you were on previously that used a scons-based install; run the manual clean-up code block above.
-3. Manually inspecting the contents of the `/path/to/miniconda3/envs/my-old-loos-env` to make sure this 'got' everything (for example, using `find` to look for files with `loos` or `scons` somewhere in the name). There may not be any, but an ounce of prevention...
-4. Returning to the loos repo, checking out the version you wanted to build in the first place, and proceeding with the cmake install.
+If you accidentally installed the cmake build overtop of an older loos build in
+the same env, one of us managed to get to a working environment. This was roughly the protocol: 
+1. Follow the 4.x instructions for removing an install from your env.
+2. `git checkout loos-3.3` or whichever commit you were on previously that used a scons-based install.
+3. Run the manual clean-up code block above.
+4. Inspect the contents of the `/path/to/miniconda3/envs/my-old-loos-env` to make sure this 'got' everything (for example, using `find` to look for files with `loos` or `scons` somewhere in the name). There may not be any, but an ounce of prevention...
+5. Check out the version you wanted to build in the first place. 
+6. Follow the cmake install instructions.
 
 ## Where's my stuff?
 
