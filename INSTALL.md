@@ -142,21 +142,43 @@ say
 cmake --build . --target clean
 ```
 
+If you want to remove loos from your environment, you can run,
+
+```
+pip uninstall loos
+```
+
 ## Upgrading
 
 If you updated an existing git repo from loos 3.x, we suggest running `scons -c;
-scons -c config` before pulling in changes from greater than or equal to 4.0.0. We also suggest building into a fresh conda environment. 
+scons -c config` before pulling in changes from greater than or equal to 4.0.0.
+We also suggest installing into a **fresh conda environment**, if you plan on
+installing.
 
 However, we know that sometimes this is a pain, and some have had success in
 retaining their envs.  If you are trying to rebuild the new loos in an extant
 conda env, you should still run the aforementioned scons commands to remove
 kruft from your 3x install before adding anything from 4.x. This applies even if
 you're switching from a local build to the new conda-forge binaries if you are
-trying to re-use your env.
+trying to re-use your env. You will also need to do some manual cleanup, by
+looking at what scons copied to your conda-env's bin and lib directories. Here
+is a suggestion for how one might check what is installed manually, then remove
+it:
+```
+# manually clean up a loos _install_
+prefix=$CONDA_PREFIX  # Change to your build prefix, if not active conda env.
+scons -c; scons -c config
+# capture output from install since paths are printed to stdout
+scons install -j $(nproc) PREFIX=$prefix > build-output.txt
+rm -v $(awk --field=\" '/^Install/ {print $4}' build-output.txt)
+rm -v $(awk --field=\" '/^Copy/ {print $2}' build-output.txt)
+``` 
+If you're confident everything in that block ran correctly, you can remove
+`build-output.txt`, since you shouldn't need it for anything else.
 
 If you accidentally installed the cmake build overtop of an older loos build in the same env, one of us managed to get to a working environment by:
-1. Follow the 4.x [uninstall instructions](#Uninstalling).
-2. Checking out tagged release 3.3, then running `scons -c; scons -c config`.
+1. Following the 4.x instructions for removing an install from your env.
+2. `git checkout loos-3.3` or whichever commit you were on previously that used a scons-based install; run the manual clean-up code block above.
 3. Manually inspecting the contents of the `/path/to/miniconda3/envs/my-old-loos-env` to make sure this 'got' everything (for example, using `find` to look for files with `loos` or `scons` somewhere in the name). There may not be any, but an ounce of prevention...
 4. Returning to the loos repo, checking out the version you wanted to build in the first place, and proceeding with the cmake install.
 
@@ -174,13 +196,7 @@ the source distribution.
 
 Building inside a conda environment and installing outside the environment is not a supported configuration.
 
-## Uninstalling
 
-If you want to remove loos from your environment, you can run,
-
-```
-pip uninstall loos
-```
 
 ## Working with the build (i.e. not installing)
 
