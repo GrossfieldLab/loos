@@ -282,7 +282,7 @@ std::string TwoModelsWithCoords::print() const {
 void BasicTrajectory::addGeneric(po::options_description &opts) {
   std::string modeltypes = "Model types:\n" + availableSystemFileTypes();
   std::string trajtypes =
-      "Trajectory types:\n" + availableTrajectoryFileTypes();
+        "Trajectory types:\n" + availableTrajectoryFileTypes();
 
   opts.add_options()("skip,k",
                      po::value<unsigned int>(&skip)->default_value(skip),

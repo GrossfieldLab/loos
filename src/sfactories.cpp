@@ -37,10 +37,7 @@
 #include <dcd.hpp>
 #include <amber_traj.hpp>
 
-#if defined(HAS_NETCDF)
 #include <amber_netcdf.hpp>
-#endif
-
 #include <amber_rst.hpp>
 #include <ccpdb.hpp>
 #include <charmm.hpp>
@@ -129,15 +126,10 @@ namespace loos {
     };
 
     TrajectoryNameBindingType trajectory_name_bindings[] = {
-#if defined(HAS_NETCDF)
       { "crd", "Amber Traj (NetCDF/Amber)", &AmberNetcdf::create},
       { "mdcrd", "Amber Traj (NetCDF/Amber)", &AmberNetcdf::create},
       { "nc", "Amber Traj (NetCDF)", &AmberNetcdf::create},
       { "netcdf", "Amber Traj (NetCDF)", &AmberNetcdf::create},
-#else
-      { "crd", "Amber Traj", &AmberTraj::create},
-      { "mdcrd", "Amber Traj", &AmberTraj::create},
-#endif
       { "inpcrd", "Amber Restart", &AmberRst::create},
       { "rst", "Amber Restart", &AmberRst::create},
       { "rst7", "Amber Restart", &AmberRst::create},
