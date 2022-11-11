@@ -513,13 +513,13 @@ int main(int argc, char *argv[]) {
   if (topts->ss_flag)
     cout << "# Secondary Structure Codes: H = Helix, S = Sheet, O = Other, ? = Undefined\n";
 
-  cout << "# frame\tresid" << setw(10);
+  cout << "# frame resid ";
   
 
   // Construct the header of what torsions were computed...
-  copy(torsion_names.begin(), torsion_names.end(), ostream_iterator<string>(cout, "\t"));
+  copy(torsion_names.begin(), torsion_names.end(), ostream_iterator<string>(cout, " "));
   if (topts->ss_flag)
-    cout << "SS";
+    cout << " SS";
   cout << endl;
 
   uint t = 0;
@@ -545,12 +545,12 @@ int main(int argc, char *argv[]) {
 
       // Grab the resid for all the torsions. Assume that the third at in first torsion is within residue.
       resid = (*(*vvi).begin())[2]->resid();
-      cout << "  " << resid;
+      cout << resid << " ";
       for (vi = (*vvi).begin(); vi != (*vvi).end(); ++vi) {
         double angle = missing_flag;
         if ((*vi).size() == 4)
           angle = Math::torsion((*vi)[0], (*vi)[1], (*vi)[2], (*vi)[3]);
-        cout << setw(10) << angle << "     ";
+        cout << angle << " ";
         torsions.push_back(angle);
       }
       
