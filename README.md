@@ -74,6 +74,21 @@ and generally speaking the performance hit for python vs. C++ isn't prohibitive.
 resources for developing with LOOS on the [GitHub wiki](https://github.com/GrossfieldLab/loos/wiki),
 particularly the [Tutorials for Developers](https://github.com/GrossfieldLab/loos/wiki/Tutorials-for-Developers).
 
+### Release 4.0.3
+
+LOOS 4.0 is now officially "in production" and can be installable either via conda-forge or
+by building from source.  The first few versions had minor issues either related to
+the new build system (cmake) or the conda-forge packaging.  The current release is 4.0.3
+and we recommend that everyone update to this as soon as possible.
+
+If you have been using LOOS prior to 4.0, particulary with the conda build system, then the
+safest way to upgrade is to recreate your conda environment and install the new conda-forge
+package.  If you chose to build from source, but had previously installed LOOS into your conda
+environment, then we still recommend that you delete and recreate your environment, _then_ build
+and install the latest LOOS.
+
+
+
 ### Release pre-4.0.0
 
 This release involves a complete switch from using SCons for building LOOS to CMake.
