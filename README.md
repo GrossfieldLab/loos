@@ -87,6 +87,13 @@ package.  If you chose to build from source, but had previously installed LOOS i
 environment, then we still recommend that you delete and recreate your environment, _then_ build
 and install the latest LOOS.
 
+If you have installed a previous version of LOOS from conda-forge, then you can update to
+the latest with,
+
+```
+conda update loos
+```
+
 
 
 ### Release pre-4.0.0
