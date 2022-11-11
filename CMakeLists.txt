@@ -7,7 +7,7 @@ include(CheckTypeSize)
 
 project(
   LOOS
-  VERSION 4.0
+  VERSION 4.0.3
   DESCRIPTION "The Lightweight Object Oriented Structural analysis library/toolkit"
   )
 
