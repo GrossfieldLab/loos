@@ -91,6 +91,7 @@ If you have installed a previous version of LOOS from conda-forge, then you can 
 the latest with,
 
 ```
+conda activate loos
 conda update loos
 ```
 
