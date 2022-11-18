@@ -459,6 +459,24 @@ namespace loos {
     }
   }
 
+
+  double AtomicGroup::principalAxesOrder(void) const {
+    const double minp = 1e-30;
+
+    std::vector<GCoord> axes = principalAxes();
+    // a planar molecule will only have 2 non-zero principle axes
+    bool planar = (abs(axes[3].z()) < minp);
+
+    double order = 0.5 - 1.5 * axes[1].z() * axes[1].z();
+    if (!planar) {
+      order += 0.5 - 1.5 * axes[2].z() * axes[2].z();
+      order *= 0.5;
+    }
+
+    return(order);
+  }
+
+
   greal AtomicGroup::stacking(const AtomicGroup& other,
                               const GCoord& box,
                               const double threshold=5.0) const {

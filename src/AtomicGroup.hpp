@@ -800,6 +800,23 @@ namespace loos
      */
     std::vector<GCoord> principalAxes(void) const;
 
+    //! Computes order parameter based on principalAxes
+    /**
+     * Computes the molecular order parameter by taking 2nd and 3rd
+     * principal axes and transforming using a 2nd order Legendre
+     * polynomial. This produces a whole-chain quantity with values 
+     * comparable to deuterium order parameters.
+     * 
+     * If the AtomicGroup is not planar, this returns the average of 
+     * the order parameter using the 2nd and 3rd axes. If the molecule is 
+     * planar, indicated by a near-zero 3rd moment, it simply returns the 2nd 
+     * moment's order parameter.
+     * 
+     * This implementation assumes you've already done any needed 
+     * transformations to the coordinates (eg reimaging by molecule)
+    */
+    double principalAxesOrder(void) const;
+
     //! Computes the moments of inertia for a group
     /**
      * Calculates the principal moments and principal axes (from the
