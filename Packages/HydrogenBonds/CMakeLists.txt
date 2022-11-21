@@ -17,3 +17,4 @@ add_executable(hcontacts hcontacts.cpp hcore.cpp)
 target_link_libraries(hcontacts loos)
 install(TARGETS hcontacts)
 
+install(PROGRAMS hoccupancies.pl DESTINATION bin)
