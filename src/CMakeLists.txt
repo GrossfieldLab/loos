@@ -166,6 +166,7 @@ target_link_libraries(loos Boost::program_options
 if(SWIG_FOUND AND BUILD_PYLOOS)
   set(CMAKE_SWIG_FLAGS -py3 -doxygen)
   set_property(SOURCE loos.i PROPERTY CPLUSPLUS ON)
+  set_source_files_properties("loos.i" PROPERTIES USE_SWIG_DEPENDENCIES TRUE)   # Needed for Ninja
 
   swig_add_library(pyloos TYPE SHARED LANGUAGE python
     SOURCES
