@@ -1,3 +1,6 @@
+2023-01-14 Alan Grossfield <alan>
+	* make_library missing from install
+
 2022-07-29 Alan Grossfield <alan>
 	* Add new tool add_bonds.py to copy connectivity information
 
