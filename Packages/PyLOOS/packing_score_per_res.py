@@ -167,7 +167,7 @@ for t in args.traj[1:]:
     vtraj.append(traj)
 
 # pre-allocate storage as a numpy array
-scores = numpy.zeros([len(residues), len(probes), len(vtraj)], numpy.float)
+scores = numpy.zeros([len(residues), len(probes), len(vtraj)], float)
 
 frame_index = 0
 for frame in vtraj:

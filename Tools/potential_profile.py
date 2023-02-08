@@ -104,7 +104,7 @@ density-dist was run.
     #      dielectric   charge density        integrated distance
     units = 1/eps0 * e_to_C/(ang_to_m**3) * ang_to_m**2
 
-    pot = numpy.zeros(data.shape, numpy.float)
+    pot = numpy.zeros(data.shape, float)
     # compute the potential, uncorrected for periodicity
     for i in range(len(data)):
         for j in range(i+1, len(data)):

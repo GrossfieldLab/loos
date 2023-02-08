@@ -133,7 +133,7 @@ def main():
     protein_centroid.append(loos.Atom())
 
     # set up space to hold the neigbor time series
-    neighbor_timeseries = numpy.zeros([len(target_lipids), len(traj)], numpy.float)
+    neighbor_timeseries = numpy.zeros([len(target_lipids), len(traj)], float)
 
     for frame in traj:
         # Use the centroid of the protein slice to represent the protein
