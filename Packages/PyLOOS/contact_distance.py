@@ -127,7 +127,7 @@ else:
         traj.append(t)
 
 num_pairs = len(residues) * (len(residues)-1) // 2
-contacts = numpy.zeros((len(traj), num_pairs), numpy.float)
+contacts = numpy.zeros((len(traj), num_pairs), float)
 
 default_box = loos.GCoord(10000., 10000., 10000.)
 frame_number = 0

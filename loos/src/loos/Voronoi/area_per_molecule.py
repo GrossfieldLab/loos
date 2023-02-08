@@ -109,7 +109,7 @@ area is absurdly large) it could suggest your padding value is too small.
         """)
         sys.exit(0)
 
-    histograms = numpy.zeros([len(selection_strings[1:]), num_bins], numpy.float)
+    histograms = numpy.zeros([len(selection_strings[1:]), num_bins], float)
 
     print("# ", " ".join(sys.argv))
 
