@@ -700,6 +700,7 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
             self._initFrameList()
 
         if self._reference:       # Align to a reference structure
+            reference_alignment_subset = loos.selectAtoms(self._reference, self._alignwith)
             self._xformlist = []
             for i in range(len(self._framelist)):
                 t = self._trajectories[self._trajlist[i]]
@@ -707,7 +708,7 @@ class AlignedVirtualTrajectory(VirtualTrajectory):
                     current_traj = t
                     current_subset = loos.selectAtoms(t.model(), self._alignwith)
                 t.readFrame(self._framelist[i])
-                m = current_subset.superposition(self._reference)
+                m = current_subset.superposition(reference_alignment_subset)
                 x = loos.XForm()
                 x.load(m)
                 self._xformlist.append(x)
