@@ -186,6 +186,10 @@ namespace loos {
 
 
   GMatrix AtomicGroup::superposition(const AtomicGroup& grp) {
+    if (size() != grp.size())
+      {
+	throw(LOOSError("Cannot superimpose AtomicGroups with differing numbers of atoms"));
+      }
     alignment::vecDouble u = coordsAsVector();
     alignment::vecDouble v = grp.coordsAsVector();
 
