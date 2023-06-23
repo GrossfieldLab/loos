@@ -37,8 +37,9 @@
 
 int main(int argc, char *argv[]) {
 
-    fstream xml_file("/home/alan/Downloads/system.xml");
+    fstream xml_file(argv[1]);
     boost::property_tree::ptree system_tree;
+    typedef std::pair<unsigned int, unsigned int> Bond;
 
     try {
         read_xml(xml_file, system_tree);
@@ -48,14 +49,44 @@ int main(int argc, char *argv[]) {
         std :: cout << "Failed !!!";
     }
 
+    // TODO: put each block in a try/catch block
+    std::vector<double> masses;
     for (auto& p : system_tree.get_child("System.Particles")) {
-        std :: cout << "[" << p.first << "]" << std :: endl;
         for (auto& c : p.second) {
-            std :: cout << "Tag : [" << c.first.data() << "], ";
             double mass = c.second.get<double>("mass");
-            std :: cout << "Value : [" << mass << "]" << std :: endl;
+            masses.push_back(mass);
         }   
     }
+    std::cout << "masses: " << masses.size() << std::endl;
+
+    std::vector<Bond> constraints;
+    for (auto& p : system_tree.get_child("System.Constraints")) {
+        for (auto& c : p.second) {
+            unsigned int p1 = c.second.get<unsigned int>("p1");
+            unsigned int p2 = c.second.get<unsigned int>("p2");
+            constraints.push_back(Bond(p1, p2));
+        }   
+    }
+    std::cout << "constraints: " << constraints.size() << std::endl;
+
+    std::vector<Bond> bonds;
+    for (auto& p : system_tree.get_child("System.Forces.Force.Bonds")) {
+        for (auto& c : p.second) {
+            unsigned int p1 = c.second.get<unsigned int>("p1");
+            unsigned int p2 = c.second.get<unsigned int>("p2");
+            bonds.push_back(Bond(p1, p2));
+        }   
+    }
+    std::cout << "bonds: " << bonds.size() << std::endl;
+
+    std::vector<double> charges;
+    for (auto& p : system_tree.get_child("System.Forces.Force.Particles")) {
+        for (auto& c : p.second) {
+            double charge = c.second.get<double>("q");
+            charges.push_back(charge);
+        }   
+    }
+    std::cout << "charges: " << charges.size() << std::endl;
 
 return 0;
 }
