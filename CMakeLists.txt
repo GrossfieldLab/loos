@@ -42,6 +42,8 @@ set(BLA_VENDOR OpenBLAS)
 find_package(BLAS REQUIRED)
 find_package(LAPACK REQUIRED)
 
+find_package(HDF5 REQUIRED COMPONENTS CXX C HL)
+
 find_package(SWIG 4.0 COMPONENTS python)
 if(SWIG_FOUND)
   include(${SWIG_USE_FILE})
