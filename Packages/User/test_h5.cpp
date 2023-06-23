@@ -31,20 +31,39 @@
 
 */
 #include <loos.hpp>
-
-#include <H5Cpp.h>
-#ifndef H5_NO_NAMESPACE
-using namespace H5;
-#endif
+#include <highfive/H5File.hpp>
+#include <highfive/H5Easy.hpp>
 
 int main(int argc, char *argv[]) {
 
-    std::string filename = "/Users/agrossfield/Downloads/imipraine-traj-0.h5";
+    std::string filename = argv[1];
 
-    H5File file(filename, H5F_ACC_RDONLY);
-    DataSet dataset = file.openDataSet("topology");
-    DataSpace dataspace = dataset.getSpace();
+    HighFive::File file(filename, HighFive::File::ReadOnly);
+    auto dataset = file.getDataSet("topology");
+    std::vector<std::size_t> dims = dataset.getSpace().getDimensions();
+    std::size_t n = dataset.getElementCount();
+    std::cout << "n = " << n << std::endl;
+    std::cout << "storage size = " << dataset.getStorageSize() << std::endl;
 
-    std::cout << "got here" << std::endl;
+    auto dataspace = dataset.getSpace();
+    std::cout << "elements: " << dataspace.getElementCount() << std::endl;
+
+    auto datatype = dataset.getDataType();
+    std::cout << "datatype: " << datatype.string() << std::endl;
+    std::cout << "fixed len:" << datatype.isFixedLenStr() << std::endl;
+
+    std::cout << H5Easy::getShape(file, "topology")[0] << std::endl;
+    std::cout << H5Easy::getShape(file, "topology")[1] << std::endl;
+    HighFive::FixedLenStringArray<200000000> str;
+
+    std::cerr << "got here" << std::endl;
+    dataset.read(str);
+    std::cerr << "got here" << std::endl;
+    std::cout << str.getString(0) << std::endl;
+
+    for (auto i : dims) {
+        std::cout << i << "\t" << dims[i] << std::endl;
+    } 
+
 
 }
