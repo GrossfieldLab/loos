@@ -160,7 +160,9 @@ target_link_libraries(loos Boost::program_options
   Boost::regex
   NetCDF::NetCDF
   BLAS::BLAS
-  LAPACK::LAPACK)
+  LAPACK::LAPACK
+  ${HDF5_CXX_LIBRARIES}
+  )
 
 
 if(SWIG_FOUND AND BUILD_PYLOOS)

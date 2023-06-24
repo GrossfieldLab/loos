@@ -35,6 +35,7 @@ if(Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
 endif()
 
+
 find_package(NetCDF REQUIRED)
 include_directories(${NetCDF_INCLUDE_DIRS})
 
@@ -43,6 +44,11 @@ find_package(BLAS REQUIRED)
 find_package(LAPACK REQUIRED)
 
 find_package(HDF5 REQUIRED COMPONENTS CXX C HL)
+
+if (HDF5_FOUND)
+  include_directories(${HDF5_INCLUDE_DIRS})
+endif()
+
 
 find_package(SWIG 4.0 COMPONENTS python)
 if(SWIG_FOUND)
