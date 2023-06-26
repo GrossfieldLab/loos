@@ -158,6 +158,7 @@ target_include_directories(loos PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 
 target_link_libraries(loos Boost::program_options
   Boost::regex
+  Boost::json
   NetCDF::NetCDF
   BLAS::BLAS
   LAPACK::LAPACK
