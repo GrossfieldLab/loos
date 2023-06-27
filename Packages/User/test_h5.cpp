@@ -44,6 +44,7 @@ std::string getTopology(H5::H5File &file) {
   return std::string(topology);
 }
 
+
 int main(int argc, char *argv[]) {
 
     std::string filename = argv[1];
@@ -101,8 +102,29 @@ int main(int argc, char *argv[]) {
     // TODO: I need an example that has constraints
     // If there are constraints, we should treat them like bonds
 
+    // Read the coordinates and box size
+    H5::DataSet box_dataset = file.openDataSet("cell_lengths");
+    H5::DataSpace box_dataspace = box_dataset.getSpace();
+    H5::DataType box_datatype = box_dataset.getDataType();
+    hsize_t box_dims[3];
+    int ndims = box_dataspace.getSimpleExtentDims(box_dims, NULL);
+    std::cout << ndims << std::endl;
+    std::cout << box_dims[0] << std::endl;
+    std::cout << box_dims[1] << std::endl;
 
-    std::cout << loos::PDB::fromAtomicGroup(ag) << std::endl;
+    int num_elements = box_dims[0]* box_dims[1];
+    auto box_lengths = new float[num_elements];
+
+    // TODO: this reads the whole traj at once, but I should learn how to read just
+    //       one frame at a time to do the traj right
+    box_dataset.read(box_lengths, box_datatype, box_dataspace, box_dataspace);
+
+    // Set the periodic box to the first frame of the traj and fix the units
+    loos::GCoord box(box_lengths[0], box_lengths[1], box_lengths[2]);
+    box *= 10.0; // convert to Angstroms
+    ag.periodicBox(box);
+
+    //std::cout << loos::PDB::fromAtomicGroup(ag) << std::endl;
   
     return 0;
 }
