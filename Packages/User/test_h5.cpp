@@ -108,12 +108,12 @@ int main(int argc, char *argv[]) {
     H5::DataType box_datatype = box_dataset.getDataType();
     hsize_t box_dims[3];
     int ndims = box_dataspace.getSimpleExtentDims(box_dims, NULL);
-    std::cout << ndims << std::endl;
-    std::cout << box_dims[0] << std::endl;
-    std::cout << box_dims[1] << std::endl;
+    //std::cout << ndims << std::endl;
+    //std::cout << box_dims[0] << std::endl;
+    //std::cout << box_dims[1] << std::endl;
 
-    int num_elements = box_dims[0]* box_dims[1];
-    auto box_lengths = new float[num_elements];
+    //int num_elements = box_dims[0] * box_dims[1];
+    //auto box_lengths = new float[num_elements];
 
     // TODO: this reads the whole traj at once, but I should learn how to read just
     //       one frame at a time to do the traj right
@@ -136,8 +136,30 @@ int main(int argc, char *argv[]) {
     loos::GCoord box(one_box[0], one_box[1], one_box[2]);
     box *= 10.0; // convert to Angstroms
     ag.periodicBox(box);
+    
+    // Read the coordinates for the nth frame
+    hsize_t frame = 10;
+    H5::DataSet coord_dataset = file.openDataSet("coordinates");
+    H5::DataSpace coord_dataspace = coord_dataset.getSpace();
+    H5::DataType coord_datatype = coord_dataset.getDataType();
+    hsize_t coord_dims[3];
+    int ndims_coord = coord_dataspace.getSimpleExtentDims(coord_dims, NULL);
+    std::cout << ndims_coord << std::endl;
+    std::cout << coord_dims[0] << "\t" 
+              << coord_dims[1] << "\t"
+              << coord_dims[2] << std::endl;
+    float one_frame[coord_dims[1]][coord_dims[2]];
+    hsize_t offset_coord[3] = {frame, 0, 0};
+    hsize_t count_coord[3] = {1, coord_dims[1], coord_dims[2]};
+    hsize_t count_coord_out[2] = {coord_dims[1], coord_dims[2]};
+    H5::DataSpace memspace_coord(2, count_coord_out);
+    coord_dataspace.selectHyperslab(H5S_SELECT_SET, count_coord, offset_coord);
+    coord_dataset.read(one_frame, coord_datatype, memspace_coord, coord_dataspace);
 
-    std::cout << box << std::endl;
+    std::cout << one_frame[0][0] << "\t" << one_frame[0][1] << "\t" << one_frame[0][2] << std::endl;
+    std::cout << one_frame[10][0] << "\t" << one_frame[10][1] << "\t" << one_frame[10][2] << std::endl;
+
+    //std::cout << box << std::endl;
     //std::cout << loos::PDB::fromAtomicGroup(ag) << std::endl;
   
     return 0;
