@@ -54,8 +54,6 @@ int main(int argc, char *argv[]) {
 
     H5::H5File file(filename, H5F_ACC_RDONLY);
     std::string topology_json = getTopology(file);
-
-    // Need to put this into try catch
     boost::json::value topology = boost::json::parse(topology_json);
 
     loos::AtomicGroup ag;
@@ -83,7 +81,6 @@ int main(int argc, char *argv[]) {
           pa->resname(resname);
           pa->PDBelement(element);
 
-          //ag._atomid_to_patom[pa->id()] = pa;
           ag.append(pa);
 
           index++;
