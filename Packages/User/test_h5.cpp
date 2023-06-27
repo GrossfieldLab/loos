@@ -89,14 +89,14 @@ int main(int argc, char *argv[]) {
     for (auto chain: chains) {
       boost::json::array residues = chain.at("residues").as_array();
       for (auto residue: residues) {
-        uint resnum = residue.at("resSeq").as_uint64();
-        std::string resname = std::string_view(residue.at("name").as_string());
+        int resnum = residue.at("resSeq").as_int64();
+        std::string resname = residue.at("name").as_string().data();
 
         boost::json::array atoms = residue.at("atoms").as_array();
         for (auto atom: atoms) {
-          std::stringview atom_name = boost::json::value_to<std::string>(atom.at("name").as_string());
-          uint id = atom.at("index").as_uint64();
-          std::stringview element = boost::json::value_to<std::string>(atom.at("element").as_string());
+          std::string atom_name = atom.at("name").as_string().data();
+          int id = atom.at("index").as_int64();
+          std::string element = atom.at("element").as_string().data();
 
           loos::pAtom pa(new loos::Atom);
           pa->name(atom_name);
@@ -114,6 +114,7 @@ int main(int argc, char *argv[]) {
       }
     }
 
+    std::cout << ag << std::endl;
   
     return 0;
 }
