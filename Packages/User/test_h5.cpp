@@ -117,13 +117,27 @@ int main(int argc, char *argv[]) {
 
     // TODO: this reads the whole traj at once, but I should learn how to read just
     //       one frame at a time to do the traj right
-    box_dataset.read(box_lengths, box_datatype, box_dataspace, box_dataspace);
+    //box_dataset.read(box_lengths, box_datatype, box_dataspace, box_dataspace);
+
+    // Read the nth frame
+    hsize_t n = 32;
+    hsize_t offset[2] = {n, 0};
+    hsize_t count[2] = {1, box_dims[1]};
+    float one_box[box_dims[1]];
+    hsize_t offset_out[1] = {0};
+    hsize_t count_out[1] = {box_dims[1]};
+    H5::DataSpace memspace(1, count_out);
+
+    box_dataspace.selectHyperslab(H5S_SELECT_SET, count, offset);
+    box_dataset.read(one_box, box_datatype, memspace, box_dataspace);
+
 
     // Set the periodic box to the first frame of the traj and fix the units
-    loos::GCoord box(box_lengths[0], box_lengths[1], box_lengths[2]);
+    loos::GCoord box(one_box[0], one_box[1], one_box[2]);
     box *= 10.0; // convert to Angstroms
     ag.periodicBox(box);
 
+    std::cout << box << std::endl;
     //std::cout << loos::PDB::fromAtomicGroup(ag) << std::endl;
   
     return 0;
