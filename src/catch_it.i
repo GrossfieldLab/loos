@@ -131,7 +131,7 @@ selectAtoms;
 // MDTraj 
 %catches(loos::FileOpenError, loos::FileReadError, loos::LOOSError) MDTraj::MDTraj;
 // TODO: there are some H5 exceptions I should probably catch here
-%catches(loos::FileReadError, loos::LOOSError) MDTraj::read;
+%catches(loos::FileReadError, loos::LOOSError, H5::FileIException) MDTraj::read;
 
 
 // pdb_remarks
