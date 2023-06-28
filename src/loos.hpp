@@ -70,6 +70,7 @@
 #include <pdb.hpp>
 #include <psf.hpp>
 #include <amber.hpp>
+#include <mdtraj.hpp>
 #include <tinkerxyz.hpp>
 
 #include <Trajectory.hpp>

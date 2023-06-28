@@ -5,6 +5,7 @@ set(LOOS_USER_TOOLS
     traj_calc
     traj_transform
     test_h5
+    test_h5_2
 )
 
 foreach(TOOL ${LOOS_USER_TOOLS})
