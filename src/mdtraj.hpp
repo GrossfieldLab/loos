@@ -33,6 +33,8 @@
 
 #include <loos_defs.hpp>
 #include <AtomicGroup.hpp>
+#include <H5Cpp.h>
+#include <boost/json.hpp>
 
 
 namespace loos {
@@ -50,7 +52,9 @@ namespace loos {
     virtual ~MDTraj() {}
 
     //explicit MDTraj(const std::string fname) : _max_index(0), _filename(fname);
-    explicit MDTraj(const std::string fname);
+    explicit MDTraj(const std::string fname) {
+      read();
+    }
 
     explicit MDTraj(std::istream &ifs) : _max_index(0), _filename("stream") {
       throw(LOOSError("Creating an MDTraj from a stream isn't implemented"));
@@ -75,6 +79,10 @@ namespace loos {
 
     uint _max_index;
     std::string _filename;
+
+    std::string getTopology(H5::H5File &file);
+    void topologyToAtoms(const boost::json::value& topology);
+    void topologyToBonds(const boost::json::value& topology);
 
   };
 

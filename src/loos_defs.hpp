@@ -161,6 +161,7 @@ namespace loos {
   class TinkerXYZ;
   class Gromacs;
   class CHARMM;
+  class MDTraj;
 
   typedef boost::shared_ptr<AtomicGroup> pAtomicGroup;
   typedef boost::shared_ptr<PDB> pPDB;

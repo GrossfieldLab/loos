@@ -41,6 +41,7 @@
 #include <amber_rst.hpp>
 #include <ccpdb.hpp>
 #include <charmm.hpp>
+#include <mdtraj.hpp>
 #include <tinkerxyz.hpp>
 #include <tinker_arc.hpp>
 #include <gro.hpp>
@@ -69,6 +70,7 @@ namespace loos {
       { "psf", "CHARMM/NAMD PSF", &PSF::create },
       { "gro", "Gromacs", &Gromacs::create },
       { "xyz", "Tinker", &TinkerXYZ::create },
+      { "h5", "MDTraj", &MDTraj::create },
       { "", "", 0}
     };
   }
