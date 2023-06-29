@@ -92,6 +92,7 @@
 #include <xtc.hpp>
 #include <gro.hpp>
 #include <trr.hpp>
+#include <mdtrajtraj.hpp>
 
 
 

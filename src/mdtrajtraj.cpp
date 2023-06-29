@@ -40,11 +40,11 @@ namespace loos {
     hsize_t box_dims[3];
     int box_ndims = box_dataspace.getSimpleExtentDims(box_dims, NULL);
 
-    coords_dataset = file.openDataSet("cell_lengths");
-    coords_dataspace = box_dataset.getSpace();
-    coords_datatype = box_dataset.getDataType();
+    coords_dataset = file.openDataSet("coordinates");
+    coords_dataspace = coords_dataset.getSpace();
+    coords_datatype = coords_dataset.getDataType();
     hsize_t coords_dims[3];
-    int coords_ndims = box_dataspace.getSimpleExtentDims(coords_dims, NULL);
+    int coords_ndims = coords_dataspace.getSimpleExtentDims(coords_dims, NULL);
 
     if (coords_dims[0] != box_dims[0]) {
       throw(FileError(_filename, "Number of frames in box and coords datasets in HDF5 do not match"));
@@ -54,6 +54,10 @@ namespace loos {
     if (_natoms != coords_dims[1]) {
       throw(FileError(_filename, "Number of atoms in HDF5 does not match the AtomicGroup"));
     }
+
+    // Now cache the first frame...
+		readRawFrame(0);
+		cached_first = true;
   }
 
   bool MDTrajTraj::parseFrame(void) {
@@ -79,10 +83,13 @@ namespace loos {
         box[j] = 10.0*one_box[j];
       }
     }
+    std::cerr << "got here" << std::endl;
 
     // Read the coordinates
+
     // TODO: shouldn't reallocate this each read
     float one_frame[_natoms][3];
+
     hsize_t offset_coord[3] = {i, 0, 0};
     hsize_t count_coord[3] = {1, _natoms, 3};
     hsize_t count_coord_out[2] = {_natoms, 3};

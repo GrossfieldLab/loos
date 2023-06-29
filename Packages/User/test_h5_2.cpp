@@ -47,6 +47,10 @@ int main(int argc, char *argv[]) {
 
     AtomicGroup system = createSystem(filename);
     std::cerr << "size = " << system.size() << std::endl;
+
+    MDTrajTraj traj(filename, system.size());
+    traj.updateGroupCoords(system);
+    std::cerr << "centroid: " << system.centroid() << std::endl;
   
     return 0;
 }
