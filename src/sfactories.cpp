@@ -70,7 +70,7 @@ namespace loos {
       { "psf", "CHARMM/NAMD PSF", &PSF::create },
       { "gro", "Gromacs", &Gromacs::create },
       { "xyz", "Tinker", &TinkerXYZ::create },
-      { "h5", "MDTraj", &MDTraj::create },
+      { "h5", "MDTraj HDF5", &MDTraj::create },
       { "", "", 0}
     };
   }

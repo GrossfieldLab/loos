@@ -13,7 +13,7 @@
   This file is part of LOOS.
 
   LOOS (Lightweight Object-Oriented Structure library)
-  Copyright (c) 2011 Tod D. Romo
+  Copyright (c) 2023 Alan Grossfield
   Department of Biochemistry and Biophysics
   School of Medicine & Dentistry, University of Rochester
 
@@ -31,8 +31,6 @@
 
 */
 #include <loos.hpp>
-//#include <H5Cpp.h>
-//#include <boost/json.hpp>
 
 using namespace loos;
 
@@ -40,10 +38,14 @@ int main(int argc, char *argv[]) {
 
     std::string filename = argv[1];
     MDTraj mdtraj_system(filename);
-    std::cerr << "size = " << mdtraj_system.size() << std::endl;
-    AtomicGroup system = createSystem(filename);
+    //std::cerr << "size = " << mdtraj_system.size() << std::endl;
+    //std::cerr <<" centroids: " << "\t" 
+    //          << mdtraj_system.centroid() << std::endl;
+    AtomicGroup ligand = selectAtoms(mdtraj_system, std::string("resname=='LIG'"));
+    //std::cerr << "ligand size = " << ligand.size() << std::endl;
+    //std::cerr << *(ligand[0]) << std::endl;
 
-    
+    AtomicGroup system = createSystem(filename);
     std::cerr << "size = " << system.size() << std::endl;
   
     return 0;

@@ -51,8 +51,7 @@ namespace loos {
     MDTraj() : _max_index(0) { }
     virtual ~MDTraj() {}
 
-    //explicit MDTraj(const std::string fname) : _max_index(0), _filename(fname);
-    explicit MDTraj(const std::string fname) {
+    explicit MDTraj(const std::string fname) : _max_index(0), _filename(fname) {
       read();
     }
 

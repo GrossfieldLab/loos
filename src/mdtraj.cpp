@@ -40,7 +40,7 @@ namespace loos {
 
   void MDTraj::read() {
     // turn off printed exceptions
-    H5::Exception::dontPrint();
+    //H5::Exception::dontPrint();
     // Open the hdf5 file
     H5::H5File file(_filename, H5F_ACC_RDONLY);
 
@@ -55,6 +55,8 @@ namespace loos {
 
     // get the bonds
     topologyToBonds(topology);
+
+    // TODO: read the first frame of coordinates from the HDF5 file
 
   }
 
@@ -95,12 +97,13 @@ namespace loos {
 
           append(pa);
 
+          _max_index = index;
           index++;
         }
       }
     }
-
   }
+
 void MDTraj::topologyToBonds(const boost::json::value& topology) {
   // We're assuming the atoms are in order
   boost::json::array bonds = topology.at("bonds").as_array();
