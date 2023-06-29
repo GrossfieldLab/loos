@@ -69,6 +69,7 @@ set(loos_hdr_files
   loos_defs.hpp
   loos_timer.hpp
   mdtraj.hpp
+  mdtrajtraj.hpp
   pdb.hpp
   pdb_remarks.hpp
   pdbtraj.hpp
@@ -128,6 +129,7 @@ set(loos_src_files
   gro.cpp
   index_range_parser.cpp
   mdtraj.cpp
+  mdtrajtraj.cpp
   pdb.cpp
   pdb_remarks.cpp
   pdbtraj.cpp
