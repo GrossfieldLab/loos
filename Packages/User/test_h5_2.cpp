@@ -52,6 +52,11 @@ int main(int argc, char *argv[]) {
     MDTrajTraj traj(filename, system.size());
     traj.updateGroupCoords(system);
     std::cerr << "centroid: " << system.centroid() << std::endl;
+
+    pTraj traj2 = createTrajectory(filename, system);
+    traj2->updateGroupCoords(system);
+    std::cerr << "centroid: " << system.centroid() << std::endl;
+    std::cerr << "box: " << system.periodicBox() << std::endl;
   
     return 0;
 }
