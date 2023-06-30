@@ -76,8 +76,7 @@ platform=`uname`
 echo "Setting channel priority to strict"
 conda config --set channel_priority strict
 
-#packages="python=3 swig=4 cmake numpy scipy scikit-learn boost openblas libnetcdf\<4.9 lapack compilers eigen"
-packages="python=3 swig=4 cmake numpy scipy scikit-learn boost openblas libnetcdf lapack compilers eigen highfive"
+packages="python=3 swig=4 cmake numpy scipy scikit-learn boost openblas libnetcdf lapack compilers eigen "
 
 env_found=$(conda env list | egrep -v '^#' | egrep "^${envname}[ ]" )
 # Build up the conda installation command line
