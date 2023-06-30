@@ -20,6 +20,7 @@
 */
 
 #include <mdtraj.hpp>
+#include <mdtrajtraj.hpp>
 #include <utils.hpp>
 #include <boost/algorithm/string.hpp>
 
@@ -57,6 +58,9 @@ namespace loos {
     topologyToBonds(topology);
 
     // TODO: read the first frame of coordinates from the HDF5 file
+    loos::MDTrajTraj traj(_filename, size());
+    traj.updateGroupCoords(*this);
+
 
   }
 
