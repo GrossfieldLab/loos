@@ -32,13 +32,16 @@ namespace loos {
   void MDTrajTraj::init(void) {
     file.openFile(_filename, H5F_ACC_RDONLY);
 
-    // TODO: I'm assuming the system is periodic, really should check it
-    periodic = true;
-    box_dataset = file.openDataSet("cell_lengths");
-    box_dataspace = box_dataset.getSpace();
-    box_datatype = box_dataset.getDataType();
     hsize_t box_dims[3];
-    int box_ndims = box_dataspace.getSimpleExtentDims(box_dims, NULL);
+    if (H5Lexists(file.getId(), "cell_lengths", H5P_DEFAULT)) {
+      periodic = true;
+      box_dataset = file.openDataSet("cell_lengths");
+      box_dataspace = box_dataset.getSpace();
+      box_datatype = box_dataset.getDataType();
+      int box_ndims = box_dataspace.getSimpleExtentDims(box_dims, NULL);
+    } else {
+      periodic = false;
+    }
 
     coords_dataset = file.openDataSet("coordinates");
     coords_dataspace = coords_dataset.getSpace();
@@ -46,8 +49,10 @@ namespace loos {
     hsize_t coords_dims[3];
     int coords_ndims = coords_dataspace.getSimpleExtentDims(coords_dims, NULL);
 
-    if (coords_dims[0] != box_dims[0]) {
-      throw(FileError(_filename, "Number of frames in box and coords datasets in HDF5 do not match"));
+    if (periodic) {
+      if (coords_dims[0] != box_dims[0]) {
+        throw(FileError(_filename, "Number of frames in box and coords datasets in HDF5 do not match"));
+      }
     }
 
     _nframes = coords_dims[0];
