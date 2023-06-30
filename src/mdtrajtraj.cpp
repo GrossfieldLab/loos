@@ -69,13 +69,14 @@ namespace loos {
   }
 
   bool MDTrajTraj::parseFrame(void) {
+    if (atEnd()) {
+      return(false);
+    }
     readRawFrame(_current_frame);
     return(true);
   }
 
   void MDTrajTraj::readRawFrame(const uint i) {
-    if (i >= _nframes)
-      throw(FileError(_filename, "Attempting to read frame beyond end of trajectory"));
     
     // Read the periodic box
     if (periodic) {
@@ -114,10 +115,12 @@ namespace loos {
 
   void MDTrajTraj::seekFrameImpl(const uint i) {
 
+    /*
     if (i >= _nframes)
       throw(FileError(_filename, "Attempting to seek frame beyond end of trajectory"));
 
     _current_frame = i;
+    */
   }
 
 

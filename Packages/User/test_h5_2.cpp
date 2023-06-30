@@ -46,17 +46,28 @@ int main(int argc, char *argv[]) {
     //std::cerr << *(ligand[0]) << std::endl;
 
     AtomicGroup system = createSystem(filename);
-    std::cerr << "size = " << system.size() << std::endl;
-    std::cerr << "centroid from ag = " << system.centroid() << std::endl;
+    //std::cerr << "size = " << system.size() << std::endl;
+    //std::cerr << "centroid from ag = " << system.centroid() << std::endl;
 
     MDTrajTraj traj(filename, system.size());
     traj.updateGroupCoords(system);
-    std::cerr << "centroid: " << system.centroid() << std::endl;
+    //std::cerr << "centroid: " << system.centroid() << std::endl;
 
     pTraj traj2 = createTrajectory(filename, system);
     traj2->updateGroupCoords(system);
-    std::cerr << "centroid: " << system.centroid() << std::endl;
-    std::cerr << "box: " << system.periodicBox() << std::endl;
+    //std::cerr << "centroid: " << system.centroid() << std::endl;
+    //std::cerr << "box: " << system.periodicBox() << std::endl;
+
+    std::cout << "#" << traj2->nframes() << std::endl;
+    while (traj2->readFrame()) {
+      traj2->updateGroupCoords(system);
+      GCoord centroid = system.centroid();
+      std::cout << traj2->currentFrame() << "\t" 
+                << centroid.x() << "\t"
+                << centroid.y() << "\t"
+                << centroid.z() << "\t"
+                << std::endl;
+    }
   
     return 0;
 }
