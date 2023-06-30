@@ -55,6 +55,9 @@ namespace loos {
       throw(FileError(_filename, "Number of atoms in HDF5 does not match the AtomicGroup"));
     }
 
+    // Allocate space to store the coordinates
+    frame.resize(_natoms);
+
     // Now cache the first frame...
 		readRawFrame(0);
 		cached_first = true;
@@ -75,7 +78,7 @@ namespace loos {
       hsize_t count[2] = {1, 3};
       hsize_t count_out[1] = {3};
       float one_box[3];
-      H5::DataSpace memspace(2, count_out);        
+      H5::DataSpace memspace(1, count_out);        
       box_dataspace.selectHyperslab(H5S_SELECT_SET, count, offset);
       box_dataset.read(one_box, box_datatype, memspace, box_dataspace);
       // copy into periodic box and convert from nm to Angstroms
@@ -83,7 +86,6 @@ namespace loos {
         box[j] = 10.0*one_box[j];
       }
     }
-    std::cerr << "got here" << std::endl;
 
     // Read the coordinates
 
@@ -96,14 +98,13 @@ namespace loos {
     H5::DataSpace memspace_coord(2, count_coord_out);
     coords_dataspace.selectHyperslab(H5S_SELECT_SET, count_coord, offset_coord);
     coords_dataset.read(one_frame, coords_datatype, memspace_coord, coords_dataspace);
+    
     // copy coords into frame and convert from nm to Angstroms
     for (int j=0; j < _natoms; ++j) {
       for (int k=0; k < 3; ++k) {
         frame[j][k] = 10.0*one_frame[j][k];
       }
     }
-
-
   }
 
   void MDTrajTraj::seekFrameImpl(const uint i) {
