@@ -102,6 +102,7 @@ namespace loos {
     H5::DataSpace coords_dataspace;
     H5::DataType coords_datatype;
     H5::DataSpace coord_memspace;
+    float (*one_frame)[3];
   };
 
 

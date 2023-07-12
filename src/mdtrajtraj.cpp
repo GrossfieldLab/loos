@@ -62,6 +62,7 @@ namespace loos {
 
     // Allocate space to store the coordinates
     frame.resize(_natoms);
+    one_frame = new float[_natoms][3];
 
     // Now cache the first frame...
 		readRawFrame(0);
@@ -94,9 +95,6 @@ namespace loos {
     }
 
     // Read the coordinates
-
-    // TODO: shouldn't reallocate this each read
-    float one_frame[_natoms][3];
 
     hsize_t offset_coord[3] = {i, 0, 0};
     hsize_t count_coord[3] = {1, _natoms, 3};
