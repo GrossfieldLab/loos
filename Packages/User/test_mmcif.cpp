@@ -11,6 +11,5 @@ namespace cif = gemmi::cif;
 int main(int argc, char *argv[]) {
     std::string filename = std::string(argv[1]);
     
-    //cif::Document doc = cif::read(gemmi::MaybeGzipped(filename));
-    auto structure = gemmi::read_structure_file(filename);
+    auto structure = gemmi::read_structure_file(filename, gemmi::CoorFormat::Mmcif);
 }
