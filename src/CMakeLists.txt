@@ -160,7 +160,8 @@ target_link_libraries(loos Boost::program_options
   Boost::regex
   NetCDF::NetCDF
   BLAS::BLAS
-  LAPACK::LAPACK)
+  LAPACK::LAPACK
+  gemmi::gemmi_cpp)
 
 
 if(SWIG_FOUND AND BUILD_PYLOOS)
