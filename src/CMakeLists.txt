@@ -68,6 +68,7 @@ set(loos_hdr_files
   loos.hpp
   loos_defs.hpp
   loos_timer.hpp
+  mmcif.hpp
   pdb.hpp
   pdb_remarks.hpp
   pdbtraj.hpp
@@ -126,6 +127,7 @@ set(loos_src_files
   ensembles.cpp
   gro.cpp
   index_range_parser.cpp
+  mmcif.cpp
   pdb.cpp
   pdb_remarks.cpp
   pdbtraj.cpp
