@@ -112,12 +112,8 @@ namespace loos {
   }
 
   void MDTrajTraj::seekFrameImpl(const uint i) {
-
-    /*
-    if (i >= _nframes)
-      throw(FileError(_filename, "Attempting to seek frame beyond end of trajectory"));
-
-    _current_frame = i;
+    /* This is a no-op, because the only thing that needs to be 
+       done is to set _current_frame, which is done in seekFrame()
     */
   }
 
