@@ -61,15 +61,16 @@ namespace loos {
                     // TODO: charge is a char*, looks like it's usually "?" in actual
                     //       mmCIF files. Perhaps a try/catch block to convert to float?
 
-                    // TODO: since I've got the element, in principle I can look up the 
-                    //       mass and atomic number, but doing so will require some changes to
-                    //       AtomicNumberDeducer
+                    pa->atomic_number(atom.element.atomic_number());
                     append(pa); 
 
                     atom_index++;
                 }
             }
         }
+    
+    // assign the masses
+    uint n_assigned = deduceMassFromAtomicNumber();
     // TODO: need to add bonds
     }
 
