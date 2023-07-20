@@ -22,7 +22,8 @@
 #if !defined(LOOS_MMCIF_HPP)
 #define LOOS_MMCIF_HPP
 
-#include <loos.hpp>
+#include <loos_defs.hpp>
+#include <AtomicGroup.hpp>
 #include <gemmi/mmread.hpp>
 #include <gemmi/cif.hpp>
 #include <gemmi/mmcif.hpp>    // cif::Document -> Structure
@@ -34,21 +35,22 @@ namespace loos {
 
     class MMCIF : public AtomicGroup {
     public:
-        MMCIF() {}
+        MMCIF() : _filename("not set") {}
         virtual ~MMCIF() {}
 
         explicit MMCIF(const std::string& filename) : _filename(filename) {
             read(filename);
         }
 
-        static pAtomicGroup create(const std::string& filename) {
+        static pAtomicGroup create(const std::string& filename)  {
             return pAtomicGroup(new MMCIF(filename));
         }
     
         //! Clones an object for polymorphism (see AtomicGroup::clone() for more info)
-        virtual PDB* clone(void) const;
+        virtual MMCIF* clone(void) const;
 
         void read(const std::string& filename);
+
 
     private:
         std::string _filename;

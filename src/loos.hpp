@@ -71,6 +71,7 @@
 #include <psf.hpp>
 #include <amber.hpp>
 #include <tinkerxyz.hpp>
+#include <mmcif.hpp>
 
 #include <Trajectory.hpp>
 #include <dcd.hpp>

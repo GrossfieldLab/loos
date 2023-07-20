@@ -22,7 +22,12 @@
 #include <mmcif.hpp>
 
 namespace loos {
-    void MMCIF::read(const std::string& filename) {
+
+  MMCIF* MMCIF::clone(void) const {
+    return(new MMCIF(*this));
+  }
+
+  void MMCIF::read(const std::string& filename) {
         auto structure = gemmi::read_structure_file(filename, gemmi::CoorFormat::Mmcif);
         auto unit_cell = structure.cell;
         auto box = loos::GCoord(unit_cell.a, unit_cell.b, unit_cell.c);
@@ -67,5 +72,7 @@ namespace loos {
         }
     // TODO: need to add bonds
     }
+
 }
+
 
