@@ -5,6 +5,7 @@ set(LOOS_USER_TOOLS
     traj_calc
     traj_transform
     test_mmcif
+    test_mmcif_2
 )
 
 foreach(TOOL ${LOOS_USER_TOOLS})
