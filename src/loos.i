@@ -78,6 +78,7 @@ namespace loos {
 %include "utils.i"
 %include "cryst.i"
 %include "pdb.i"
+//%include "mdtraj.i"
 %include "ensembles.i"
 %include "Geometry.i"
 %include "TimeSeries.i"

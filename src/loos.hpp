@@ -70,6 +70,7 @@
 #include <pdb.hpp>
 #include <psf.hpp>
 #include <amber.hpp>
+#include <mdtraj.hpp>
 #include <tinkerxyz.hpp>
 #include <mmcif.hpp>
 
@@ -92,6 +93,7 @@
 #include <xtc.hpp>
 #include <gro.hpp>
 #include <trr.hpp>
+#include <mdtrajtraj.hpp>
 
 
 

@@ -68,6 +68,8 @@ set(loos_hdr_files
   loos.hpp
   loos_defs.hpp
   loos_timer.hpp
+  mdtraj.hpp
+  mdtrajtraj.hpp
   mmcif.hpp
   pdb.hpp
   pdb_remarks.hpp
@@ -127,6 +129,8 @@ set(loos_src_files
   ensembles.cpp
   gro.cpp
   index_range_parser.cpp
+  mdtraj.cpp
+  mdtrajtraj.cpp
   mmcif.cpp
   pdb.cpp
   pdb_remarks.cpp
@@ -160,9 +164,12 @@ target_include_directories(loos PUBLIC ${CMAKE_CURRENT_BINARY_DIR})
 
 target_link_libraries(loos Boost::program_options
   Boost::regex
+  Boost::json
   NetCDF::NetCDF
   BLAS::BLAS
   LAPACK::LAPACK
+  ${HDF5_CXX_LIBRARIES}
+  
   gemmi::gemmi_cpp)
 
 
