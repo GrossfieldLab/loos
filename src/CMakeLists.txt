@@ -169,7 +169,6 @@ target_link_libraries(loos Boost::program_options
   BLAS::BLAS
   LAPACK::LAPACK
   ${HDF5_CXX_LIBRARIES}
-  
   gemmi::gemmi_cpp)
 
 
