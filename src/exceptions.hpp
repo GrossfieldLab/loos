@@ -48,6 +48,11 @@ namespace loos {
       ss << a << std::endl << arg;
       _msg = ss.str();
     }
+    explicit LOOSError(const std::string& fname, const Atom& a, const std::string& arg) {
+        std::stringstream ss;
+        ss << "In file: " + fname << std::endl << a << std::endl << arg;
+        _msg = ss.str();
+    }
 
     virtual ~LOOSError() throw() {};
     virtual const char* what(void) const throw() { return(_msg.c_str()); }
