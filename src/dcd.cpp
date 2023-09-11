@@ -414,7 +414,7 @@ namespace loos {
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       uint idx = (*i)->index();
       if (idx >= _natoms)
-        throw(LOOSError(**i, "Atom index into the trajectory frame is out of bounds"));
+        throw(LOOSError(_filename, **i, "Atom index into the trajectory frame is out of bounds"));
       (*i)->coords(GCoord(xcrds[idx], ycrds[idx], zcrds[idx]));
     }
 

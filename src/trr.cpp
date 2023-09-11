@@ -163,7 +163,7 @@ namespace loos {
 		for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
 			uint idx = (*i)->index();
 			if (static_cast<uint>(idx) >= natoms())
-				throw(LOOSError(**i, "atom index into trajectory frame is out of range"));
+				throw(LOOSError(_filename, **i, "atom index into trajectory frame is out of range"));
 			(*i)->coords(coords_[idx]);
 		}
 
@@ -176,7 +176,7 @@ namespace loos {
 		for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
 			uint idx = (*i)->index();
 			if (static_cast<uint>(idx) >= natoms())
-				throw(LOOSError(**i, "atom index into trajectory frame is out of range"));
+				throw(LOOSError(_filename, **i, "atom index into trajectory frame is out of range"));
 			(*i)->velocities(velo_[idx]);
 		}
 
