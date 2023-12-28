@@ -162,6 +162,7 @@ namespace loos {
   class Gromacs;
   class CHARMM;
   class MDTraj;
+  class MMCIF;
 
   typedef boost::shared_ptr<AtomicGroup> pAtomicGroup;
   typedef boost::shared_ptr<PDB> pPDB;
@@ -171,6 +172,7 @@ namespace loos {
   typedef boost::shared_ptr<TinkerXYZ> pTinkerXYZ;
   typedef boost::shared_ptr<Gromacs> pGromacs;
   typedef boost::shared_ptr<CHARMM> pCHARMM;
+  typedef boost::shared_ptr<MMCIF> pMMCIF;
 
 
   // Misc

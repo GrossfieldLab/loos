@@ -70,6 +70,7 @@ set(loos_hdr_files
   loos_timer.hpp
   mdtraj.hpp
   mdtrajtraj.hpp
+  mmcif.hpp
   pdb.hpp
   pdb_remarks.hpp
   pdbtraj.hpp
@@ -130,6 +131,7 @@ set(loos_src_files
   index_range_parser.cpp
   mdtraj.cpp
   mdtrajtraj.cpp
+  mmcif.cpp
   pdb.cpp
   pdb_remarks.cpp
   pdbtraj.cpp
@@ -167,7 +169,7 @@ target_link_libraries(loos Boost::program_options
   BLAS::BLAS
   LAPACK::LAPACK
   ${HDF5_CXX_LIBRARIES}
-  )
+  gemmi::gemmi_cpp)
 
 
 if(SWIG_FOUND AND BUILD_PYLOOS)

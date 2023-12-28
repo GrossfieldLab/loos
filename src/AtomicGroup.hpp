@@ -443,6 +443,9 @@ namespace loos
     //! Deduce atomic number from mass (if present), returning number of atoms assigned
     uint deduceAtomicNumberFromMass(const double tol = 0.1);
 
+    //! Deduce mass from atomic number (if present), returning the number of atoms assigned
+    double deduceMassFromAtomicNumber();
+
     //! Is the array of atoms already sorted???
     /**
      * While we make some effort to ensure that alterations to the AtomicGroup
