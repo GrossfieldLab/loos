@@ -282,7 +282,7 @@ namespace loos {
 
 #if !defined(SWIG)
   //! Compares two atoms based solely on name, id, resid, resname, and segid
-  struct AtomEquals : public std::binary_function<pAtom, pAtom, bool> {
+  struct AtomEquals {
     bool operator()(const pAtom& a, const pAtom& b) const;
   };
 
@@ -291,7 +291,7 @@ namespace loos {
   /**
    * The default distance threshold is 1e-3 Angstroms
    */
-  struct AtomCoordsEquals : public std::binary_function<pAtom, pAtom, bool> {
+  struct AtomCoordsEquals {
     AtomCoordsEquals(const double d) : threshold(d*d) { }
     AtomCoordsEquals() : threshold(1e-6) { }
 
