@@ -235,11 +235,9 @@ namespace loos {
   };
   
 
-  //! Errors related to 
+  //! Errors related to trajectory reading and writing
   /**
    * Most trajectory exceptions derive from this class.
-   *
-   * 
    */
   class TrajectoryError : public LOOSError {
   protected:
@@ -251,14 +249,14 @@ namespace loos {
       TrajectoryError(const std::string& op) : LOOSError("Error while " + op), _operation(op) {}
 
       TrajectoryError(const std::string& op, const std::string& fname)
-          : LOOSError("Error while " + op + " " + fname),
+          : LOOSError("Error while " + op + ", " + fname),
           _operation(op), _filename(fname)
       {}
 
       TrajectoryError(const std::string& op,
           const std::string& fname,
           const std::string& msg)
-          : LOOSError("Error while " + op + " " + fname + msg),
+          : LOOSError("Error while " + op + ", " + fname + "\n" + msg),
           _operation(op),
           _filename(fname)
       {}
@@ -267,7 +265,7 @@ namespace loos {
           const std::string& fname,
           const std::string& msg,
           const int err)
-          : LOOSError("Error while " + op + " " + fname + msg),
+          : LOOSError("Error while " + op + ", " + fname + "\n" + msg),
           _operation(op),
           _filename(fname),
           _errcode(err)

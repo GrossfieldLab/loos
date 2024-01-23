@@ -113,7 +113,7 @@ namespace loos {
     for (gi = g.begin(); gi != g.end(); ++gi) {
       uint i = (*gi)->index();
       if (i >= _natoms)
-        throw(LOOSError(_filename, **gi, "Atom index into trajectory is out of bounds"));
+        throw(TrajectoryError("updating group coords", _filename, "Atom index into trajectory frame is out of bounds"));
       (*gi)->coords(frame[i]);
     }
 

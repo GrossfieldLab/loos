@@ -414,7 +414,7 @@ namespace loos {
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       uint idx = (*i)->index();
       if (idx >= _natoms)
-        throw(LOOSError(_filename, **i, "Atom index into the trajectory frame is out of bounds"));
+        throw(TrajectoryError("updating group coords", _filename, "Atom index into trajectory frame is out of bounds"));
       (*i)->coords(GCoord(xcrds[idx], ycrds[idx], zcrds[idx]));
     }
 
@@ -430,7 +430,7 @@ namespace loos {
         readHeader();
         bool b = parseFrame();
         if (!b)
-            throw(LOOSError("Cannot read first frame of DCD during initialization"));
+            throw(TrajectoryError("reading first frame of DCD during initialization"));
         cached_first = true;
     }
     

@@ -151,7 +151,8 @@ namespace loos {
 		for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
 			uint idx = (*i)->index();
 			if (idx >= _natoms)
-				throw(LOOSError(_filename, **i, "Atom index into trajectory frame is out of bounds"));
+				//throw(LOOSError(_filename, **i, "Atom index into trajectory frame is out of bounds"));
+				throw(TrajectoryError("updating group coords",_filename, "Atom index into trajectory frame is out of bounds"));
 			idx *= 3;
 			(*i)->coords(GCoord(_coord_data[idx], _coord_data[idx+1], _coord_data[idx+2]));
 		}
@@ -166,7 +167,7 @@ namespace loos {
 		for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
 			uint idx = (*i)->index();
 			if (idx >= _natoms)
-				throw(LOOSError(_filename, **i, "Atom index into trajectory frame is out of bounds"));
+				throw(TrajectoryError("updating group velocities", _filename, "Atom index into trajectory frame is out of bounds"));
 			idx *= 3;
 			(*i)->coords(GCoord(_velocity_data[idx], _velocity_data[idx+1], _velocity_data[idx+2]));
 		}
