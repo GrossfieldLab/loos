@@ -18,6 +18,7 @@ namespace loos {
 
       unsigned int deduceFromMass(const double mass, const double tolerance);
       std::string deduceName(const double mass, const double tolerance);
+      double deduceMass(const unsigned int number);
 
     private:
       void initialize();
@@ -34,6 +35,9 @@ namespace loos {
    */
   unsigned int deduceAtomicNumberFromMass(const double mass, const double tolerance = 0.1);
   std::string deduceElementNameFromMass(const double mass, const double tolerance = 0.1);
+
+  //! Deduce a mass from the atomic number
+  double deduceMassFromAtomicNumber(const unsigned int number);
 
 };
 

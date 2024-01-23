@@ -48,6 +48,7 @@
 #include <gro.hpp>
 #include <xtc.hpp>
 #include <trr.hpp>
+#include <mmcif.hpp>
 
 
 #include <trajwriter.hpp>
@@ -71,6 +72,7 @@ namespace loos {
       { "psf", "CHARMM/NAMD PSF", &PSF::create },
       { "gro", "Gromacs", &Gromacs::create },
       { "xyz", "Tinker", &TinkerXYZ::create },
+      { "cif", "PDBx/mmcif", &MMCIF::create },
       { "h5", "MDTraj HDF5", &MDTraj::create },
       { "", "", 0}
     };

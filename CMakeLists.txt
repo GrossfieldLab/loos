@@ -39,6 +39,8 @@ endif()
 find_package(NetCDF REQUIRED)
 include_directories(${NetCDF_INCLUDE_DIRS})
 
+find_package(gemmi)
+
 set(BLA_VENDOR OpenBLAS)
 find_package(BLAS REQUIRED)
 find_package(LAPACK REQUIRED)

@@ -72,6 +72,7 @@
 #include <amber.hpp>
 #include <mdtraj.hpp>
 #include <tinkerxyz.hpp>
+#include <mmcif.hpp>
 
 #include <Trajectory.hpp>
 #include <dcd.hpp>

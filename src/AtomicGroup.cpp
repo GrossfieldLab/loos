@@ -1031,6 +1031,19 @@ namespace loos {
     return(n);
   }
 
+  double AtomicGroup::deduceMassFromAtomicNumber() {
+    uint n = 0;
+    for (AtomicGroup::iterator i = begin(); i != end(); ++i)
+      if ((*i)->checkProperty(Atom::anumbit)) {
+        double mass = loos::deduceMassFromAtomicNumber((*i)->atomic_number());
+        if (mass) {
+          (*i)->mass(mass);
+          ++n;
+        }
+      }
+    return(n);
+  }
+
 
   void AtomicGroup::copyCoordinatesWithIndex(const std::vector<GCoord> &coords) {
     if (! atoms.empty())

@@ -90,7 +90,7 @@ If you want to build everything by
 hand, but with conda, first set up your conda environment,
 
 ```
-conda create -n loos -c conda-forge python=3 swig=4 cmake numpy scipy scikit-learn boost openblas libnetcdf=4.8.1 lapack compilers eigen
+conda create -n loos -c conda-forge python=3 swig=4 cmake numpy scipy scikit-learn boost openblas libnetcdf lapack compilers eigen gemmi
 conda activate loos
 ```
 
