@@ -256,7 +256,7 @@ namespace loos
      *
      * Or as another example, comparing only residue numbers...
      * \code
-     * struct ResidEquals : public std::binary_function<pAtom, pAtom, bool> {
+     * struct ResidEquals {
      *   bool operator()(const pAtom& a, const pAtom& b) { return(a.resid() == b.resid()); }
      * };
      *
