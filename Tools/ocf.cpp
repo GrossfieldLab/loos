@@ -262,7 +262,7 @@ int main(int argc, char *argv[])
   AtomicGroup scope = selectAtoms(model, sopts->selection);
   pTraj traj = mtopts->trajectory;
   // move unique ptr to Weights into main function ownership for ease of use.
-  auto weights = move(wopts->pWeights);
+  auto weights = std::move(wopts->pWeights);
   // Attach trajectory to weights
   weights->addTraj(traj);
   // initialize max offset at top level, define either with user input

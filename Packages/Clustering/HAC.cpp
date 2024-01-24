@@ -55,7 +55,7 @@ void HAC::cluster()
   for (idxT i = 0; i < eltCount; i++)
   {
     unique_ptr<vector<idxT>> cluster_ptr(new vector<idxT>{i});
-    currStg.push_back(move(cluster_ptr));
+    currStg.push_back(std::move(cluster_ptr));
     vector<idxT> clusterRecord{i};
     recordCurrStg[i] = clusterRecord;
   }

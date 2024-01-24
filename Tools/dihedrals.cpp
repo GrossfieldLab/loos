@@ -279,7 +279,7 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
         for (auto sel : sels)
           reordered += selectAtoms(oo_D, sel);
 
-        oo_D = move(reordered);
+        oo_D = std::move(reordered);
         cerr << "included group of size: " << to_string(reordered.size())
              << "\n";
         return false;
@@ -294,7 +294,7 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
         for (auto sel : sels)
           reordered += selectAtoms(oo_D, sel);
 
-        oo_D = move(reordered);
+        oo_D = std::move(reordered);
         return false;
       }
     };
@@ -324,7 +324,7 @@ sels_to_dihedralAGs(const vector<vector<string>> &dihedral_sels,
                     return (*chkSizeReorder)(oo_D, dSels);
                   }),
         dihedralInstances.end());
-    dihedralAGs.push_back(move(dihedralInstances));
+    dihedralAGs.push_back(std::move(dihedralInstances));
   }
   return dihedralAGs;
 }
@@ -386,7 +386,7 @@ int main(int argc, char *argv[]) {
         *(p_ofstream) << "# " << header << "\n";
         v_filePtrs.push_back(p_ofstream);
       }
-      vv_filePtrs.push_back(move(v_filePtrs));
+      vv_filePtrs.push_back(std::move(v_filePtrs));
     }
   } else {
     vector<string> user_tags = split(topts->tags, atom_delim);
@@ -406,7 +406,7 @@ int main(int argc, char *argv[]) {
         *p_ofstream << "# " << header << "\n";
         v_filePtrs.push_back(p_ofstream);
       }
-      vv_filePtrs.push_back(move(v_filePtrs));
+      vv_filePtrs.push_back(std::move(v_filePtrs));
     }
   }
 
