@@ -47,6 +47,7 @@ GTAGS
 .vscode
 .vscode/*
 **.vscode
+.vs/
 
 # cruft from sublime text
 *.sublime*

@@ -136,7 +136,7 @@ namespace loos {
     for (AtomicGroup::iterator i = g.begin(); i != g.end(); ++i) {
       uint idx = (*i)->index();
       if (idx >= _natoms)
-        throw(LOOSError(**i, "Atom index into trajectory is out of bounds"));
+        throw(TrajectoryError("updating group coords", _filename, "Atom index into trajectory frame is out of bounds"));
       (*i)->coords(frame[idx]);
     }
     
