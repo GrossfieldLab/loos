@@ -17,7 +17,6 @@ assignees: ''
 ## Expected behavior
 <!---   A clear and concise description of what you expected to happen.  --->
 
-.
 
 ## LOOS version and platform
 <!---   Which version you're running, on what OS, and how it was built (e.g. conda, system libraries, manually installed dependencies)  --->
