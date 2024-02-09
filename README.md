@@ -74,6 +74,11 @@ and generally speaking the performance hit for python vs. C++ isn't prohibitive.
 resources for developing with LOOS on the [GitHub wiki](https://github.com/GrossfieldLab/loos/wiki),
 particularly the [Tutorials for Developers](https://github.com/GrossfieldLab/loos/wiki/Tutorials-for-Developers).
 
+### Release 4.1.0
+
+This release includes a number of fixes related to issues listed on github.  Added
+support for PDBx, mmCIF, and MDTraj-HDF5 formats.
+
 ### Release 4.0.4
 
 This release includes a number of fixes that address recent issues listed on github.  Molecular
