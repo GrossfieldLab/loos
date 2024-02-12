@@ -2,14 +2,33 @@
 \usepackage{ifthen}
 \usepackage{epsfig}
 \usepackage[utf8]{inputenc}
+\usepackage{xcolor}
 \usepackage{newunicodechar}
-  \newunicodechar{⁻}{${}^{-}$}% Superscript minus
-  \newunicodechar{²}{${}^{2}$}% Superscript two
-  \newunicodechar{³}{${}^{3}$}% Superscript three
+  \makeatletter
+    \def\doxynewunicodechar#1#2{%
+    \@tempswafalse
+    \edef\nuc@tempa{\detokenize{#1}}%
+    \if\relax\nuc@tempa\relax
+      \nuc@emptyargerr
+    \else
+      \edef\@tempb{\expandafter\@car\nuc@tempa\@nil}%
+      \nuc@check
+      \if@tempswa
+        \@namedef{u8:\nuc@tempa}{#2}%
+      \fi
+    \fi
+  }
+  \makeatother
+  \doxynewunicodechar{⁻}{${}^{-}$}% Superscript minus
+  \doxynewunicodechar{²}{${}^{2}$}% Superscript two
+  \doxynewunicodechar{³}{${}^{3}$}% Superscript three
 
 \pagestyle{empty}
 \begin{document}
-\begin{eqnarray*} r^{-2} & \mbox{for} & r \leq r_c \\ 0 & \mbox{for} & r > r_c\\ \end{eqnarray*}
+\begin{eqnarray*}
+r^{-2} & \mbox{for} & r \leq r_c \\
+0 & \mbox{for} & r > r_c\\
+\end{eqnarray*}
 \pagebreak
 
 $r^p$
@@ -18,7 +37,10 @@ $r^p$
 $\exp(k r)$
 \pagebreak
 
-\begin{eqnarray*} ar + b & \mbox{for} & r < r_c \\ c r^{-d} & \mbox{for} & r \geq r_c\\ \end{eqnarray*}
+\begin{eqnarray*}
+ar + b & \mbox{for} & r < r_c \\
+c r^{-d} & \mbox{for} & r \geq r_c\\
+\end{eqnarray*}
 \pagebreak
 
 \end{document}

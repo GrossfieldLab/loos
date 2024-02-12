@@ -1,5 +1,0 @@
-<map id="loos::AndSelector" name="loos::AndSelector">
-<area shape="rect" id="node1" title="Combines two selectors with a logical &quot;and&quot;." alt="" coords="24,185,159,212"/>
-<area shape="rect" id="node2" href="$classloos_1_1loos_1_1AtomSelector.html" title=" " alt="" coords="5,81,177,108"/>
-<area shape="rect" id="node3" title=" " alt="" coords="60,5,123,32"/>
-</map>

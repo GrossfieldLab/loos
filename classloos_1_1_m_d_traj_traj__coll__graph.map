@@ -1,0 +1,7 @@
+<map id="loos::MDTrajTraj" name="loos::MDTrajTraj">
+<area shape="rect" id="Node000001" title="Class for reading MDTraj HDF5 coordinate trajectories." alt="" coords="5,169,124,195"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_trajectory.html" title="Base&#45;class for polymorphic trajectories." alt="" coords="9,94,120,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="67,135,67,169,62,169,62,135"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="38,5,91,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="67,47,67,94,62,94,62,47"/>
+</map>

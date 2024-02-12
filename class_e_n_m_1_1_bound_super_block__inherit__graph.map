@@ -1,5 +1,7 @@
 <map id="ENM::BoundSuperBlock" name="ENM::BoundSuperBlock">
-<area shape="rect" id="node1" title="Decorator for switching spring functions based on a matrix of flags." alt="" coords="15,155,179,181"/>
-<area shape="rect" id="node2" href="$class_e_n_m_1_1_super_block_decorator.html" title="SuperBlock decorator base class." alt="" coords="5,80,189,107"/>
-<area shape="rect" id="node3" href="$class_e_n_m_1_1_super_block.html" title="This class creates superblocks in a hessian." alt="" coords="34,5,161,32"/>
+<area shape="rect" id="Node000001" title="Decorator for switching spring functions based on a matrix of flags." alt="" coords="15,153,179,178"/>
+<area shape="rect" id="Node000002" href="$class_e_n_m_1_1_super_block_decorator.html" title="SuperBlock decorator base class." alt="" coords="5,79,189,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="100,120,100,152,94,152,94,120"/>
+<area shape="rect" id="Node000003" href="$class_e_n_m_1_1_super_block.html" title="This class creates superblocks in a hessian." alt="" coords="34,5,160,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="100,46,100,79,94,79,94,46"/>
 </map>

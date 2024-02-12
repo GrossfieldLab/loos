@@ -1,6 +1,9 @@
 <map id="loos::FileOpenError" name="loos::FileOpenError">
-<area shape="rect" id="node1" title="Error while opening a file." alt="" coords="5,229,140,256"/>
-<area shape="rect" id="node2" href="$classloos_1_1_file_error.html" title="Errors related to File I/O." alt="" coords="21,155,124,181"/>
-<area shape="rect" id="node3" href="$classloos_1_1_l_o_o_s_error.html" title="Generic LOOS exception." alt="" coords="13,80,132,107"/>
-<area shape="rect" id="node4" title=" " alt="" coords="21,5,124,32"/>
+<area shape="rect" id="Node000001" title="Error while opening a file." alt="" coords="5,226,139,252"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_file_error.html" title="Errors related to File I/O." alt="" coords="21,153,123,178"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="75,194,75,226,69,226,69,194"/>
+<area shape="rect" id="Node000003" href="$classloos_1_1_l_o_o_s_error.html" title="Generic LOOS exception." alt="" coords="13,79,131,105"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="75,120,75,152,69,152,69,120"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="20,5,124,31"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="75,46,75,79,69,79,69,46"/>
 </map>

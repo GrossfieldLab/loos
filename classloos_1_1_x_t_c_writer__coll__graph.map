@@ -1,6 +1,7 @@
 <map id="loos::XTCWriter" name="loos::XTCWriter">
-<area shape="rect" id="node1" title="Class for writing Gromacs XTC trajectories." alt="" coords="21,261,136,288"/>
-<area shape="rect" id="node2" href="$classloos_1_1_trajectory_writer.html" title="Base class for writing trajectories." alt="" coords="5,185,152,212"/>
-<area shape="rect" id="node3" title=" " alt="" coords="39,96,119,123"/>
-<area shape="rect" id="node4" title=" " alt="" coords="15,5,142,47"/>
+<area shape="rect" id="Node000001" title="Class for writing Gromacs XTC trajectories." alt="" coords="21,169,135,195"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_trajectory_writer.html" title="Base class for writing trajectories." alt="" coords="5,94,151,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="81,135,81,169,75,169,75,135"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="51,5,105,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="81,47,81,94,75,94,75,47"/>
 </map>

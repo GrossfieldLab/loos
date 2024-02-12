@@ -1,4 +1,5 @@
 <map id="ENM::ANM" name="ENM::ANM">
-<area shape="rect" id="node1" title="Anisotropic network model." alt="" coords="52,80,143,107"/>
-<area shape="rect" id="node2" href="$class_e_n_m_1_1_elastic_network_model.html" title="Interface for all ENMs." alt="" coords="5,5,189,32"/>
+<area shape="rect" id="Node000001" title="Anisotropic network model." alt="" coords="52,79,142,105"/>
+<area shape="rect" id="Node000002" href="$class_e_n_m_1_1_elastic_network_model.html" title="Interface for all ENMs." alt="" coords="5,5,189,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="100,46,100,79,94,79,94,46"/>
 </map>

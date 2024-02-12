@@ -1,5 +1,7 @@
 <map id="loos::Weights" name="loos::Weights">
-<area shape="rect" id="node1" title=" " alt="" coords="110,5,211,32"/>
-<area shape="rect" id="node2" href="$classloos_1_1_uniform_weight.html" title=" " alt="" coords="5,80,145,107"/>
-<area shape="rect" id="node3" href="$classloos_1_1_weights_from_file.html" title=" " alt="" coords="170,80,322,107"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="109,5,209,31"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_uniform_weight.html" title=" " alt="" coords="5,79,145,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="135,43,91,81,87,77,132,39"/>
+<area shape="rect" id="Node000003" href="$classloos_1_1_weights_from_file.html" title=" " alt="" coords="169,79,320,105"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="187,39,232,77,228,81,183,43"/>
 </map>

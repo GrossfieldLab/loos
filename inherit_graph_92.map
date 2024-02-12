@@ -1,3 +1,25 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classMaster.html" title=" " alt="" coords="5,5,72,32"/>
+<area shape="rect" id="Node000000" href="$classloos_1_1_trajectory.html" title="Base&#45;class for polymorphic trajectories." alt="" coords="5,252,117,278"/>
+<area shape="rect" id="Node000001" href="$classloos_1_1_amber_netcdf.html" title="Class for reading Amber Trajectories in NetCDF format." alt="" coords="169,5,300,31"/>
+<area shape="poly" id="edge119_Node000000_Node000001" title=" " alt="" coords="65,236,77,193,96,141,124,87,142,62,163,40,179,29,182,34,166,44,146,66,128,90,101,143,82,195,70,237"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_amber_rst.html" title="Class for reading amber restart files as a single&#45;frame trajectory." alt="" coords="178,55,291,80"/>
+<area shape="poly" id="edge120_Node000000_Node000002" title=" " alt="" coords="69,236,83,203,103,163,130,124,163,89,181,79,183,83,166,94,134,127,108,166,88,205,74,238"/>
+<area shape="rect" id="Node000003" href="$classloos_1_1_amber_traj.html" title="Class for reading amber coordinate trajectories." alt="" coords="178,104,291,130"/>
+<area shape="poly" id="edge121_Node000000_Node000003" title=" " alt="" coords="76,237,112,187,136,161,163,139,183,128,186,133,166,143,140,165,116,191,80,240"/>
+<area shape="rect" id="Node000004" href="$classloos_1_1_c_c_p_d_b.html" title="Class for interpreting concatenated PDB files as a Trajectory." alt="" coords="184,153,285,179"/>
+<area shape="poly" id="edge122_Node000000_Node000004" title=" " alt="" coords="88,240,123,213,163,188,188,177,190,182,166,193,126,217,91,244"/>
+<area shape="rect" id="Node000005" href="$classloos_1_1_d_c_d.html" title="Class for reading DCD files." alt="" coords="193,203,276,228"/>
+<area shape="poly" id="edge123_Node000000_Node000005" title=" " alt="" coords="123,245,191,225,193,230,124,250"/>
+<area shape="rect" id="Node000006" href="$classloos_1_1_m_d_traj_traj.html" title="Class for reading MDTraj HDF5 coordinate trajectories." alt="" coords="175,252,294,278"/>
+<area shape="poly" id="edge124_Node000000_Node000006" title=" " alt="" coords="132,262,175,262,175,268,132,268"/>
+<area shape="rect" id="Node000007" href="$classloos_1_1_multi_trajectory.html" title="Combine multiple trajectories (pTraj&#39;s) into one large virtual trajectory." alt="" coords="165,301,304,327"/>
+<area shape="poly" id="edge125_Node000000_Node000007" title=" " alt="" coords="124,280,187,298,186,303,123,285"/>
+<area shape="rect" id="Node000008" href="$classloos_1_1_p_d_b_traj.html" title="Class for intepreting separate PDB files as a single trajectory." alt="" coords="183,351,286,376"/>
+<area shape="poly" id="edge126_Node000000_Node000008" title=" " alt="" coords="91,286,126,312,166,337,190,348,188,353,163,342,123,317,88,290"/>
+<area shape="rect" id="Node000009" href="$classloos_1_1_t_r_r.html" title="Class representing the GROMACS TRR trajectory files." alt="" coords="194,400,275,426"/>
+<area shape="poly" id="edge127_Node000000_Node000009" title=" " alt="" coords="80,289,116,339,140,364,166,387,194,401,192,405,163,391,136,368,112,342,76,293"/>
+<area shape="rect" id="Node000010" href="$classloos_1_1_tinker_arc.html" title="Class for handling Tinker ARC files (concatenation of .xyz files)" alt="" coords="180,449,289,475"/>
+<area shape="poly" id="edge128_Node000000_Node000010" title=" " alt="" coords="74,292,88,325,108,363,134,402,166,436,183,447,181,451,163,440,130,406,103,366,83,327,69,294"/>
+<area shape="rect" id="Node000011" href="$classloos_1_1_x_t_c.html" title="Class representing GROMACS reduced precision, compressed trajectories." alt="" coords="194,499,275,524"/>
+<area shape="poly" id="edge129_Node000000_Node000011" title=" " alt="" coords="70,292,82,335,101,387,128,440,146,464,166,485,195,501,192,506,163,490,142,467,124,442,96,389,77,336,65,294"/>
 </map>

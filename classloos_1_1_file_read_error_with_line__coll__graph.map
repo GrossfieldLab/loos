@@ -1,9 +1,15 @@
 <map id="loos::FileReadErrorWithLine" name="loos::FileReadErrorWithLine">
-<area shape="rect" id="node1" title="Errors that occur while reading a text file (where lines are tracked)" alt="" coords="5,416,189,443"/>
-<area shape="rect" id="node2" href="$classloos_1_1_file_read_error.html" title="Errors that occur while reading a file." alt="" coords="123,340,256,367"/>
-<area shape="rect" id="node3" href="$classloos_1_1_file_error.html" title="Errors related to File I/O." alt="" coords="143,264,246,291"/>
-<area shape="rect" id="node4" href="$classloos_1_1_l_o_o_s_error.html" title="Generic LOOS exception." alt="" coords="229,187,347,213"/>
-<area shape="rect" id="node5" title=" " alt="" coords="237,96,339,123"/>
-<area shape="rect" id="node6" title=" " alt="" coords="103,96,183,123"/>
-<area shape="rect" id="node7" title=" " alt="" coords="79,5,206,47"/>
+<area shape="rect" id="Node000001" title="Errors that occur while reading a text file (where lines are tracked)" alt="" coords="5,323,190,349"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_file_read_error.html" title="Errors that occur while reading a file." alt="" coords="103,248,236,274"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="149,287,111,325,107,321,145,283"/>
+<area shape="rect" id="Node000003" href="$classloos_1_1_file_error.html" title="Errors related to File I/O." alt="" coords="122,173,225,199"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="175,215,173,248,167,248,169,214"/>
+<area shape="rect" id="Node000004" href="$classloos_1_1_l_o_o_s_error.html" title="Generic LOOS exception." alt="" coords="208,96,326,122"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="242,134,190,175,186,171,238,130"/>
+<area shape="rect" id="Node000005" title=" " alt="" coords="215,5,319,31"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="270,46,270,96,264,96,264,46"/>
+<area shape="rect" id="Node000006" title=" " alt="" coords="98,5,151,31"/>
+<area shape="poly" id="edge7_Node000001_Node000006" title=" " alt="" coords="100,43,76,72,68,89,65,108,65,262,68,279,74,295,90,321,85,324,69,297,63,280,60,263,60,107,63,88,72,69,96,40"/>
+<area shape="poly" id="edge6_Node000003_Node000006" title=" " alt="" coords="127,46,130,83,139,123,152,150,166,172,162,175,147,152,134,125,124,84,121,47"/>
+<area shape="poly" id="edge5_Node000004_Node000006" title=" " alt="" coords="157,37,249,93,246,98,155,41"/>
 </map>

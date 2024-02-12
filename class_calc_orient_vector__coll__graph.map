@@ -1,6 +1,7 @@
 <map id="CalcOrientVector" name="CalcOrientVector">
-<area shape="rect" id="node1" title=" " alt="" coords="15,261,135,288"/>
-<area shape="rect" id="node2" href="$class_calc_property.html" title=" " alt="" coords="7,171,142,212"/>
-<area shape="rect" id="node3" href="$class_calc_property_base.html" title=" " alt="" coords="5,5,133,32"/>
-<area shape="rect" id="node4" href="$class_calc_property.html" title=" " alt="" coords="91,81,221,108"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="11,168,133,193"/>
+<area shape="rect" id="Node000002" href="$class_calc_property.html" title=" " alt="" coords="5,79,139,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="75,135,75,167,69,167,69,135"/>
+<area shape="rect" id="Node000003" href="$class_calc_property_base.html" title=" " alt="" coords="8,5,136,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="75,46,75,79,69,79,69,46"/>
 </map>

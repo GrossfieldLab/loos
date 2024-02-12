@@ -1,3 +1,55 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structloos_1_1internal_1_1SystemNameBindingType.html" title=" " alt="" coords="5,5,208,47"/>
+<area shape="rect" id="Node000000" href="$classloos_1_1internal_1_1_action.html" title="Base class for all commands..." alt="" coords="5,655,146,680"/>
+<area shape="rect" id="Node000001" href="$classloos_1_1internal_1_1_backbone.html" title="Shortcut for checking for backbone atoms..." alt="" coords="212,5,373,31"/>
+<area shape="poly" id="edge70_Node000000_Node000001" title=" " alt="" coords="75,639,84,512,104,332,119,241,139,157,163,88,176,61,192,40,210,27,213,31,196,44,181,64,167,90,144,158,125,242,109,333,90,512,81,640"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1internal_1_1_hydrogen.html" title="Shortcut for checking for hydrogens..." alt="" coords="213,55,372,80"/>
+<area shape="poly" id="edge71_Node000000_Node000002" title=" " alt="" coords="76,639,86,520,107,356,123,272,142,195,164,133,178,108,192,90,211,76,214,80,196,93,182,111,169,135,147,197,128,273,113,356,92,521,81,639"/>
+<area shape="rect" id="Node000003" href="$classloos_1_1internal_1_1drop.html" title="Drop the top item from the stack." alt="" coords="228,104,357,130"/>
+<area shape="poly" id="edge72_Node000000_Node000003" title=" " alt="" coords="77,639,88,529,111,379,126,304,145,235,166,178,192,139,208,127,227,119,229,124,211,132,196,143,171,180,150,236,131,305,116,380,94,530,82,639"/>
+<area shape="rect" id="Node000004" href="$classloos_1_1internal_1_1dup.html" title="Duplicate the top item on the stack." alt="" coords="230,153,355,179"/>
+<area shape="poly" id="edge73_Node000000_Node000004" title=" " alt="" coords="77,639,90,539,114,404,129,336,148,274,168,223,192,188,209,176,229,168,231,173,212,181,196,192,173,226,153,276,135,337,119,405,96,540,83,640"/>
+<area shape="rect" id="Node000005" href="$classloos_1_1internal_1_1equals.html" title="Test for equality: ARG1 ARG ==." alt="" coords="222,203,363,228"/>
+<area shape="poly" id="edge74_Node000000_Node000005" title=" " alt="" coords="78,639,93,548,117,428,151,313,170,268,192,238,220,221,223,225,195,241,175,271,156,315,123,429,98,549,83,640"/>
+<area shape="rect" id="Node000006" href="$classloos_1_1internal_1_1extract_number.html" title="Extracts a number for a string on the stack using a regular expression: ARG1 regexp(S)" alt="" coords="198,252,387,278"/>
+<area shape="poly" id="edge75_Node000000_Node000006" title=" " alt="" coords="74,639,79,568,95,473,110,423,130,373,157,327,192,287,207,276,210,280,195,291,162,330,135,376,115,424,100,474,84,569,79,639"/>
+<area shape="rect" id="Node000007" href="$classloos_1_1internal_1_1greater_than.html" title="ARG1 ARG2 &gt;" alt="" coords="206,301,379,327"/>
+<area shape="poly" id="edge76_Node000000_Node000007" title=" " alt="" coords="76,639,83,577,102,495,117,452,136,411,161,372,192,337,210,325,213,330,195,342,165,375,141,413,122,454,107,497,89,577,81,639"/>
+<area shape="rect" id="Node000008" href="$classloos_1_1internal_1_1greater_than_equals.html" title="ARG1 ARG2 &gt;=." alt="" coords="206,351,379,392"/>
+<area shape="poly" id="edge77_Node000000_Node000008" title=" " alt="" coords="79,639,91,588,112,525,145,459,167,428,192,401,208,390,211,394,195,406,171,432,150,462,117,527,96,590,84,640"/>
+<area shape="rect" id="Node000009" href="$classloos_1_1internal_1_1less_than.html" title="Relation operators...: ARG1 ARG2 &lt;." alt="" coords="214,416,371,442"/>
+<area shape="poly" id="edge78_Node000000_Node000009" title=" " alt="" coords="82,638,96,597,119,546,150,495,170,472,192,452,213,440,216,445,195,456,174,476,155,499,123,549,101,599,87,640"/>
+<area shape="rect" id="Node000010" href="$classloos_1_1internal_1_1less_than_equals.html" title="ARG1 ARG2 &lt;=." alt="" coords="214,466,371,507"/>
+<area shape="poly" id="edge79_Node000000_Node000010" title=" " alt="" coords="89,640,130,578,159,545,192,516,213,504,215,509,195,520,162,548,134,581,93,643"/>
+<area shape="rect" id="Node000011" href="$classloos_1_1internal_1_1logical_and.html" title="ARG1 ARG2 &amp;&amp;." alt="" coords="211,531,374,556"/>
+<area shape="poly" id="edge80_Node000000_Node000011" title=" " alt="" coords="97,641,138,602,192,565,219,554,221,559,195,570,142,606,100,645"/>
+<area shape="rect" id="Node000012" href="$classloos_1_1internal_1_1logical_not.html" title="ARG1 !" alt="" coords="212,580,373,606"/>
+<area shape="poly" id="edge81_Node000000_Node000012" title=" " alt="" coords="117,645,193,614,229,604,231,609,195,619,119,650"/>
+<area shape="rect" id="Node000013" href="$classloos_1_1internal_1_1logical_or.html" title="ARG1 ARG2 ||." alt="" coords="215,629,370,655"/>
+<area shape="poly" id="edge82_Node000000_Node000013" title=" " alt="" coords="160,655,214,649,215,654,161,660"/>
+<area shape="rect" id="Node000014" href="$classloos_1_1internal_1_1logical_true.html" title="Always returns true..." alt="" coords="209,679,376,704"/>
+<area shape="poly" id="edge83_Node000000_Node000014" title=" " alt="" coords="161,674,209,680,208,685,160,680"/>
+<area shape="rect" id="Node000015" href="$classloos_1_1internal_1_1match_regex.html" title="Regular expression matching: ARG1 regexp(S)" alt="" coords="204,728,381,754"/>
+<area shape="poly" id="edge84_Node000000_Node000015" title=" " alt="" coords="120,685,195,714,231,725,230,730,193,719,118,690"/>
+<area shape="rect" id="Node000016" href="$classloos_1_1internal_1_1match_string_as_regex.html" title="Regular expression matching: ARG1 regexp(ARG2)" alt="" coords="206,778,379,819"/>
+<area shape="poly" id="edge85_Node000000_Node000016" title=" " alt="" coords="101,689,143,727,195,764,219,775,216,780,192,768,140,732,98,693"/>
+<area shape="rect" id="Node000017" href="$classloos_1_1internal_1_1push_atom_chain_id.html" title="Push atom&#39;s chain ID onto the stack." alt="" coords="211,843,374,884"/>
+<area shape="poly" id="edge86_Node000000_Node000017" title=" " alt="" coords="92,693,132,760,161,797,195,828,216,840,213,845,192,832,157,800,128,763,87,695"/>
+<area shape="rect" id="Node000018" href="$classloos_1_1internal_1_1push_atom_id.html" title="Push atom id onto the stack." alt="" coords="206,908,379,934"/>
+<area shape="poly" id="edge87_Node000000_Node000018" title=" " alt="" coords="86,695,99,739,121,793,153,847,173,872,195,893,215,905,212,910,192,898,169,876,148,850,116,795,94,741,81,696"/>
+<area shape="rect" id="Node000019" href="$classloos_1_1internal_1_1push_atom_index.html" title="Push atom index onto the stack." alt="" coords="211,958,374,999"/>
+<area shape="poly" id="edge88_Node000000_Node000019" title=" " alt="" coords="83,695,94,748,115,815,148,884,170,916,195,944,212,956,209,960,192,948,166,919,143,887,110,817,89,749,78,696"/>
+<area shape="rect" id="Node000020" href="$classloos_1_1internal_1_1push_atom_name.html" title="Push atom name onto the stack." alt="" coords="194,1023,391,1048"/>
+<area shape="poly" id="edge89_Node000000_Node000020" title=" " alt="" coords="80,695,87,760,105,844,120,889,139,933,164,973,195,1008,213,1020,210,1024,192,1012,160,976,135,935,115,891,100,846,82,761,75,696"/>
+<area shape="rect" id="Node000021" href="$classloos_1_1internal_1_1push_atom_resid.html" title="Push atom&#39;s residue id onto the stack." alt="" coords="211,1073,374,1113"/>
+<area shape="poly" id="edge90_Node000000_Node000021" title=" " alt="" coords="79,696,84,768,100,865,115,917,135,969,162,1017,196,1059,212,1072,209,1076,192,1063,157,1020,130,971,110,919,95,867,79,769,74,696"/>
+<area shape="rect" id="Node000022" href="$classloos_1_1internal_1_1push_atom_resname.html" title="Push atom&#39;ss residue name onto the stack." alt="" coords="211,1138,374,1179"/>
+<area shape="poly" id="edge91_Node000000_Node000022" title=" " alt="" coords="83,695,98,791,122,919,155,1042,175,1090,196,1123,213,1136,209,1141,192,1127,170,1093,150,1044,117,920,92,792,78,696"/>
+<area shape="rect" id="Node000023" href="$classloos_1_1internal_1_1push_atom_segid.html" title="Push atom&#39;s segid onto the stack." alt="" coords="211,1203,374,1244"/>
+<area shape="poly" id="edge92_Node000000_Node000023" title=" " alt="" coords="82,695,95,803,118,951,133,1026,151,1094,172,1150,196,1188,212,1202,209,1206,192,1192,167,1153,146,1096,128,1027,112,952,89,804,77,696"/>
+<area shape="rect" id="Node000024" href="$classloos_1_1internal_1_1push_float.html" title="Push a float onto the data stack." alt="" coords="212,1268,373,1294"/>
+<area shape="poly" id="edge93_Node000000_Node000024" title=" " alt="" coords="81,696,91,816,112,984,127,1069,146,1147,169,1211,182,1235,196,1254,213,1267,210,1271,192,1257,177,1238,164,1213,141,1149,122,1071,107,985,86,817,76,696"/>
+<area shape="rect" id="Node000025" href="$classloos_1_1internal_1_1push_int.html" title="Push an integer onto the data stack." alt="" coords="219,1317,366,1343"/>
+<area shape="poly" id="edge94_Node000000_Node000025" title=" " alt="" coords="81,696,89,825,109,1009,124,1102,143,1188,167,1257,181,1284,195,1304,220,1320,217,1325,192,1308,176,1287,162,1260,138,1189,118,1103,103,1009,84,826,75,696"/>
+<area shape="rect" id="Node000026" href="$classloos_1_1internal_1_1push_string.html" title="Push a std::string onto the data stack." alt="" coords="210,1367,375,1392"/>
+<area shape="poly" id="edge95_Node000000_Node000026" title=" " alt="" coords="80,696,87,834,105,1032,120,1134,140,1227,165,1303,180,1332,196,1354,211,1365,208,1370,192,1357,175,1335,160,1305,135,1228,115,1135,100,1033,82,834,75,696"/>
 </map>

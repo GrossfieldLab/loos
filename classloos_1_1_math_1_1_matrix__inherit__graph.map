@@ -1,6 +1,7 @@
 <map id="loos::Math::Matrix&lt; T, OrderPolicy, StoragePolicy &gt;" name="loos::Math::Matrix&lt; T, OrderPolicy, StoragePolicy &gt;">
-<area shape="rect" id="node1" title="Simple matrix template class using policy classes to determine behavior." alt="" coords="64,81,281,123"/>
-<area shape="rect" id="node4" href="$classloos_1_1_math_1_1_matrix.html" title=" " alt="" coords="109,185,236,227"/>
-<area shape="rect" id="node2" href="$classloos_1_1_math_1_1_col_major.html" title="Class for storing a matrix in column&#45;major order." alt="" coords="5,5,148,32"/>
-<area shape="rect" id="node3" href="$classloos_1_1_math_1_1_shared_array.html" title="Storage policy for a block of memory wrapped in a boost::shared_array pointer." alt="" coords="173,5,367,32"/>
+<area shape="rect" id="Node000001" title="Simple matrix template class using policy classes to determine behavior." alt="" coords="48,79,262,120"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_math_1_1_col_major.html" title="Class for storing a matrix in column&#45;major order." alt="" coords="5,5,148,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="101,40,138,77,134,81,97,44"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="171,5,297,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="213,44,176,81,173,77,209,40"/>
 </map>

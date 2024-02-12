@@ -1,6 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title=" " alt="" coords="5,56,56,83"/>
-<area shape="rect" id="node2" href="$classloos_1_1__SwigNonDynamicMeta.html" title=" " alt="" coords="119,5,327,32"/>
-<area shape="rect" id="node3" href="$classloos_1_1loos_1_1__SwigNonDynamicMeta.html" title=" " alt="" coords="104,56,343,83"/>
-<area shape="rect" id="node4" href="$classpyloos_1_1__SwigNonDynamicMeta.html" title=" " alt="" coords="111,107,335,133"/>
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,13,85,39"/>
+<area shape="rect" id="Node000001" href="$classloos_1_1_voronoi_1_1_voronoi_1_1_voronoi_error.html" title=" " alt="" coords="133,5,322,46"/>
+<area shape="poly" id="edge30_Node000000_Node000001" title=" " alt="" coords="100,23,132,23,132,28,100,28"/>
 </map>

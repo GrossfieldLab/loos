@@ -1,5 +1,5 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classClustering_1_1HAC.html" title=" " alt="" coords="5,5,129,32"/>
-<area shape="rect" id="node2" href="$classClustering_1_1AverageLinkage.html" title=" " alt="" coords="177,5,376,32"/>
-<area shape="rect" id="node3" href="$classClustering_1_1KGS.html" title=" " alt="" coords="424,5,547,32"/>
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,5,140,31"/>
+<area shape="rect" id="Node000001" href="$classloos_1_1_stream_wrapper.html" title="Simple wrapper class for caching stream pointers." alt="" coords="188,5,331,31"/>
+<area shape="poly" id="edge8_Node000000_Node000001" title=" " alt="" coords="156,16,187,16,187,21,156,21"/>
 </map>

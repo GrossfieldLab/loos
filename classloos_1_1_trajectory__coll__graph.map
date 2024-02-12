@@ -1,5 +1,5 @@
 <map id="loos::Trajectory" name="loos::Trajectory">
-<area shape="rect" id="node1" title="Base&#45;class for polymorphic trajectories." alt="" coords="13,185,125,212"/>
-<area shape="rect" id="node2" title=" " alt="" coords="29,96,109,123"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,5,132,47"/>
+<area shape="rect" id="Node000001" title="Base&#45;class for polymorphic trajectories." alt="" coords="5,94,117,120"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="34,5,88,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="64,47,64,94,58,94,58,47"/>
 </map>

@@ -1,4 +1,5 @@
 <map id="set_segids.FullHelp" name="set_segids.FullHelp">
-<area shape="rect" id="node1" title=" " alt="" coords="5,80,143,107"/>
-<area shape="rect" id="node2" title=" " alt="" coords="17,5,131,32"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,79,142,105"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="17,5,130,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="76,46,76,79,71,79,71,46"/>
 </map>

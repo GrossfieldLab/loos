@@ -1,9 +1,15 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title=" " alt="" coords="5,144,129,171"/>
-<area shape="rect" id="node2" href="$classall__stacking_1_1FullHelp.html" title=" " alt="" coords="212,5,369,32"/>
-<area shape="rect" id="node3" href="$classhierarchical-cluster_1_1FullHelp.html" title=" " alt="" coords="189,56,392,83"/>
-<area shape="rect" id="node4" href="$classloos_1_1pyloos_1_1options_1_1FullHelper.html" title=" " alt="" coords="203,107,378,149"/>
-<area shape="rect" id="node5" href="$classpacking__score__per__res_1_1FullHelp.html" title=" " alt="" coords="177,173,404,200"/>
-<area shape="rect" id="node6" href="$classscattering_1_1FullHelp.html" title=" " alt="" coords="219,224,363,251"/>
-<area shape="rect" id="node7" href="$classset__segids_1_1FullHelp.html" title=" " alt="" coords="217,275,365,301"/>
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,141,118,167"/>
+<area shape="rect" id="Node000001" href="$classall__stacking_1_1_full_help.html" title=" " alt="" coords="198,5,341,31"/>
+<area shape="poly" id="edge1_Node000000_Node000001" title=" " alt="" coords="78,127,114,82,138,59,164,40,197,26,199,31,167,44,141,63,118,85,82,130"/>
+<area shape="rect" id="Node000002" href="$classhierarchical-cluster_1_1_full_help.html" title=" " alt="" coords="179,55,360,80"/>
+<area shape="poly" id="edge2_Node000000_Node000002" title=" " alt="" coords="92,130,126,109,165,90,201,78,202,83,167,95,129,114,95,135"/>
+<area shape="rect" id="Node000003" href="$classloos_1_1pyloos_1_1options_1_1_full_helper.html" title=" " alt="" coords="190,105,349,145"/>
+<area shape="poly" id="edge3_Node000000_Node000003" title=" " alt="" coords="132,142,189,133,190,139,133,147"/>
+<area shape="rect" id="Node000004" href="$classpacking__score__per__res_1_1_full_help.html" title=" " alt="" coords="166,169,373,195"/>
+<area shape="poly" id="edge4_Node000000_Node000004" title=" " alt="" coords="133,161,170,166,169,171,132,166"/>
+<area shape="rect" id="Node000005" href="$classscattering_1_1_full_help.html" title=" " alt="" coords="204,219,335,244"/>
+<area shape="poly" id="edge5_Node000000_Node000005" title=" " alt="" coords="99,173,167,205,205,217,203,222,165,210,97,177"/>
+<area shape="rect" id="Node000006" href="$classset__segids_1_1_full_help.html" title=" " alt="" coords="201,268,338,294"/>
+<area shape="poly" id="edge6_Node000000_Node000006" title=" " alt="" coords="83,178,119,218,142,238,167,254,202,268,200,273,164,259,139,242,116,222,79,181"/>
 </map>

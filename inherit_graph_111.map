@@ -1,0 +1,33 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="Node000000" title=" " alt="" coords="5,179,109,204"/>
+<area shape="rect" id="Node000001" href="$structloos_1_1_h_bonds_1_1_error_with_atom.html" title=" " alt="" coords="157,153,351,179"/>
+<area shape="poly" id="edge139_Node000000_Node000001" title=" " alt="" coords="123,180,156,176,157,181,124,186"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_l_o_o_s_error.html" title="Generic LOOS exception." alt="" coords="195,203,313,228"/>
+<area shape="poly" id="edge140_Node000000_Node000002" title=" " alt="" coords="124,197,195,206,194,211,123,202"/>
+<area shape="rect" id="Node000003" href="$classloos_1_1_atom_1_1_unset_property.html" title="DEPRECATED exception class...use loos::UnsetProperty instead." alt="" coords="399,5,575,31"/>
+<area shape="poly" id="edge141_Node000002_Node000003" title=" " alt="" coords="326,204,349,189,363,172,370,154,373,117,375,79,382,59,397,40,412,29,415,34,401,44,387,62,380,80,378,117,375,155,368,175,353,194,329,208"/>
+<area shape="rect" id="Node000004" href="$classloos_1_1_d_c_d_1_1_end_of_file.html" title=" " alt="" coords="413,55,562,80"/>
+<area shape="poly" id="edge142_Node000002_Node000004" title=" " alt="" coords="325,203,349,189,360,178,367,166,373,141,378,115,385,102,397,89,414,79,417,83,401,94,390,105,383,117,378,142,372,168,365,181,353,194,328,207"/>
+<area shape="rect" id="Node000005" href="$classloos_1_1_file_error.html" title="Errors related to File I/O." alt="" coords="436,104,538,130"/>
+<area shape="poly" id="edge143_Node000002_Node000005" title=" " alt="" coords="326,200,350,189,364,177,373,165,382,151,398,139,435,123,437,128,400,143,386,155,377,168,368,181,352,194,328,205"/>
+<area shape="rect" id="Node000010" href="$classloos_1_1_numerical_error.html" title="Exception caused by a blas/atlas error." alt="" coords="417,153,557,179"/>
+<area shape="poly" id="edge148_Node000002_Node000010" title=" " alt="" coords="327,197,422,177,423,182,328,203"/>
+<area shape="rect" id="Node000011" href="$classloos_1_1_options_error.html" title="Exception in options." alt="" coords="424,203,550,228"/>
+<area shape="poly" id="edge149_Node000002_Node000011" title=" " alt="" coords="328,213,424,213,424,218,328,218"/>
+<area shape="rect" id="Node000012" href="$classloos_1_1_parse_error.html" title="Exception when parsing input data." alt="" coords="430,252,545,278"/>
+<area shape="poly" id="edge150_Node000002_Node000012" title=" " alt="" coords="328,228,430,250,428,255,327,234"/>
+<area shape="rect" id="Node000013" href="$classloos_1_1_trajectory_error.html" title="Errors related to trajectory reading and writing." alt="" coords="418,301,557,327"/>
+<area shape="poly" id="edge151_Node000002_Node000013" title=" " alt="" coords="292,234,342,261,400,288,431,298,430,303,398,293,340,266,289,239"/>
+<area shape="rect" id="Node000014" href="$classloos_1_1_unset_property.html" title="Exception when trying to use an unset Atom property." alt="" coords="419,351,556,376"/>
+<area shape="poly" id="edge152_Node000002_Node000014" title=" " alt="" coords="279,238,331,288,365,315,400,337,425,348,423,353,398,342,361,319,328,293,275,242"/>
+<area shape="rect" id="Node000015" href="$structloos_1_1_x_d_r_data_size_error.html" title="Exception indicating internal XDR error." alt="" coords="405,400,569,426"/>
+<area shape="poly" id="edge153_Node000002_Node000015" title=" " alt="" coords="272,240,323,313,359,353,400,387,422,397,419,402,398,391,355,357,318,317,268,243"/>
+<area shape="rect" id="Node000006" href="$classloos_1_1_file_open_error.html" title="Error while opening a file." alt="" coords="623,55,757,80"/>
+<area shape="poly" id="edge144_Node000005_Node000006" title=" " alt="" coords="553,98,633,78,635,84,554,103"/>
+<area shape="rect" id="Node000007" href="$classloos_1_1_file_read_error.html" title="Errors that occur while reading a file." alt="" coords="623,104,757,130"/>
+<area shape="poly" id="edge145_Node000005_Node000007" title=" " alt="" coords="553,114,623,114,623,120,553,120"/>
+<area shape="rect" id="Node000009" href="$classloos_1_1_file_write_error.html" title="Errors while writing to files." alt="" coords="624,153,756,179"/>
+<area shape="poly" id="edge147_Node000005_Node000009" title=" " alt="" coords="554,130,635,150,633,155,553,135"/>
+<area shape="rect" id="Node000008" href="$classloos_1_1_file_read_error_with_line.html" title="Errors that occur while reading a text file (where lines are tracked)" alt="" coords="805,104,989,130"/>
+<area shape="poly" id="edge146_Node000007_Node000008" title=" " alt="" coords="772,114,804,114,804,120,772,120"/>
+</map>

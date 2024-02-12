@@ -1,10 +1,7 @@
 <map id="loos::BasicProgress" name="loos::BasicProgress">
-<area shape="rect" id="node1" title=" " alt="" coords="157,367,295,393"/>
-<area shape="rect" id="node2" href="$classloos_1_1_abstract_observer.html" title=" " alt="" coords="5,248,161,275"/>
-<area shape="rect" id="node3" title=" " alt="" coords="186,248,266,275"/>
-<area shape="rect" id="node4" title=" " alt="" coords="157,157,284,199"/>
-<area shape="rect" id="node5" title=" " alt="" coords="312,248,407,275"/>
-<area shape="rect" id="node6" title=" " alt="" coords="309,157,442,199"/>
-<area shape="rect" id="node7" title=" " alt="" coords="298,81,453,108"/>
-<area shape="rect" id="node8" title=" " alt="" coords="325,5,425,32"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="78,124,216,150"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_abstract_observer.html" title=" " alt="" coords="5,5,161,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="99,44,143,122,138,125,95,46"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="184,5,238,31"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="199,46,156,125,151,122,195,44"/>
 </map>

@@ -1,7 +1,9 @@
 <map id="loos::DCD::EndOfFile" name="loos::DCD::EndOfFile">
-<area shape="rect" id="node1" title=" " alt="" coords="5,261,155,288"/>
-<area shape="rect" id="node2" href="$classloos_1_1_l_o_o_s_error.html" title="Generic LOOS exception." alt="" coords="21,185,139,212"/>
-<area shape="rect" id="node3" title=" " alt="" coords="7,96,110,123"/>
-<area shape="rect" id="node4" title=" " alt="" coords="135,96,215,123"/>
-<area shape="rect" id="node5" title=" " alt="" coords="111,5,238,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="33,169,182,195"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_l_o_o_s_error.html" title="Generic LOOS exception." alt="" coords="49,94,166,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="110,135,110,169,105,169,105,135"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="5,5,109,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="74,43,103,92,98,95,69,46"/>
+<area shape="rect" id="Node000004" title=" " alt="" coords="133,5,186,31"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="147,46,117,95,113,92,142,43"/>
 </map>

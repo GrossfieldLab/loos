@@ -1,6 +1,0 @@
-<map id="loos::SegidSelector" name="loos::SegidSelector">
-<area shape="rect" id="node1" title="Predicate for selecting atoms based on the passed segid string." alt="" coords="87,171,234,197"/>
-<area shape="rect" id="node2" href="$classloos_1_1loos_1_1AtomSelector.html" title=" " alt="" coords="5,81,177,108"/>
-<area shape="rect" id="node3" title=" " alt="" coords="60,5,123,32"/>
-<area shape="rect" id="node4" title=" " alt="" coords="202,81,261,108"/>
-</map>

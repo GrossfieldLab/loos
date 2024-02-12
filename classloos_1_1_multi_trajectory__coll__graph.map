@@ -1,6 +1,7 @@
 <map id="loos::MultiTrajectory" name="loos::MultiTrajectory">
-<area shape="rect" id="node1" title="Combine multiple trajectories (pTraj&#39;s) into one large virtual trajectory." alt="" coords="5,261,145,288"/>
-<area shape="rect" id="node2" href="$classloos_1_1_trajectory.html" title="Base&#45;class for polymorphic trajectories." alt="" coords="19,185,131,212"/>
-<area shape="rect" id="node3" title=" " alt="" coords="35,96,115,123"/>
-<area shape="rect" id="node4" title=" " alt="" coords="12,5,139,47"/>
+<area shape="rect" id="Node000001" title="Combine multiple trajectories (pTraj&#39;s) into one large virtual trajectory." alt="" coords="5,169,145,195"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_trajectory.html" title="Base&#45;class for polymorphic trajectories." alt="" coords="19,94,131,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="78,135,78,169,72,169,72,135"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="48,5,102,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="78,47,78,94,72,94,72,47"/>
 </map>

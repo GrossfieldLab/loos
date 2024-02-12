@@ -1,5 +1,5 @@
 <map id="loos::internal::TrajectoryNameBindingType" name="loos::internal::TrajectoryNameBindingType">
-<area shape="rect" id="node1" title=" " alt="" coords="5,200,168,241"/>
-<area shape="rect" id="node2" title=" " alt="" coords="47,96,127,123"/>
-<area shape="rect" id="node3" title=" " alt="" coords="23,5,150,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,109,167,150"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="59,5,113,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="89,47,89,109,83,109,83,47"/>
 </map>

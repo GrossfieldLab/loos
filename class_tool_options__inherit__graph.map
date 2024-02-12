@@ -1,4 +1,11 @@
 <map id="ToolOptions" name="ToolOptions">
-<area shape="rect" id="node1" title=" " alt="" coords="42,95,133,121"/>
-<area shape="rect" id="node2" href="$classloos_1_1_options_framework_1_1_options_package.html" title="Base class for options." alt="" coords="5,5,169,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="42,94,132,120"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_options_framework_1_1_options_package.html" title="Base class for options." alt="" coords="5,5,169,46"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="36,60,38,77,49,92,45,95,33,79,31,60"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="54,61,55,78,63,92,58,95,50,79,49,61"/>
+<area shape="poly" id="edge3_Node000001_Node000002" title=" " alt="" coords="72,61,76,93,71,94,66,62"/>
+<area shape="poly" id="edge4_Node000001_Node000002" title=" " alt="" coords="90,62,90,93,84,93,84,62"/>
+<area shape="poly" id="edge5_Node000001_Node000002" title=" " alt="" coords="108,62,103,94,98,93,102,61"/>
+<area shape="poly" id="edge6_Node000001_Node000002" title=" " alt="" coords="125,61,124,79,116,95,111,92,119,78,120,61"/>
+<area shape="poly" id="edge7_Node000001_Node000002" title=" " alt="" coords="143,60,141,79,129,95,125,92,136,77,138,60"/>
 </map>

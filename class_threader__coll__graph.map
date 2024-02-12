@@ -1,6 +1,5 @@
 <map id="Threader&lt; W &gt;" name="Threader&lt; W &gt;">
-<area shape="rect" id="node1" title=" " alt="" coords="23,273,134,300"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,184,152,211"/>
-<area shape="rect" id="node3" title=" " alt="" coords="21,95,136,121"/>
-<area shape="rect" id="node4" title=" " alt="" coords="59,5,98,32"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="11,94,121,120"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,127,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="69,47,69,94,63,94,63,47"/>
 </map>

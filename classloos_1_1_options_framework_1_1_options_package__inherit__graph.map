@@ -1,20 +1,43 @@
 <map id="loos::OptionsFramework::OptionsPackage" name="loos::OptionsFramework::OptionsPackage">
-<area shape="rect" id="node1" title="Base class for options." alt="" coords="5,303,169,345"/>
-<area shape="rect" id="node2" href="$class_clustering_1_1_clustering_options.html" title=" " alt="" coords="221,5,414,32"/>
-<area shape="rect" id="node3" href="$class_tool_options.html" title=" " alt="" coords="272,56,363,83"/>
-<area shape="rect" id="node4" href="$classloos_1_1_options_framework_1_1_basic_convergence.html" title=" " alt="" coords="235,107,399,149"/>
-<area shape="rect" id="node5" href="$classloos_1_1_options_framework_1_1_basic_options.html" title="Options common to all tools (including –fullhelp)" alt="" coords="235,173,399,214"/>
-<area shape="rect" id="node6" href="$classloos_1_1_options_framework_1_1_basic_selection.html" title="Provides a single LOOS selection (–selection)" alt="" coords="235,238,399,279"/>
-<area shape="rect" id="node7" href="$classloos_1_1_options_framework_1_1_basic_split_by.html" title="Provides a mechanism for controlling how to split an AtomicGroup." alt="" coords="235,303,399,345"/>
-<area shape="rect" id="node8" href="$classloos_1_1_options_framework_1_1_basic_trajectory.html" title="Basic trajectory with a –skip option." alt="" coords="235,369,399,410"/>
-<area shape="rect" id="node9" href="$classloos_1_1_options_framework_1_1_basic_water.html" title="Options specific to tools that work with water/internal&#45;water." alt="" coords="235,434,399,475"/>
-<area shape="rect" id="node10" href="$classloos_1_1_options_framework_1_1_model_with_coords.html" title="Request a model with coordinates." alt="" coords="235,499,399,541"/>
-<area shape="rect" id="node11" href="$classloos_1_1_options_framework_1_1_multi_traj_options.html" title="Multiple trajectories as one trajectory via MultiTrajectory." alt="" coords="235,565,399,606"/>
-<area shape="rect" id="node12" href="$classloos_1_1_options_framework_1_1_output_prefix.html" title="Gets a string as prefix for output files (–prefix)" alt="" coords="235,630,399,671"/>
-<area shape="rect" id="node13" href="$classloos_1_1_options_framework_1_1_output_trajectory_options.html" title=" " alt="" coords="231,695,403,737"/>
-<area shape="rect" id="node14" href="$classloos_1_1_options_framework_1_1_output_trajectory_type_options.html" title=" " alt="" coords="217,761,417,802"/>
-<area shape="rect" id="node15" href="$classloos_1_1_options_framework_1_1_required_arguments.html" title="Provides simple way to add command&#45;line arguments (required options)" alt="" coords="235,826,399,867"/>
-<area shape="rect" id="node16" href="$classloos_1_1_options_framework_1_1_trajectory_with_frame_indices.html" title="Trajectory with either a –range or –skip." alt="" coords="220,891,415,933"/>
-<area shape="rect" id="node17" href="$classloos_1_1_options_framework_1_1_two_models_with_coords.html" title="Request Two models with coordinates." alt="" coords="235,957,399,998"/>
-<area shape="rect" id="node18" href="$classloos_1_1_options_framework_1_1_weights_options.html" title=" " alt="" coords="235,1022,399,1063"/>
+<area shape="rect" id="Node000001" title="Base class for options." alt="" coords="5,302,169,343"/>
+<area shape="rect" id="Node000002" href="$class_clustering_1_1_clustering_options.html" title=" " alt="" coords="220,7,413,33"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="92,286,105,232,129,166,165,99,188,68,215,42,232,31,235,35,218,46,192,72,169,102,134,168,110,233,97,287"/>
+<area shape="rect" id="Node000003" href="$class_tool_options.html" title=" " alt="" coords="271,56,362,82"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="121,287,160,224,185,192,215,164,244,148,274,135,299,115,307,101,312,82,317,83,312,103,303,118,277,139,246,153,218,169,189,196,164,227,125,290"/>
+<area shape="poly" id="edge3_Node000001_Node000003" title=" " alt="" coords="110,287,151,212,180,174,215,140,243,125,272,114,297,101,305,92,311,81,316,83,309,95,300,105,274,119,245,130,218,145,184,177,156,215,115,289"/>
+<area shape="poly" id="edge4_Node000001_Node000003" title=" " alt="" coords="102,287,119,247,144,201,175,155,215,116,238,103,264,94,305,80,307,85,265,99,241,108,218,121,179,159,148,204,124,249,107,289"/>
+<area shape="poly" id="edge5_Node000001_Node000003" title=" " alt="" coords="96,287,112,242,137,190,171,137,192,113,215,92,242,78,270,70,271,75,244,83,218,97,195,117,175,140,142,192,117,244,101,288"/>
+<area shape="poly" id="edge6_Node000001_Node000003" title=" " alt="" coords="92,286,107,236,132,177,167,118,190,91,215,68,238,55,264,49,288,48,306,53,305,58,287,54,264,54,240,60,218,73,194,95,172,121,137,179,112,238,97,288"/>
+<area shape="poly" id="edge7_Node000001_Node000003" title=" " alt="" coords="89,286,103,229,128,162,165,98,188,69,215,44,243,30,273,26,299,34,309,43,316,55,311,57,305,46,297,39,273,31,245,35,218,49,192,73,169,101,133,165,108,230,95,287"/>
+<area shape="poly" id="edge8_Node000001_Node000003" title=" " alt="" coords="88,286,101,220,125,147,142,111,163,77,187,46,215,20,244,6,276,5,290,10,303,20,312,35,317,55,312,56,307,37,299,24,288,15,275,10,246,11,218,25,191,50,167,80,147,113,130,149,106,221,93,287"/>
+<area shape="rect" id="Node000004" href="$classloos_1_1_options_framework_1_1_basic_convergence.html" title=" " alt="" coords="235,106,398,147"/>
+<area shape="poly" id="edge9_Node000001_Node000004" title=" " alt="" coords="105,287,149,222,180,187,215,158,237,145,240,150,218,162,184,191,154,225,109,290"/>
+<area shape="rect" id="Node000005" href="$classloos_1_1_options_framework_1_1_basic_options.html" title="Options common to all tools (including –fullhelp)" alt="" coords="235,171,398,212"/>
+<area shape="poly" id="edge10_Node000001_Node000005" title=" " alt="" coords="121,290,164,255,215,223,243,210,245,215,218,227,167,260,124,294"/>
+<area shape="rect" id="Node000006" href="$classloos_1_1_options_framework_1_1_basic_selection.html" title="Provides a single LOOS selection (–selection)" alt="" coords="235,237,398,277"/>
+<area shape="poly" id="edge11_Node000001_Node000006" title=" " alt="" coords="174,295,241,276,243,281,176,300"/>
+<area shape="rect" id="Node000007" href="$classloos_1_1_options_framework_1_1_basic_split_by.html" title="Provides a mechanism for controlling how to split an AtomicGroup." alt="" coords="235,302,398,343"/>
+<area shape="poly" id="edge12_Node000001_Node000007" title=" " alt="" coords="184,320,234,320,234,325,184,325"/>
+<area shape="rect" id="Node000008" href="$classloos_1_1_options_framework_1_1_basic_trajectory.html" title="Basic trajectory with a –skip option." alt="" coords="235,367,398,408"/>
+<area shape="poly" id="edge13_Node000001_Node000008" title=" " alt="" coords="176,345,243,364,241,369,174,350"/>
+<area shape="rect" id="Node000009" href="$classloos_1_1_options_framework_1_1_basic_water.html" title="Options specific to tools that work with water/internal&#45;water." alt="" coords="235,433,398,473"/>
+<area shape="poly" id="edge14_Node000001_Node000009" title=" " alt="" coords="124,351,167,385,218,417,245,430,243,435,215,422,164,390,121,355"/>
+<area shape="rect" id="Node000010" href="$classloos_1_1_options_framework_1_1_model_with_coords.html" title="Request a model with coordinates." alt="" coords="235,498,398,539"/>
+<area shape="poly" id="edge15_Node000001_Node000010" title=" " alt="" coords="109,354,154,420,184,454,218,483,240,495,237,500,215,487,180,457,149,423,105,357"/>
+<area shape="rect" id="Node000011" href="$classloos_1_1_options_framework_1_1_multi_traj_options.html" title="Multiple trajectories as one trajectory via MultiTrajectory." alt="" coords="235,563,398,604"/>
+<area shape="poly" id="edge16_Node000001_Node000011" title=" " alt="" coords="102,357,118,400,143,452,176,504,218,548,237,561,235,565,215,552,172,507,138,454,113,402,97,358"/>
+<area shape="rect" id="Node000012" href="$classloos_1_1_options_framework_1_1_output_prefix.html" title="Gets a string as prefix for output files (–prefix)" alt="" coords="235,629,398,669"/>
+<area shape="poly" id="edge17_Node000001_Node000012" title=" " alt="" coords="97,357,110,413,133,482,169,553,192,585,218,614,236,626,233,631,215,618,188,589,164,556,129,484,105,415,92,359"/>
+<area shape="rect" id="Node000013" href="$classloos_1_1_options_framework_1_1_output_trajectory_options.html" title=" " alt="" coords="231,694,402,735"/>
+<area shape="poly" id="edge18_Node000001_Node000013" title=" " alt="" coords="94,358,103,425,125,512,141,557,162,601,187,643,218,679,235,691,232,696,215,683,183,646,157,604,136,559,119,513,98,426,88,359"/>
+<area shape="rect" id="Node000014" href="$classloos_1_1_options_framework_1_1_output_trajectory_type_options.html" title=" " alt="" coords="217,759,416,800"/>
+<area shape="poly" id="edge19_Node000001_Node000014" title=" " alt="" coords="91,358,97,437,116,540,132,595,154,649,183,700,219,745,234,757,231,761,215,748,178,703,149,652,127,597,111,542,92,438,86,359"/>
+<area shape="rect" id="Node000015" href="$classloos_1_1_options_framework_1_1_required_arguments.html" title="Provides simple way to add command&#45;line arguments (required options)" alt="" coords="235,825,398,865"/>
+<area shape="poly" id="edge20_Node000001_Node000015" title=" " alt="" coords="96,358,113,462,140,597,157,665,176,726,196,776,219,810,236,823,232,828,215,814,192,778,171,728,151,666,134,599,107,463,91,359"/>
+<area shape="rect" id="Node000016" href="$classloos_1_1_options_framework_1_1_trajectory_with_frame_indices.html" title="Trajectory with either a –range or –skip." alt="" coords="220,890,413,931"/>
+<area shape="poly" id="edge21_Node000001_Node000016" title=" " alt="" coords="95,358,109,474,135,629,152,707,172,778,194,836,219,875,233,888,230,892,215,879,189,838,167,779,147,708,130,630,104,475,89,359"/>
+<area shape="rect" id="Node000017" href="$classloos_1_1_options_framework_1_1_two_models_with_coords.html" title="Request Two models with coordinates." alt="" coords="234,955,399,996"/>
+<area shape="poly" id="edge22_Node000001_Node000017" title=" " alt="" coords="94,358,107,487,131,661,148,750,168,830,192,896,205,921,219,941,235,954,232,959,215,944,200,924,187,898,163,831,143,751,126,662,101,488,88,359"/>
+<area shape="rect" id="Node000018" href="$classloos_1_1_options_framework_1_1_weights_options.html" title=" " alt="" coords="235,1021,398,1061"/>
+<area shape="poly" id="edge23_Node000001_Node000018" title=" " alt="" coords="93,358,104,499,127,693,144,792,164,882,189,956,203,984,219,1006,236,1020,232,1024,215,1010,199,987,184,958,159,883,138,793,122,694,99,500,88,359"/>
 </map>

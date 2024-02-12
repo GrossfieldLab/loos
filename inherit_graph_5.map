@@ -1,5 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classENM_1_1ElasticNetworkModel.html" title="Interface for all ENMs." alt="" coords="5,31,204,57"/>
-<area shape="rect" id="node2" href="$classENM_1_1ANM.html" title="Anisotropic network model." alt="" coords="252,5,343,32"/>
-<area shape="rect" id="node3" href="$classENM_1_1VSA.html" title="Vibrational subsystem analysis ENM." alt="" coords="254,56,341,83"/>
+<area shape="rect" id="Node000000" href="$class_clustering_1_1_h_a_c.html" title=" " alt="" coords="5,5,123,31"/>
+<area shape="rect" id="Node000001" href="$class_clustering_1_1_average_linkage.html" title=" " alt="" coords="171,5,352,31"/>
+<area shape="poly" id="edge18_Node000000_Node000001" title=" " alt="" coords="139,16,170,16,170,21,139,21"/>
+<area shape="rect" id="Node000002" href="$class_clustering_1_1_k_g_s.html" title=" " alt="" coords="400,5,516,31"/>
+<area shape="poly" id="edge19_Node000001_Node000002" title=" " alt="" coords="367,16,400,16,400,21,367,21"/>
 </map>

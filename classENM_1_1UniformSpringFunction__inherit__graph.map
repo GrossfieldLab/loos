@@ -1,9 +1,0 @@
-<map id="ENM::UniformSpringFunction" name="ENM::UniformSpringFunction">
-<area shape="rect" id="node1" title="Spring functions that are uniform in all directions (ie return a single value)" alt="" coords="209,107,419,133"/>
-<area shape="rect" id="node3" href="$classENM_1_1ConstBonded.html" title="Use a spring function that is a constant weight regardless of distance." alt="" coords="491,5,637,32"/>
-<area shape="rect" id="node4" href="$classENM_1_1DistanceCutoff.html" title="Basic distance cutoff for &quot;traditional&quot; ENM." alt="" coords="486,56,642,83"/>
-<area shape="rect" id="node5" href="$classENM_1_1DistanceWeight.html" title="Distance weighting (i.e. )" alt="" coords="483,107,645,133"/>
-<area shape="rect" id="node6" href="$classENM_1_1ExponentialDistance.html" title="Exponential distance weighting (i.e. )" alt="" coords="467,157,661,184"/>
-<area shape="rect" id="node7" href="$classENM_1_1HCA.html" title="HCA method (bimodal distance&#45;based function)" alt="" coords="520,208,608,235"/>
-<area shape="rect" id="node2" href="$classENM_1_1SpringFunction.html" title="Interface for ENM spring functions." alt="" coords="5,107,161,133"/>
-</map>

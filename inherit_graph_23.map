@@ -1,3 +1,9 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classloos_1_1Voronoi_1_1Voronoi_1_1ZSliceSelector.html" title=" " alt="" coords="5,5,204,47"/>
+<area shape="rect" id="Node000000" href="$classloos_1_1_abstract_observer.html" title=" " alt="" coords="5,31,161,56"/>
+<area shape="rect" id="Node000001" href="$classloos_1_1_basic_progress.html" title=" " alt="" coords="209,31,347,56"/>
+<area shape="poly" id="edge32_Node000000_Node000001" title=" " alt="" coords="176,41,208,41,208,46,176,46"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_percent_progress.html" title="Provide feedback by percent&#45;complete." alt="" coords="423,5,573,31"/>
+<area shape="poly" id="edge33_Node000001_Node000002" title=" " alt="" coords="362,31,422,24,423,29,363,36"/>
+<area shape="rect" id="Node000003" href="$classloos_1_1_percent_progress_with_time.html" title=" " alt="" coords="395,55,601,80"/>
+<area shape="poly" id="edge34_Node000001_Node000003" title=" " alt="" coords="363,50,395,54,394,59,362,55"/>
 </map>

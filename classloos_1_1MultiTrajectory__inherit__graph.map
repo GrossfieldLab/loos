@@ -1,5 +1,0 @@
-<map id="loos::MultiTrajectory" name="loos::MultiTrajectory">
-<area shape="rect" id="node1" title="Combine multiple trajectories (pTraj&#39;s) into one large virtual trajectory." alt="" coords="5,155,160,181"/>
-<area shape="rect" id="node2" href="$classloos_1_1loos_1_1Trajectory.html" title=" " alt="" coords="9,80,157,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="51,5,114,32"/>
-</map>

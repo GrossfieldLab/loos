@@ -1,4 +1,6 @@
 <map id="loos::NotSelector" name="loos::NotSelector">
-<area shape="rect" id="node1" title="Negates a selection predicate." alt="" coords="11,95,133,121"/>
-<area shape="rect" id="node2" href="$structloos_1_1_atom_selector.html" title="Virtual base&#45;class for selecting atoms from a group." alt="" coords="5,5,139,32"/>
+<area shape="rect" id="Node000001" title="Negates a selection predicate." alt="" coords="10,94,133,120"/>
+<area shape="rect" id="Node000002" href="$structloos_1_1_atom_selector.html" title="Virtual base&#45;class for selecting atoms from a group." alt="" coords="5,5,138,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="72,47,71,55,73,93,68,94,66,55,67,46"/>
+<area shape="poly" id="edge2_Node000001_Node000002" title=" " alt="" coords="74,47,74,94,69,94,69,47"/>
 </map>

@@ -1,6 +1,7 @@
 <map id="loos::OptionsFramework::BasicSplitBy" name="loos::OptionsFramework::BasicSplitBy">
-<area shape="rect" id="node1" title="Provides a mechanism for controlling how to split an AtomicGroup." alt="" coords="27,215,191,256"/>
-<area shape="rect" id="node2" href="$classloos_1_1_options_framework_1_1_options_package.html" title="Base class for options." alt="" coords="5,96,169,137"/>
-<area shape="rect" id="node3" title=" " alt="" coords="194,103,274,130"/>
-<area shape="rect" id="node4" title=" " alt="" coords="171,5,297,47"/>
+<area shape="rect" id="Node000001" title="Provides a mechanism for controlling how to split an AtomicGroup." alt="" coords="71,124,234,165"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_options_framework_1_1_options_package.html" title="Base class for options." alt="" coords="5,5,169,46"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="108,58,144,122,139,125,103,61"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="192,13,246,39"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="207,53,166,125,161,122,202,51"/>
 </map>

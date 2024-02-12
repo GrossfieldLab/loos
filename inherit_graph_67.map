@@ -1,3 +1,10 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structloos_1_1MatrixReadImpl_3_01T_00_01Math_1_1Triangular_00_01S_01_4.html" title="Special handling for triangular matrices." alt="" coords="5,5,195,47"/>
+<area shape="rect" id="Node000000" href="$classloos_1_1_math_1_1_col_major.html" title="Class for storing a matrix in column&#45;major order." alt="" coords="5,17,148,43"/>
+<area shape="rect" id="Node000001" href="$classloos_1_1_math_1_1_matrix.html" title=" " alt="" coords="240,5,366,46"/>
+<area shape="poly" id="edge96_Node000000_Node000001" title=" " alt="" coords="163,25,239,24,239,29,163,31"/>
+<area shape="rect" id="Node000003" href="$classloos_1_1_math_1_1_matrix.html" title="Simple matrix template class using policy classes to determine behavior." alt="" coords="196,71,410,111"/>
+<area shape="poly" id="edge97_Node000000_Node000003" title=" " alt="" coords="142,45,226,68,225,73,141,50"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="30,70,123,96"/>
+<area shape="poly" id="edge98_Node000002_Node000001" title=" " alt="" coords="138,65,239,39,240,44,139,70"/>
+<area shape="poly" id="edge99_Node000002_Node000003" title=" " alt="" coords="139,83,195,85,195,90,138,88"/>
 </map>

@@ -1,4 +1,5 @@
 <map id="loos::internal::pushFloat" name="loos::internal::pushFloat">
-<area shape="rect" id="node1" title="Push a float onto the data stack." alt="" coords="5,80,167,107"/>
-<area shape="rect" id="node2" href="$classloos_1_1internal_1_1_action.html" title="Base class for all commands..." alt="" coords="15,5,157,32"/>
+<area shape="rect" id="Node000001" title="Push a float onto the data stack." alt="" coords="5,79,166,105"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1internal_1_1_action.html" title="Base class for all commands..." alt="" coords="15,5,156,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="88,46,88,79,83,79,83,46"/>
 </map>

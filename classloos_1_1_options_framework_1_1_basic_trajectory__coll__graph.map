@@ -1,11 +1,11 @@
 <map id="loos::OptionsFramework::BasicTrajectory" name="loos::OptionsFramework::BasicTrajectory">
-<area shape="rect" id="node1" title="Basic trajectory with a –skip option." alt="" coords="152,436,316,477"/>
-<area shape="rect" id="node2" href="$classloos_1_1_options_framework_1_1_options_package.html" title="Base class for options." alt="" coords="5,288,169,329"/>
-<area shape="rect" id="node3" title=" " alt="" coords="194,295,274,322"/>
-<area shape="rect" id="node4" title=" " alt="" coords="156,184,283,225"/>
-<area shape="rect" id="node5" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)" alt="" coords="323,295,454,322"/>
-<area shape="rect" id="node6" href="$classloos_1_1_shared_periodic_box.html" title="This class manages a shared Periodicbox." alt="" coords="307,191,471,218"/>
-<area shape="rect" id="node7" title=" " alt="" coords="495,191,640,218"/>
-<area shape="rect" id="node8" title=" " alt="" coords="510,95,625,121"/>
-<area shape="rect" id="node9" title=" " alt="" coords="548,5,587,32"/>
+<area shape="rect" id="Node000001" title="Basic trajectory with a –skip option." alt="" coords="137,243,301,283"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_options_framework_1_1_options_package.html" title="Base class for options." alt="" coords="5,94,169,135"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="116,144,203,240,199,244,112,148"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="192,102,246,127"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="222,143,222,242,216,242,216,143"/>
+<area shape="rect" id="Node000004" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)" alt="" coords="270,102,400,127"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="335,143,325,182,316,202,304,220,273,244,270,240,300,217,311,199,320,180,329,142"/>
+<area shape="rect" id="Node000005" href="$classloos_1_1_shared_periodic_box.html" title="This class manages a shared Periodicbox." alt="" coords="253,5,417,31"/>
+<area shape="poly" id="edge4_Node000004_Node000005" title=" " alt="" coords="338,47,338,101,332,101,332,47"/>
 </map>

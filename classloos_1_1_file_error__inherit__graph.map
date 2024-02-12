@@ -1,9 +1,15 @@
 <map id="loos::FileError" name="loos::FileError">
-<area shape="rect" id="node1" title="Errors related to File I/O." alt="" coords="180,155,283,181"/>
-<area shape="rect" id="node4" href="$classloos_1_1_file_open_error.html" title="Error while opening a file." alt="" coords="5,229,140,256"/>
-<area shape="rect" id="node5" href="$classloos_1_1_file_read_error.html" title="Errors that occur while reading a file." alt="" coords="165,229,298,256"/>
-<area shape="rect" id="node7" href="$classloos_1_1_file_write_error.html" title="Errors while writing to files." alt="" coords="322,229,455,256"/>
-<area shape="rect" id="node2" href="$classloos_1_1_l_o_o_s_error.html" title="Generic LOOS exception." alt="" coords="172,80,291,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="180,5,283,32"/>
-<area shape="rect" id="node6" href="$classloos_1_1_file_read_error_with_line.html" title="Errors that occur while reading a text file (where lines are tracked)" alt="" coords="139,304,323,331"/>
+<area shape="rect" id="Node000001" title="Errors related to File I/O." alt="" coords="178,153,281,178"/>
+<area shape="rect" id="Node000004" href="$classloos_1_1_file_open_error.html" title="Error while opening a file." alt="" coords="5,226,139,252"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="190,188,100,228,98,223,188,183"/>
+<area shape="rect" id="Node000005" href="$classloos_1_1_file_read_error.html" title="Errors that occur while reading a file." alt="" coords="163,226,296,252"/>
+<area shape="poly" id="edge4_Node000001_Node000005" title=" " alt="" coords="232,194,232,226,227,226,227,194"/>
+<area shape="rect" id="Node000007" href="$classloos_1_1_file_write_error.html" title="Errors while writing to files." alt="" coords="321,226,453,252"/>
+<area shape="poly" id="edge6_Node000001_Node000007" title=" " alt="" coords="271,183,361,223,359,228,269,188"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_l_o_o_s_error.html" title="Generic LOOS exception." alt="" coords="171,79,288,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="232,120,232,152,227,152,227,120"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="178,5,281,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="232,46,232,79,227,79,227,46"/>
+<area shape="rect" id="Node000006" href="$classloos_1_1_file_read_error_with_line.html" title="Errors that occur while reading a text file (where lines are tracked)" alt="" coords="137,300,322,326"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="232,267,232,300,227,300,227,267"/>
 </map>

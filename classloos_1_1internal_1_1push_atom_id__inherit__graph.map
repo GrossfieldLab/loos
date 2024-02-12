@@ -1,4 +1,5 @@
 <map id="loos::internal::pushAtomId" name="loos::internal::pushAtomId">
-<area shape="rect" id="node1" title="Push atom id onto the stack." alt="" coords="5,80,180,107"/>
-<area shape="rect" id="node2" href="$classloos_1_1internal_1_1_action.html" title="Base class for all commands..." alt="" coords="22,5,163,32"/>
+<area shape="rect" id="Node000001" title="Push atom id onto the stack." alt="" coords="5,79,179,105"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1internal_1_1_action.html" title="Base class for all commands..." alt="" coords="22,5,162,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="95,46,95,79,89,79,89,46"/>
 </map>

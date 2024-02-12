@@ -1,3 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$class_threader.html" title=" " alt="" coords="5,5,116,32"/>
+<area shape="rect" id="Node000000" href="$classloos_1_1_weights.html" title=" " alt="" coords="5,31,106,56"/>
+<area shape="rect" id="Node000001" href="$classloos_1_1_uniform_weight.html" title=" " alt="" coords="160,5,299,31"/>
+<area shape="poly" id="edge134_Node000000_Node000001" title=" " alt="" coords="120,31,159,26,160,31,121,37"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_weights_from_file.html" title=" " alt="" coords="154,55,305,80"/>
+<area shape="poly" id="edge135_Node000000_Node000002" title=" " alt="" coords="121,50,154,54,153,60,121,55"/>
 </map>

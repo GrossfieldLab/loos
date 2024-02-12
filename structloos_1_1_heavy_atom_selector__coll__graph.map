@@ -1,6 +1,12 @@
 <map id="loos::HeavyAtomSelector" name="loos::HeavyAtomSelector">
-<area shape="rect" id="node1" title="Select non&#45;hydrogen atoms." alt="" coords="5,184,176,211"/>
-<area shape="rect" id="node2" href="$structloos_1_1_atom_selector.html" title="Virtual base&#45;class for selecting atoms from a group." alt="" coords="23,5,156,32"/>
-<area shape="rect" id="node3" href="$structloos_1_1_not_selector.html" title="Negates a selection predicate." alt="" coords="29,95,152,121"/>
-<area shape="rect" id="node4" href="$structloos_1_1_hydrogen_selector.html" title="Select hydrogen atoms." alt="" coords="176,95,333,121"/>
+<area shape="rect" id="Node000001" title="Select non&#45;hydrogen atoms." alt="" coords="16,183,186,208"/>
+<area shape="rect" id="Node000002" href="$structloos_1_1_atom_selector.html" title="Virtual base&#45;class for selecting atoms from a group." alt="" coords="61,5,194,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="79,40,41,63,25,78,13,95,8,108,10,120,25,143,50,164,76,180,74,184,46,168,21,147,5,122,3,107,8,93,21,74,38,58,76,35"/>
+<area shape="rect" id="Node000003" href="$structloos_1_1_hydrogen_selector.html" title="Select hydrogen atoms." alt="" coords="22,94,179,120"/>
+<area shape="poly" id="edge3_Node000003_Node000002" title=" " alt="" coords="122,47,107,94,102,93,117,45"/>
+<area shape="rect" id="Node000004" href="$structloos_1_1_not_selector.html" title="Negates a selection predicate." alt="" coords="204,94,326,120"/>
+<area shape="poly" id="edge5_Node000004_Node000002" title=" " alt="" coords="161,37,247,91,244,96,158,42"/>
+<area shape="poly" id="edge6_Node000004_Node000002" title=" " alt="" coords="181,35,216,53,239,72,257,92,253,96,236,76,213,57,179,40"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="103,135,103,182,98,182,98,135"/>
+<area shape="poly" id="edge4_Node000001_Node000004" title=" " alt="" coords="230,130,125,184,123,180,227,125"/>
 </map>

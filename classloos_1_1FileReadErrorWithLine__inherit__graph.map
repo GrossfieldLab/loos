@@ -1,7 +1,0 @@
-<map id="loos.FileReadErrorWithLine" name="loos.FileReadErrorWithLine">
-<area shape="rect" id="node1" title="Errors that occur while reading a text file (where lines are tracked)" alt="" coords="5,304,203,331"/>
-<area shape="rect" id="node2" href="$classloos_1_1loos_1_1FileReadError.html" title=" " alt="" coords="19,229,189,256"/>
-<area shape="rect" id="node3" href="$classloos_1_1loos_1_1FileError.html" title=" " alt="" coords="35,155,173,181"/>
-<area shape="rect" id="node4" href="$classloos_1_1loos_1_1LOOSError.html" title=" " alt="" coords="29,80,179,107"/>
-<area shape="rect" id="node5" title=" " alt="" coords="61,5,147,32"/>
-</map>

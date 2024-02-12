@@ -1,5 +1,5 @@
 <map id="ScanfFmt" name="ScanfFmt">
-<area shape="rect" id="node1" title=" " alt="" coords="29,185,108,212"/>
-<area shape="rect" id="node2" title=" " alt="" coords="29,96,109,123"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,5,132,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,94,84,120"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="18,5,71,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="47,47,47,94,42,94,42,47"/>
 </map>

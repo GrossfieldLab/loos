@@ -1,0 +1,7 @@
+<map id="loos::MDTraj" name="loos::MDTraj">
+<area shape="rect" id="Node000001" title="Class for reading a MDTraj HDF5 file." alt="" coords="39,169,136,195"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)" alt="" coords="23,94,152,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="90,135,90,169,85,169,85,135"/>
+<area shape="rect" id="Node000003" href="$classloos_1_1_shared_periodic_box.html" title="This class manages a shared Periodicbox." alt="" coords="5,5,170,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="90,47,90,94,85,94,85,47"/>
+</map>

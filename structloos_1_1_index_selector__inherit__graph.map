@@ -1,4 +1,5 @@
 <map id="loos::IndexSelector" name="loos::IndexSelector">
-<area shape="rect" id="node1" title="Predicate for selecting atoms based on index." alt="" coords="5,80,140,107"/>
-<area shape="rect" id="node2" href="$structloos_1_1_atom_selector.html" title="Virtual base&#45;class for selecting atoms from a group." alt="" coords="6,5,139,32"/>
+<area shape="rect" id="Node000001" title="Predicate for selecting atoms based on index." alt="" coords="5,79,139,105"/>
+<area shape="rect" id="Node000002" href="$structloos_1_1_atom_selector.html" title="Virtual base&#45;class for selecting atoms from a group." alt="" coords="6,5,138,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="75,46,75,79,69,79,69,46"/>
 </map>

@@ -1,9 +1,15 @@
 <map id="ENM::SpringFunction" name="ENM::SpringFunction">
-<area shape="rect" id="node1" title="Interface for ENM spring functions." alt="" coords="5,107,152,133"/>
-<area shape="rect" id="node2" href="$class_e_n_m_1_1_uniform_spring_function.html" title="Spring functions that are uniform in all directions (ie return a single value)" alt="" coords="200,107,393,133"/>
-<area shape="rect" id="node3" href="$class_e_n_m_1_1_const_bonded.html" title="Use a spring function that is a constant weight regardless of distance." alt="" coords="462,5,601,32"/>
-<area shape="rect" id="node4" href="$class_e_n_m_1_1_distance_cutoff.html" title="Basic distance cutoff for &quot;traditional&quot; ENM." alt="" coords="458,56,605,83"/>
-<area shape="rect" id="node5" href="$class_e_n_m_1_1_distance_weight.html" title="Distance weighting (i.e. )" alt="" coords="455,107,607,133"/>
-<area shape="rect" id="node6" href="$class_e_n_m_1_1_exponential_distance.html" title="Exponential distance weighting (i.e. )" alt="" coords="441,157,621,184"/>
-<area shape="rect" id="node7" href="$class_e_n_m_1_1_h_c_a.html" title="HCA method (bimodal distance&#45;based function)" alt="" coords="487,208,575,235"/>
+<area shape="rect" id="Node000001" title="Interface for ENM spring functions." alt="" coords="5,104,152,130"/>
+<area shape="rect" id="Node000002" href="$class_e_n_m_1_1_uniform_spring_function.html" title="Spring functions that are uniform in all directions (ie return a single value)" alt="" coords="200,104,392,130"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="167,114,199,114,199,120,167,120"/>
+<area shape="rect" id="Node000003" href="$class_e_n_m_1_1_const_bonded.html" title="Use a spring function that is a constant weight regardless of distance." alt="" coords="461,5,599,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="331,93,381,66,439,40,471,29,473,34,441,45,384,71,334,98"/>
+<area shape="rect" id="Node000004" href="$class_e_n_m_1_1_distance_cutoff.html" title="Basic distance cutoff for &quot;traditional&quot; ENM." alt="" coords="456,55,603,80"/>
+<area shape="poly" id="edge3_Node000002_Node000004" title=" " alt="" coords="375,98,465,78,466,84,376,103"/>
+<area shape="rect" id="Node000005" href="$class_e_n_m_1_1_distance_weight.html" title="Distance weighting (i.e. )" alt="" coords="454,104,605,130"/>
+<area shape="poly" id="edge4_Node000002_Node000005" title=" " alt="" coords="407,114,454,114,454,120,407,120"/>
+<area shape="rect" id="Node000006" href="$class_e_n_m_1_1_exponential_distance.html" title="Exponential distance weighting (i.e. )" alt="" coords="440,153,619,179"/>
+<area shape="poly" id="edge5_Node000002_Node000006" title=" " alt="" coords="376,131,466,150,465,155,375,136"/>
+<area shape="rect" id="Node000007" href="$class_e_n_m_1_1_h_c_a.html" title="HCA method (bimodal distance&#45;based function)" alt="" coords="486,203,574,228"/>
+<area shape="poly" id="edge6_Node000002_Node000007" title=" " alt="" coords="334,136,384,163,441,189,486,203,484,208,439,194,381,168,331,140"/>
 </map>

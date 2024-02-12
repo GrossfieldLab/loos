@@ -1,4 +1,5 @@
 <map id="loos::PSF" name="loos::PSF">
-<area shape="rect" id="node1" title="Class for reading a subset of the PSF format." alt="" coords="31,80,111,107"/>
-<area shape="rect" id="node2" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)" alt="" coords="5,5,136,32"/>
+<area shape="rect" id="Node000001" title="Class for reading a subset of the PSF format." alt="" coords="30,79,110,105"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)" alt="" coords="5,5,135,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="73,46,73,79,67,79,67,46"/>
 </map>

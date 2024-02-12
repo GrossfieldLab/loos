@@ -1,3 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classloos_1_1UserTimer.html" title="Policy class for tracking only user process time." alt="" coords="5,5,131,32"/>
+<area shape="rect" id="Node000000" href="$classloos_1_1_simple_counter.html" title="Basic progress counter object, defining the interface..." alt="" coords="5,35,145,60"/>
+<area shape="rect" id="Node000001" href="$classloos_1_1_estimating_counter.html" title="A progress counter that can estimate how much time is left." alt="" coords="193,5,354,31"/>
+<area shape="poly" id="edge117_Node000000_Node000001" title=" " alt="" coords="160,32,192,27,193,33,161,38"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_progress_counter.html" title="The progress counter front&#45;end." alt="" coords="198,55,349,96"/>
+<area shape="poly" id="edge118_Node000000_Node000002" title=" " alt="" coords="161,57,198,62,197,67,160,62"/>
 </map>

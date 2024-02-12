@@ -1,9 +1,5 @@
 <map id="loos::ParserDriver" name="loos::ParserDriver">
-<area shape="rect" id="node1" title=" " alt="" coords="120,428,247,455"/>
-<area shape="rect" id="node2" title=" " alt="" coords="25,339,147,365"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,248,167,289"/>
-<area shape="rect" id="node4" title=" " alt="" coords="21,157,151,199"/>
-<area shape="rect" id="node5" title=" " alt="" coords="9,81,163,108"/>
-<area shape="rect" id="node6" title=" " alt="" coords="36,5,136,32"/>
-<area shape="rect" id="node7" href="$classloos_1_1_kernel.html" title="The Kernel (virtual machine) for compiling and executing user&#45;defined atom selections." alt="" coords="171,339,262,365"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="5,94,132,120"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_kernel.html" title="The Kernel (virtual machine) for compiling and executing user&#45;defined atom selections." alt="" coords="23,5,114,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="71,47,71,94,66,94,66,47"/>
 </map>

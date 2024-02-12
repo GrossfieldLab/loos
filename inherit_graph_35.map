@@ -1,4 +1,9 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title=" " alt="" coords="5,20,171,47"/>
-<area shape="rect" id="node2" href="$classloos_1_1DensityTools_1_1DensityGridIterator.html" title="Random access iterator using the BOOST facade." alt="" coords="219,5,373,61"/>
+<area shape="rect" id="Node000000" href="$classloos_1_1_density_tools_1_1_bulk_estimator.html" title=" " alt="" coords="5,71,135,111"/>
+<area shape="rect" id="Node000001" href="$classloos_1_1_density_tools_1_1_null_estimator.html" title=" " alt="" coords="183,5,312,46"/>
+<area shape="poly" id="edge58_Node000000_Node000001" title=" " alt="" coords="140,62,189,44,191,49,142,67"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_density_tools_1_1_z_clip_estimator.html" title=" " alt="" coords="183,71,312,111"/>
+<area shape="poly" id="edge59_Node000000_Node000002" title=" " alt="" coords="150,88,182,88,182,94,150,94"/>
+<area shape="rect" id="Node000003" href="$classloos_1_1_density_tools_1_1_z_slice_estimator.html" title=" " alt="" coords="183,136,312,177"/>
+<area shape="poly" id="edge60_Node000000_Node000003" title=" " alt="" coords="142,115,191,133,189,138,140,120"/>
 </map>

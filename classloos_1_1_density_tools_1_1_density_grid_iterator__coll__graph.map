@@ -1,4 +1,5 @@
 <map id="loos::DensityTools::DensityGridIterator&lt; T, R &gt;" name="loos::DensityTools::DensityGridIterator&lt; T, R &gt;">
-<area shape="rect" id="node1" title="Random access iterator using the BOOST facade." alt="" coords="281,13,421,69"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,5,233,76"/>
+<area shape="rect" id="Node000001" title="Random access iterator using the BOOST facade." alt="" coords="281,13,420,69"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="5,5,233,76"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="249,38,280,38,280,43,249,43"/>
 </map>

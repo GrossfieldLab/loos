@@ -1,4 +1,5 @@
 <map id="loos::BoundFmt" name="loos::BoundFmt">
-<area shape="rect" id="node1" title="Internal helper class to bind formatting state." alt="" coords="5,95,120,121"/>
-<area shape="rect" id="node2" href="$classloos_1_1_fmt.html" title="Output formatter class, adapted from Stroustrup&#39;s book." alt="" coords="24,5,101,32"/>
+<area shape="rect" id="Node000001" title="Internal helper class to bind formatting state." alt="" coords="5,94,119,120"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_fmt.html" title="Output formatter class, adapted from Stroustrup&#39;s book." alt="" coords="24,5,100,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="65,47,65,94,59,94,59,47"/>
 </map>

@@ -1,5 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classENM_1_1SuperBlock.html" title="This class creates superblocks in a hessian." alt="" coords="5,5,139,32"/>
-<area shape="rect" id="node2" href="$classENM_1_1SuperBlockDecorator.html" title="SuperBlock decorator base class." alt="" coords="187,5,384,32"/>
-<area shape="rect" id="node3" href="$classENM_1_1BoundSuperBlock.html" title="Decorator for switching spring functions based on a matrix of flags." alt="" coords="432,5,607,32"/>
+<area shape="rect" id="Node000000" href="$class_e_n_m_1_1_elastic_network_model.html" title="Interface for all ENMs." alt="" coords="5,31,189,56"/>
+<area shape="rect" id="Node000001" href="$class_e_n_m_1_1_a_n_m.html" title="Anisotropic network model." alt="" coords="237,5,326,31"/>
+<area shape="poly" id="edge20_Node000000_Node000001" title=" " alt="" coords="204,26,236,22,236,27,204,31"/>
+<area shape="rect" id="Node000002" href="$class_e_n_m_1_1_v_s_a.html" title="Vibrational subsystem analysis ENM." alt="" coords="238,55,325,80"/>
+<area shape="poly" id="edge21_Node000000_Node000002" title=" " alt="" coords="205,55,238,59,238,65,204,60"/>
 </map>

@@ -1,9 +1,0 @@
-<map id="pyloos.FileError" name="pyloos.FileError">
-<area shape="rect" id="node1" title=" " alt="" coords="204,155,327,181"/>
-<area shape="rect" id="node4" href="$classpyloos_1_1FileOpenError.html" title=" " alt="" coords="5,229,163,256"/>
-<area shape="rect" id="node5" href="$classpyloos_1_1FileReadError.html" title=" " alt="" coords="187,229,343,256"/>
-<area shape="rect" id="node7" href="$classpyloos_1_1FileWriteError.html" title=" " alt="" coords="367,229,526,256"/>
-<area shape="rect" id="node2" href="$classpyloos_1_1LOOSError.html" title=" " alt="" coords="198,80,333,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="222,5,309,32"/>
-<area shape="rect" id="node6" href="$classpyloos_1_1FileReadErrorWithLine.html" title=" " alt="" coords="159,304,372,331"/>
-</map>

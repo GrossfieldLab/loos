@@ -1,4 +1,5 @@
 <map id="ENM::UniformSpringFunction" name="ENM::UniformSpringFunction">
-<area shape="rect" id="node1" title="Spring functions that are uniform in all directions (ie return a single value)" alt="" coords="5,80,199,107"/>
-<area shape="rect" id="node2" href="$class_e_n_m_1_1_spring_function.html" title="Interface for ENM spring functions." alt="" coords="29,5,175,32"/>
+<area shape="rect" id="Node000001" title="Spring functions that are uniform in all directions (ie return a single value)" alt="" coords="5,79,198,105"/>
+<area shape="rect" id="Node000002" href="$class_e_n_m_1_1_spring_function.html" title="Interface for ENM spring functions." alt="" coords="28,5,175,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="104,46,104,79,99,79,99,46"/>
 </map>

@@ -1,11 +1,14 @@
 <map id="ENM::BoundSuperBlock" name="ENM::BoundSuperBlock">
-<area shape="rect" id="node1" title="Decorator for switching spring functions based on a matrix of flags." alt="" coords="57,528,221,555"/>
-<area shape="rect" id="node2" href="$class_e_n_m_1_1_super_block_decorator.html" title="SuperBlock decorator base class." alt="" coords="47,452,231,479"/>
-<area shape="rect" id="node3" href="$class_e_n_m_1_1_super_block.html" title="This class creates superblocks in a hessian." alt="" coords="75,363,202,389"/>
-<area shape="rect" id="node4" href="$class_e_n_m_1_1_spring_function.html" title="Interface for ENM spring functions." alt="" coords="5,273,152,300"/>
-<area shape="rect" id="node5" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)" alt="" coords="176,273,307,300"/>
-<area shape="rect" id="node6" href="$classloos_1_1_shared_periodic_box.html" title="This class manages a shared Periodicbox." alt="" coords="101,184,265,211"/>
-<area shape="rect" id="node7" title=" " alt="" coords="289,184,434,211"/>
-<area shape="rect" id="node8" title=" " alt="" coords="304,95,419,121"/>
-<area shape="rect" id="node9" title=" " alt="" coords="342,5,381,32"/>
+<area shape="rect" id="Node000001" title="Decorator for switching spring functions based on a matrix of flags." alt="" coords="36,346,199,372"/>
+<area shape="rect" id="Node000002" href="$class_e_n_m_1_1_super_block_decorator.html" title="SuperBlock decorator base class." alt="" coords="26,271,209,297"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="120,312,120,346,115,346,115,312"/>
+<area shape="rect" id="Node000003" href="$class_e_n_m_1_1_super_block.html" title="This class creates superblocks in a hessian." alt="" coords="54,183,180,208"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="118,224,117,247,119,271,113,271,112,247,112,224"/>
+<area shape="poly" id="edge6_Node000002_Node000003" title=" " alt="" coords="120,224,120,271,115,271,115,224"/>
+<area shape="rect" id="Node000004" href="$class_e_n_m_1_1_spring_function.html" title="Interface for ENM spring functions." alt="" coords="5,94,152,120"/>
+<area shape="poly" id="edge3_Node000003_Node000004" title=" " alt="" coords="93,133,114,181,109,183,88,135"/>
+<area shape="rect" id="Node000005" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)" alt="" coords="175,94,305,120"/>
+<area shape="poly" id="edge4_Node000003_Node000005" title=" " alt="" coords="212,131,136,184,133,180,209,126"/>
+<area shape="rect" id="Node000006" href="$classloos_1_1_shared_periodic_box.html" title="This class manages a shared Periodicbox." alt="" coords="158,5,322,31"/>
+<area shape="poly" id="edge5_Node000005_Node000006" title=" " alt="" coords="243,47,243,94,237,94,237,47"/>
 </map>

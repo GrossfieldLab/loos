@@ -1,6 +1,9 @@
 <map id="loos::DensityTools::WaterFilterDecorator" name="loos::DensityTools::WaterFilterDecorator">
-<area shape="rect" id="node1" title="Decorator base class for &quot;decorating&quot; the core water filters..." alt="" coords="77,95,228,136"/>
-<area shape="rect" id="node3" href="$classloos_1_1_density_tools_1_1_bulked_water_filter.html" title="Add bulk water back into the mask/map." alt="" coords="5,184,137,225"/>
-<area shape="rect" id="node4" href="$classloos_1_1_density_tools_1_1_z_clipped_water_filter.html" title="Restrict waters to be within a given z&#45;range." alt="" coords="161,184,307,225"/>
-<area shape="rect" id="node2" href="$classloos_1_1_density_tools_1_1_water_filter_base.html" title="Base interface for water filter/picker." alt="" coords="87,5,218,47"/>
+<area shape="rect" id="Node000001" title="Decorator base class for &quot;decorating&quot; the core water filters..." alt="" coords="78,94,228,135"/>
+<area shape="rect" id="Node000003" href="$classloos_1_1_density_tools_1_1_bulked_water_filter.html" title="Add bulk water back into the mask/map." alt="" coords="5,183,138,223"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="126,148,92,184,88,180,122,144"/>
+<area shape="rect" id="Node000004" href="$classloos_1_1_density_tools_1_1_z_clipped_water_filter.html" title="Restrict waters to be within a given z&#45;range." alt="" coords="162,183,306,223"/>
+<area shape="poly" id="edge3_Node000001_Node000004" title=" " alt="" coords="184,144,218,180,214,184,180,148"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_density_tools_1_1_water_filter_base.html" title="Base interface for water filter/picker." alt="" coords="88,5,218,46"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="156,62,156,94,150,94,150,62"/>
 </map>

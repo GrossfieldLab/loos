@@ -1,5 +1,7 @@
 <map id="loos::PercentProgress" name="loos::PercentProgress">
-<area shape="rect" id="node1" title="Provide feedback by percent&#45;complete." alt="" coords="8,155,159,181"/>
-<area shape="rect" id="node2" href="$classloos_1_1_basic_progress.html" title=" " alt="" coords="14,80,153,107"/>
-<area shape="rect" id="node3" href="$classloos_1_1_abstract_observer.html" title=" " alt="" coords="5,5,161,32"/>
+<area shape="rect" id="Node000001" title="Provide feedback by percent&#45;complete." alt="" coords="8,153,158,178"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_basic_progress.html" title=" " alt="" coords="14,79,152,105"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="86,120,86,152,80,152,80,120"/>
+<area shape="rect" id="Node000003" href="$classloos_1_1_abstract_observer.html" title=" " alt="" coords="5,5,161,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="86,46,86,79,80,79,80,46"/>
 </map>

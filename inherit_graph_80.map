@@ -1,3 +1,37 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classloos_1_1ScientificMatrixFormatter.html" title="Generic matrix element formatter using scientific notation..." alt="" coords="5,5,265,32"/>
+<area shape="rect" id="Node000000" href="$classloos_1_1_options_framework_1_1_options_package.html" title="Base class for options." alt="" coords="5,497,169,537"/>
+<area shape="rect" id="Node000001" href="$class_clustering_1_1_clustering_options.html" title=" " alt="" coords="220,5,413,31"/>
+<area shape="poly" id="edge100_Node000000_Node000001" title=" " alt="" coords="91,481,107,379,134,247,151,182,170,122,191,74,215,40,229,29,233,34,219,44,196,76,175,124,156,183,139,249,112,380,96,482"/>
+<area shape="rect" id="Node000002" href="$class_tool_options.html" title=" " alt="" coords="271,55,362,80"/>
+<area shape="poly" id="edge101_Node000000_Node000002" title=" " alt="" coords="85,481,91,401,109,296,125,240,147,186,177,135,215,91,241,75,270,67,271,72,243,80,218,95,181,138,152,188,130,242,114,297,96,401,91,481"/>
+<area shape="rect" id="Node000003" href="$classloos_1_1_options_framework_1_1_basic_convergence.html" title=" " alt="" coords="235,105,398,145"/>
+<area shape="poly" id="edge102_Node000000_Node000003" title=" " alt="" coords="88,481,98,413,119,326,136,280,157,236,183,194,215,156,233,143,236,147,218,160,187,197,162,238,141,282,125,328,103,414,94,482"/>
+<area shape="rect" id="Node000004" href="$classloos_1_1_options_framework_1_1_basic_options.html" title="Options common to all tools (including –fullhelp)" alt="" coords="235,170,398,211"/>
+<area shape="poly" id="edge103_Node000000_Node000004" title=" " alt="" coords="92,481,105,424,129,355,164,284,188,251,215,221,233,209,236,213,218,226,192,254,169,286,133,357,110,426,97,482"/>
+<area shape="rect" id="Node000005" href="$classloos_1_1_options_framework_1_1_basic_selection.html" title="Provides a single LOOS selection (–selection)" alt="" coords="235,235,398,276"/>
+<area shape="poly" id="edge104_Node000000_Node000005" title=" " alt="" coords="97,481,113,437,138,385,172,332,215,287,235,274,237,279,218,291,176,336,143,387,118,439,102,483"/>
+<area shape="rect" id="Node000006" href="$classloos_1_1_options_framework_1_1_basic_split_by.html" title="Provides a mechanism for controlling how to split an AtomicGroup." alt="" coords="235,301,398,341"/>
+<area shape="poly" id="edge105_Node000000_Node000006" title=" " alt="" coords="105,482,149,416,180,382,215,352,237,339,240,344,218,356,184,386,154,420,109,485"/>
+<area shape="rect" id="Node000007" href="$classloos_1_1_options_framework_1_1_basic_trajectory.html" title="Basic trajectory with a –skip option." alt="" coords="235,366,398,407"/>
+<area shape="poly" id="edge106_Node000000_Node000007" title=" " alt="" coords="121,484,164,450,215,417,243,405,245,410,218,422,167,454,124,488"/>
+<area shape="rect" id="Node000008" href="$classloos_1_1_options_framework_1_1_basic_water.html" title="Options specific to tools that work with water/internal&#45;water." alt="" coords="235,431,398,472"/>
+<area shape="poly" id="edge107_Node000000_Node000008" title=" " alt="" coords="174,489,241,470,243,475,176,494"/>
+<area shape="rect" id="Node000009" href="$classloos_1_1_options_framework_1_1_model_with_coords.html" title="Request a model with coordinates." alt="" coords="235,497,398,537"/>
+<area shape="poly" id="edge108_Node000000_Node000009" title=" " alt="" coords="184,514,234,514,234,520,184,520"/>
+<area shape="rect" id="Node000010" href="$classloos_1_1_options_framework_1_1_multi_traj_options.html" title="Multiple trajectories as one trajectory via MultiTrajectory." alt="" coords="235,562,398,603"/>
+<area shape="poly" id="edge109_Node000000_Node000010" title=" " alt="" coords="176,539,243,559,241,564,174,544"/>
+<area shape="rect" id="Node000011" href="$classloos_1_1_options_framework_1_1_output_prefix.html" title="Gets a string as prefix for output files (–prefix)" alt="" coords="235,627,398,668"/>
+<area shape="poly" id="edge110_Node000000_Node000011" title=" " alt="" coords="124,546,167,580,218,612,245,624,243,629,215,617,164,584,121,550"/>
+<area shape="rect" id="Node000012" href="$classloos_1_1_options_framework_1_1_output_trajectory_options.html" title=" " alt="" coords="231,693,402,733"/>
+<area shape="poly" id="edge111_Node000000_Node000012" title=" " alt="" coords="109,549,154,614,184,648,218,677,240,690,237,694,215,682,180,652,149,617,105,552"/>
+<area shape="rect" id="Node000013" href="$classloos_1_1_options_framework_1_1_output_trajectory_type_options.html" title=" " alt="" coords="217,758,416,799"/>
+<area shape="poly" id="edge112_Node000000_Node000013" title=" " alt="" coords="102,551,118,595,143,646,176,698,218,743,237,755,235,760,215,747,172,701,138,649,113,597,97,553"/>
+<area shape="rect" id="Node000014" href="$classloos_1_1_options_framework_1_1_required_arguments.html" title="Provides simple way to add command&#45;line arguments (required options)" alt="" coords="235,823,398,864"/>
+<area shape="poly" id="edge113_Node000000_Node000014" title=" " alt="" coords="97,552,110,608,133,677,169,747,192,780,218,808,236,821,233,825,215,812,188,783,164,750,129,679,105,609,92,553"/>
+<area shape="rect" id="Node000015" href="$classloos_1_1_options_framework_1_1_trajectory_with_frame_indices.html" title="Trajectory with either a –range or –skip." alt="" coords="220,889,413,929"/>
+<area shape="poly" id="edge114_Node000000_Node000015" title=" " alt="" coords="94,552,103,620,125,706,141,751,162,796,187,837,218,874,235,886,232,890,215,877,183,840,157,798,136,753,119,708,98,621,88,553"/>
+<area shape="rect" id="Node000016" href="$classloos_1_1_options_framework_1_1_two_models_with_coords.html" title="Request Two models with coordinates." alt="" coords="234,954,399,995"/>
+<area shape="poly" id="edge115_Node000000_Node000016" title=" " alt="" coords="91,552,97,631,116,735,132,790,154,844,183,894,219,939,235,952,232,956,215,943,178,897,149,846,127,792,111,736,92,632,86,553"/>
+<area shape="rect" id="Node000017" href="$classloos_1_1_options_framework_1_1_weights_options.html" title=" " alt="" coords="235,1019,398,1060"/>
+<area shape="poly" id="edge116_Node000000_Node000017" title=" " alt="" coords="96,553,113,657,140,792,157,859,176,920,196,970,219,1004,236,1018,232,1022,215,1008,192,973,171,922,151,861,134,793,107,658,91,553"/>
 </map>

@@ -1,0 +1,5 @@
+<map id="loos::MMCIF" name="loos::MMCIF">
+<area shape="rect" id="Node000001" title="Class to read pdbx/mmcif files." alt="" coords="21,79,119,105"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)" alt="" coords="5,5,135,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="73,46,73,79,67,79,67,46"/>
+</map>

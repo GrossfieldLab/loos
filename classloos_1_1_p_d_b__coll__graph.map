@@ -1,8 +1,7 @@
 <map id="loos::PDB" name="loos::PDB">
-<area shape="rect" id="node1" title="PDB reading/writing class." alt="" coords="105,349,187,376"/>
-<area shape="rect" id="node2" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)" alt="" coords="81,273,211,300"/>
-<area shape="rect" id="node3" href="$classloos_1_1_shared_periodic_box.html" title="This class manages a shared Periodicbox." alt="" coords="5,184,169,211"/>
-<area shape="rect" id="node4" title=" " alt="" coords="193,184,339,211"/>
-<area shape="rect" id="node5" title=" " alt="" coords="209,95,323,121"/>
-<area shape="rect" id="node6" title=" " alt="" coords="247,5,285,32"/>
+<area shape="rect" id="Node000001" title="PDB reading/writing class." alt="" coords="47,169,128,195"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_atomic_group.html" title="Class for handling groups of Atoms (pAtoms, actually)" alt="" coords="23,94,152,120"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="90,135,90,169,85,169,85,135"/>
+<area shape="rect" id="Node000003" href="$classloos_1_1_shared_periodic_box.html" title="This class manages a shared Periodicbox." alt="" coords="5,5,170,31"/>
+<area shape="poly" id="edge2_Node000002_Node000003" title=" " alt="" coords="90,47,90,94,85,94,85,47"/>
 </map>

@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['lightweight_20object_2doriented_20structure_20library_20_28loos_29_1846',['Lightweight Object-Oriented Structure library (LOOS)',['../index.html',1,'']]],
-  ['loos_1847',['LOOS',['../md_build_src_pyloos_README.html',1,'(Global Namespace)'],['../md_loos_README.html',1,'(Global Namespace)']]]
+  ['enm_0',['enm',['../enm.html',1,'pca']]],
+  ['exceptions_20in_20loos_20and_20pyloos_1',['Exceptions in LOOS and PyLOOS',['../exceptions.html',1,'index']]]
 ];

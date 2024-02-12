@@ -1,4 +1,5 @@
 <map id="ENM::VSA" name="ENM::VSA">
-<area shape="rect" id="node1" title="Vibrational subsystem analysis ENM." alt="" coords="54,80,141,107"/>
-<area shape="rect" id="node2" href="$class_e_n_m_1_1_elastic_network_model.html" title="Interface for all ENMs." alt="" coords="5,5,189,32"/>
+<area shape="rect" id="Node000001" title="Vibrational subsystem analysis ENM." alt="" coords="54,79,140,105"/>
+<area shape="rect" id="Node000002" href="$class_e_n_m_1_1_elastic_network_model.html" title="Interface for all ENMs." alt="" coords="5,5,189,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="100,46,100,79,94,79,94,46"/>
 </map>

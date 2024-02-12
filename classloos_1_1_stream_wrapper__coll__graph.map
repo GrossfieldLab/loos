@@ -1,4 +1,5 @@
 <map id="loos::StreamWrapper" name="loos::StreamWrapper">
-<area shape="rect" id="node1" title="Simple wrapper class for caching stream pointers." alt="" coords="5,80,149,107"/>
-<area shape="rect" id="node2" title=" " alt="" coords="10,5,145,32"/>
+<area shape="rect" id="Node000001" title="Simple wrapper class for caching stream pointers." alt="" coords="5,79,149,105"/>
+<area shape="rect" id="Node000002" title=" " alt="" coords="10,5,144,31"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="80,46,80,79,74,79,74,46"/>
 </map>

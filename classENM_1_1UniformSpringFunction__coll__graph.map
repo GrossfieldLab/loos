@@ -1,4 +1,0 @@
-<map id="ENM::UniformSpringFunction" name="ENM::UniformSpringFunction">
-<area shape="rect" id="node1" title="Spring functions that are uniform in all directions (ie return a single value)" alt="" coords="5,80,215,107"/>
-<area shape="rect" id="node2" href="$classENM_1_1SpringFunction.html" title="Interface for ENM spring functions." alt="" coords="32,5,188,32"/>
-</map>

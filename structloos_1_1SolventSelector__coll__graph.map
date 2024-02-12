@@ -1,8 +1,0 @@
-<map id="loos::SolventSelector" name="loos::SolventSelector">
-<area shape="rect" id="node1" title="Predicate for selecting solvent based on common solvent SEGIDs." alt="" coords="110,289,269,316"/>
-<area shape="rect" id="node2" href="$classloos_1_1loos_1_1AtomSelector.html" title=" " alt="" coords="141,81,313,108"/>
-<area shape="rect" id="node4" href="$structloos_1_1OrSelector.html" title="Combines two selectors with a logical &quot;or&quot;." alt="" coords="227,185,352,212"/>
-<area shape="rect" id="node5" href="$structloos_1_1SegidSelector.html" title="Predicate for selecting atoms based on the passed segid string." alt="" coords="5,185,152,212"/>
-<area shape="rect" id="node3" title=" " alt="" coords="195,5,258,32"/>
-<area shape="rect" id="node6" title=" " alt="" coords="49,81,108,108"/>
-</map>

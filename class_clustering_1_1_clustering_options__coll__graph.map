@@ -1,6 +1,7 @@
 <map id="Clustering::ClusteringOptions" name="Clustering::ClusteringOptions">
-<area shape="rect" id="node1" title=" " alt="" coords="12,200,205,227"/>
-<area shape="rect" id="node2" href="$classloos_1_1_options_framework_1_1_options_package.html" title="Base class for options." alt="" coords="5,96,169,137"/>
-<area shape="rect" id="node3" title=" " alt="" coords="194,103,274,130"/>
-<area shape="rect" id="node4" title=" " alt="" coords="171,5,297,47"/>
+<area shape="rect" id="Node000001" title=" " alt="" coords="56,109,249,135"/>
+<area shape="rect" id="Node000002" href="$classloos_1_1_options_framework_1_1_options_package.html" title="Base class for options." alt="" coords="5,5,169,46"/>
+<area shape="poly" id="edge1_Node000001_Node000002" title=" " alt="" coords="111,57,146,107,142,110,107,60"/>
+<area shape="rect" id="Node000003" title=" " alt="" coords="192,13,246,39"/>
+<area shape="poly" id="edge2_Node000001_Node000003" title=" " alt="" coords="204,52,163,110,159,107,200,49"/>
 </map>
