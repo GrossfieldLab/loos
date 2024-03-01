@@ -540,6 +540,9 @@ namespace loos {
   std::vector<AtomicGroup> AtomicGroup::splitByResidue(void) const {
     std::vector<AtomicGroup> residues;
 
+    if (size() == 0) {
+      return(residues);
+    }
     int curr_resid = atoms[0]->resid();
     std::string curr_segid = atoms[0]->segid();
 
