@@ -114,8 +114,8 @@ namespace loos {
         if (!(s >> buf1 >> buf2))
           throw(FileReadError(_filename, "PSF error parsing bonds.\n> " + input));
 
-        ind1 = parseStringAsHybrid36(buf1);
-        ind2 = parseStringAsHybrid36(buf2);
+        ind1 = std::stoi(buf1);
+        ind2 = std::stoi(buf2);
 
         if (ind1 > num_atoms || ind2 > num_atoms)
           throw(FileReadError(_filename, "PSF bond error: bound atomid exceeds number of atoms.\n> " + input));
@@ -163,7 +163,7 @@ namespace loos {
 
     if (!(ss >> buf))
       throw(FileReadError(_filename, "PSF parse error.\n> " + s));
-    index = parseStringAsHybrid36(buf);
+    index = std::stoi(buf);
     pa->id(index);
 
     if (!(ss >> segname))
@@ -173,7 +173,7 @@ namespace loos {
 
     if (!(ss >> buf))
       throw(FileReadError(_filename, "PSF parse error.\n> " + s));
-    resid = parseStringAsHybrid36(buf);
+    resid = std::stoi(buf);
     pa->resid(resid);
 
     if (!(ss >> resname))
