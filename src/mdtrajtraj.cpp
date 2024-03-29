@@ -30,7 +30,12 @@ namespace loos {
 
   // Scan the trajectory file to determine frame sizes and box
   void MDTrajTraj::init(void) {
-    file.openFile(_filename, H5F_ACC_RDONLY);
+    try {
+      file.openFile(_filename, H5F_ACC_RDONLY);
+    }
+    catch(H5::FileIException& e) {
+      throw(FileOpenError(_filename));
+    }
 
     hsize_t box_dims[3];
     if (H5Lexists(file.getId(), "cell_lengths", H5P_DEFAULT)) {

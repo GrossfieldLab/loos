@@ -43,7 +43,13 @@ namespace loos {
     // turn off printed exceptions
     //H5::Exception::dontPrint();
     // Open the hdf5 file
-    H5::H5File file(_filename, H5F_ACC_RDONLY);
+    H5::H5File file;
+    try {
+      file.openFile(_filename, H5F_ACC_RDONLY);
+    }
+    catch(H5::FileIException& e) {
+      throw(FileOpenError(_filename));
+    }
 
     // Retrieve the topology from the HDF5 file
     std::string topology_json = getTopology(file);
