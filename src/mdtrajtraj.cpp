@@ -48,11 +48,16 @@ namespace loos {
       periodic = false;
     }
 
-    coords_dataset = file.openDataSet("coordinates");
-    coords_dataspace = coords_dataset.getSpace();
-    coords_datatype = coords_dataset.getDataType();
     hsize_t coords_dims[3];
-    int coords_ndims = coords_dataspace.getSimpleExtentDims(coords_dims, NULL);
+    int coords_ndims;
+    if (H5Lexists(file.getId(), "coordinates", H5P_DEFAULT)) {
+      coords_dataset = file.openDataSet("coordinates");
+      coords_dataspace = coords_dataset.getSpace();
+      coords_datatype = coords_dataset.getDataType();
+      coords_ndims = coords_dataspace.getSimpleExtentDims(coords_dims, NULL);
+    } else{
+      throw(FileError(_filename, "No coordinates dataset found in HDF5"));
+    }
 
     if (periodic) {
       if (coords_dims[0] != box_dims[0]) {
