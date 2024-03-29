@@ -28,7 +28,12 @@ namespace loos {
   }
 
   void MMCIF::read(const std::string& filename) {
-        auto structure = gemmi::read_structure_file(filename, gemmi::CoorFormat::Mmcif);
+        gemmi::Structure structure;
+        try {
+          structure = gemmi::read_structure_file(filename, gemmi::CoorFormat::Mmcif);
+        } catch (...) {
+          throw(FileOpenError(filename));
+        }
         auto unit_cell = structure.cell;
         auto box = loos::GCoord(unit_cell.a, unit_cell.b, unit_cell.c);
 
