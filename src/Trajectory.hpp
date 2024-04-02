@@ -29,6 +29,7 @@
 
 #include <boost/utility.hpp>
 #include <boost/lambda/lambda.hpp>
+#include <boost/filesystem.hpp>
 
 #include <loos_defs.hpp>
 #include <AtomicGroup.hpp>
@@ -280,6 +281,17 @@ namespace loos {
 		void setInputStream(const std::string& fname)
 		{
 			_filename = fname;
+			// Check if the file is 0-sized
+			uintmax_t fileSize;
+			try {
+				fileSize = boost::filesystem::file_size(fname);
+			} catch (boost::filesystem::filesystem_error& e) {
+				throw(FileOpenError(fname));
+			}
+			if (fileSize == 0) {
+				throw(FileReadError(fname));
+			}
+			
 			ifs = pStream(new std::fstream(fname.c_str(), std::ios_base::in | std::ios_base::binary));
 			if (!ifs->good())
 				throw(FileOpenError(fname));

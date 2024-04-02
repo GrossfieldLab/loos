@@ -29,7 +29,7 @@ if(NOT ${HAVE_SIZEOF_ULONG})
 endif()
 
 find_package(Boost REQUIRED COMPONENTS
-  regex program_options json)
+  regex program_options json filesystem)
 
 if(Boost_FOUND)
   include_directories(${Boost_INCLUDE_DIRS})
