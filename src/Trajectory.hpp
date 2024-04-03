@@ -286,10 +286,10 @@ namespace loos {
 			try {
 				fileSize = boost::filesystem::file_size(fname);
 			} catch (boost::filesystem::filesystem_error& e) {
-				throw(FileOpenError(fname));
+				throw(FileOpenError(fname, std::string("Error computing file size: ") + e.what()));
 			}
 			if (fileSize == 0) {
-				throw(FileReadError(fname));
+				throw(FileReadError(fname, std::string("File is empty")));
 			}
 			
 			ifs = pStream(new std::fstream(fname.c_str(), std::ios_base::in | std::ios_base::binary));
