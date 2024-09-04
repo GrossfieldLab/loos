@@ -30,6 +30,7 @@ set(LOOS_BASIC_TOOLS
     fixdcd
     frame2pdb
     helix_kink
+    hex-order
     interdist
     kurskew
     lipid_survival
