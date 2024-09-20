@@ -57,7 +57,7 @@ string fullHelpMessage(void) {
     "*after* any options to tell the options parse that the negative frame number\n"
     "is not another command line option.\n"
     "\n"
-    "The --clear-bonds option is there because some build systems can produce weird\n"
+    "The --clear-element option is there because some build systems can produce weird\n"
     "output in the elements field of the PDB file that can cause pymol to have trouble\n"
     "rendering a protein. \n"
     "\n"
