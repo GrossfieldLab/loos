@@ -57,6 +57,10 @@ string fullHelpMessage(void) {
     "*after* any options to tell the options parse that the negative frame number\n"
     "is not another command line option.\n"
     "\n"
+    "The --clear-bonds option is there because some build systems can produce weird\n"
+    "output in the elements field of the PDB file that can cause pymol to have trouble\n"
+    "rendering a protein. \n"
+    "\n"
     "EXAMPLES\n"
     "\n"
     "\tframe2pdb model.psf simulation.dcd 42 >frame.pdb\n"
@@ -73,11 +77,12 @@ string fullHelpMessage(void) {
 
 class ToolOptions : public opts::OptionsPackage {
 public:
-  ToolOptions() : use_bonds(true) { }
+  ToolOptions() : use_bonds(true), clear_element(false) { }
 
   void addGeneric(po::options_description& o) {
     o.add_options()
-      ("bonds", po::value<bool>(&use_bonds)->default_value(use_bonds), "Include bonds in output (if available)");
+      ("bonds", po::value<bool>(&use_bonds)->default_value(use_bonds), "Include bonds in output (if available)")
+      ("clear-element", po::value<bool>(&clear_element)->default_value(clear_element), "Clear the element field in the pdb");
   }
 
 
@@ -88,7 +93,7 @@ public:
   }
 
 
-  bool use_bonds;
+  bool use_bonds, clear_element;
 };
 
 
@@ -135,5 +140,10 @@ int main(int argc, char *argv[]) {
   if (sopts->selection != "all")
     pdb.clearBonds();
   pdb.remarks().add(hdr);
+
+  if (topts->clear_element) {
+    for (auto& atom : pdb)
+      atom->PDBelement(string(""));
+  }
   cout << pdb;
 }
