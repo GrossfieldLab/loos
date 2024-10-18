@@ -28,6 +28,7 @@
 */
 
 #include <iostream>
+#include <algorithm>
 #include <loos.hpp>
 
 using namespace std;
@@ -110,6 +111,13 @@ int main(int argc, char *argv[]) {
   }
 
   double cutoff2 = topts->cutoff * topts->cutoff;
+  vector<double> hist(20);
+  double histmin = -1.0;
+  double histmax = 1.0;
+  double binwidth = (histmax - histmin) / 20;
+
+  double total = 0.0;
+  int totalvals = 0;
 
   while (mtopts->trajectory->readFrame()) {
     mtopts->trajectory->updateGroupCoords(mtopts->model);
@@ -132,7 +140,6 @@ int main(int argc, char *argv[]) {
     }
     GCoord box = mtopts->model.periodicBox();
 
-    double total = 0.0;
     for (auto leaflet : {upper, lower}) {
 
       // TODO: Right now, we're doing every distance calculation twice, because 
@@ -149,22 +156,43 @@ int main(int argc, char *argv[]) {
         int neighbors = 0;
         double sum = 0.0;
         for (uint j = 0; j < leaflet.size(); j++) {
-          if (i == j) continue;
-          GCoord diff = leaflet[i] - leaflet[j];
-          diff.reimage(box);
-          double dist2 = diff.length2();
-          if (dist2 < cutoff2) {
-            neighbors++;
-            double angle = atan2(diff.y(), diff.x());
-            // Do I want 1- this?
-            sum += cos(topts->sym * angle);
+          if (i != j) { 
+            GCoord diff = leaflet[i] - leaflet[j];
+            diff.reimage(box);
+            double dist2 = diff.length2();
+            if (dist2 < cutoff2) {
+              neighbors++;
+              double angle = atan2(diff.y(), diff.x());
+              // Do I want 1- this?
+              sum += cos(topts->sym * angle);
+            }
           }
         }
-      sum /= neighbors;
-      // TODO: prepare a histogram of the individual lipid values?
-      total += sum;
+      if (neighbors > 0) {
+        sum /= neighbors;
+        int index = floor((sum - histmin) / binwidth);
+        hist[index]++;
+        total += sum;
+        totalvals++;
+        }
       }
     }
 
   }
+
+  // Normalize the histogram and output it
+  double norm = 0.0;
+  for (auto h : hist) {
+    norm += h;
+  }
+
+  cout << "# Mean = " << total / totalvals << endl;
+  cout << "# HexVal\tProb" << endl;
+  for (int i = 0; i < 20; i++) {
+    double val = hist[i] / norm;
+    double bincenter = histmin + (i+0.5)*binwidth;
+    
+    cout << bincenter << "\t" << val << endl;
+  }
+
 }
