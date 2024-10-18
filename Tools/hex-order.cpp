@@ -142,39 +142,40 @@ int main(int argc, char *argv[]) {
 
     for (auto leaflet : {upper, lower}) {
 
-      // TODO: Right now, we're doing every distance calculation twice, because 
-      //       we need to consider each lipid as a center. We should either cache the vectors
-      //       or build up the center values at once.  I suspect the latter is a smarter choice.
-      //       Perhaps the right thing to do would be to store a tuple of the current unnormalized 
-      //       order parameter for each lipid and the number of neighbors found so far. That way, we 
-      //       can normalize at the end.
       // TODO: since this is a liquid and there is no preferred axis, could we rewrite this in terms of the 
       //       angles between neighbors?
       // TODO: might want to break out by type. eg, compute hex parameter for DPPC, but use all lipids 
       //       to compute the neighbors, kind of like the way density dist works
-      for (uint i = 0; i < leaflet.size(); i++) {
-        int neighbors = 0;
-        double sum = 0.0;
-        for (uint j = 0; j < leaflet.size(); j++) {
-          if (i != j) { 
-            GCoord diff = leaflet[i] - leaflet[j];
-            diff.reimage(box);
-            double dist2 = diff.length2();
-            if (dist2 < cutoff2) {
-              neighbors++;
-              double angle = atan2(diff.y(), diff.x());
-              // Do I want 1- this?
-              sum += cos(topts->sym * angle);
-            }
+      
+      // Precompute the neighbor map so we only need 1 distance calculation
+      vector<vector<GCoord>> neighbors(leaflet.size());
+      for (uint i = 0; i < leaflet.size()-1; i++) {
+        for (uint j = i+1; j < leaflet.size(); j++) {
+          GCoord diff = leaflet[i] - leaflet[j];
+          diff.reimage(box);
+          double dist2 = diff.length2();
+          if (dist2 < cutoff2) {
+            neighbors[i].push_back(diff);
+            neighbors[j].push_back(-diff);
           }
         }
-      if (neighbors > 0) {
-        sum /= neighbors;
+      }
+
+      for (uint i = 0; i < leaflet.size(); i++) {
+        if (neighbors[i].size() == 0) {
+          continue;
+        }
+        double sum = 0.0;
+        for (uint j = 0; j < neighbors[i].size(); j++) {
+          double angle = atan2(neighbors[i][j].y(), neighbors[i][j].x());
+          // Do I want 1- this?
+          sum += cos(topts->sym * angle);
+        }
+        sum /= neighbors[i].size();
         int index = floor((sum - histmin) / binwidth);
         hist[index]++;
         total += sum;
         totalvals++;
-        }
       }
     }
 
