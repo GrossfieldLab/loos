@@ -155,23 +155,31 @@ int main(int argc, char *argv[]) {
           diff.reimage(box);
           double dist2 = diff.length2();
           if (dist2 < cutoff2) {
-            neighbors[i].push_back(diff);
-            neighbors[j].push_back(-diff);
+            double length = sqrt(dist2);
+            neighbors[i].push_back(diff/length);
+            neighbors[j].push_back(-diff/length);
           }
         }
       }
 
       for (uint i = 0; i < leaflet.size(); i++) {
-        if (neighbors[i].size() == 0) {
+        if (neighbors[i].size() < 2) {
           continue;
         }
         double sum = 0.0;
-        for (uint j = 0; j < neighbors[i].size(); j++) {
-          double angle = atan2(neighbors[i][j].y(), neighbors[i][j].x());
-          // Do I want 1- this?
-          sum += cos(topts->sym * angle);
+        for (uint j = 0; j < neighbors[i].size()-1; j++) {
+          for (uint k = j+1; k < neighbors[i].size(); k++) {
+            // vectors are prenomalized, so dot product is cosine of angle
+            double cosine = neighbors[i][j] * neighbors[i][k];
+            // Deal with numerical roundoff
+            cosine = min(1.0, max(-1.0, cosine));
+            double angle = acos(cosine);
+            sum += cos(topts->sym * angle);
+          }
         }
-        sum /= neighbors[i].size();
+
+        // Normalize sum by number of neighbor pairs
+        sum /= 0.5*(neighbors[i].size() * (neighbors[i].size()-1));
         int index = floor((sum - histmin) / binwidth);
         hist[index]++;
         total += sum;
