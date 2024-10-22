@@ -119,6 +119,8 @@ int main(int argc, char *argv[]) {
   double total = 0.0;
   int totalvals = 0;
 
+  int frame = 0;
+
   while (mtopts->trajectory->readFrame()) {
     mtopts->trajectory->updateGroupCoords(mtopts->model);
 
@@ -142,12 +144,14 @@ int main(int argc, char *argv[]) {
 
     for (auto leaflet : {upper, lower}) {
 
-      // TODO: since this is a liquid and there is no preferred axis, could we rewrite this in terms of the 
-      //       angles between neighbors?
       // TODO: might want to break out by type. eg, compute hex parameter for DPPC, but use all lipids 
       //       to compute the neighbors, kind of like the way density dist works
       
       // Precompute the neighbor map so we only need 1 distance calculation
+      // Skip empty leaflets
+      if (leaflet.size() == 0) {
+        continue;
+      }
       vector<vector<GCoord>> neighbors(leaflet.size());
       for (uint i = 0; i < leaflet.size()-1; i++) {
         for (uint j = i+1; j < leaflet.size(); j++) {
@@ -187,6 +191,7 @@ int main(int argc, char *argv[]) {
       }
     }
 
+  frame++;
   }
 
   // Normalize the histogram and output it
