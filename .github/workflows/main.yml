@@ -33,6 +33,11 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+      # OS X no longer has conda by default, although linux does
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+            miniconda-version: "latest"
+            activate-environment: base
 
       # Runs a set of commands using the runners shell
       - name: Run conda_build.sh
