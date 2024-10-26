@@ -37,7 +37,7 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v3
         with:
             miniconda-version: "latest"
-            activate-environment: base
+            activate-environment: anaconda-client-env
 
       # Runs a set of commands using the runners shell
       - name: Run conda_build.sh
