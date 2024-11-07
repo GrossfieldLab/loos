@@ -76,7 +76,7 @@ platform=`uname`
 echo "Setting channel priority to strict"
 conda config --set channel_priority strict
 
-packages="python=3 swig=4.2.1 cmake 'numpy<2' scipy scikit-learn boost openblas
+packages="python=3 swig cmake numpy scipy scikit-learn boost openblas
 libnetcdf lapack compilers eigen hdf5 gemmi"
 
 env_found=$(conda env list | egrep -v '^#' | egrep "^${envname}[ ]" )
