@@ -270,8 +270,8 @@ int main(int argc, char *argv[]) {
         dist2 = b[0]->coords().distance2(b[1]->coords());
         if (dist2 > max_bond2) {
           if (!topts->quiet)
-            cout << "Issue in "frame_index << "; bond between atomIDs " << b[0]->id() << " and " << b[1]->id() << 
-            " is overlong. Length is " << sqrtf(dist2) << ". Exiting..." endl;
+            cout << "Issue in frame " << frame_index << "; bond between atomIDs " << b[0]->id() << " and " << b[1]->id() << 
+            " is " << sqrtf(dist2) << " Angstroms. Exiting..." << endl;
           return EXIT_FAILURE;
         }
       }
