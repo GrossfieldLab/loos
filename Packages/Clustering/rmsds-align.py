@@ -3,6 +3,7 @@
 """
 rmsds-align.py: Calcuate 2D RMSD using different alignment and rmsd selections.
 
+
 The purpose of this tool is to calcuate pairwise RMSD for a selection after
 aligning using a different selection. This script supports upto 2 trajectories.
 
