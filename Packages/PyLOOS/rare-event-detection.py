@@ -144,7 +144,7 @@ if __name__ == '__main__':
     if args.no_backbone:
         residues = list([loos.selectAtoms(r, "!backbone") for r in residues])
 
-    fc = numpy.zeros([int((len(residues)-1)*len(residues)/2), len(traj)], numpy.float64)
+    fc = numpy.zeros([int((len(residues)-1)*len(residues)/2), len(traj)], float64)
 
 
     for (frame, frame_id) in zip(traj, range(len(traj))):

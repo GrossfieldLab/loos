@@ -29,6 +29,7 @@
 
 #include <boost/utility.hpp>
 #include <boost/lambda/lambda.hpp>
+#include <boost/filesystem.hpp>
 
 #include <loos_defs.hpp>
 #include <AtomicGroup.hpp>
@@ -70,7 +71,7 @@ namespace loos {
 		Trajectory() : cached_first(false), _filename("unset"), _current_frame(0) { }
 
 		//! Automatically open the file named \a s
-		Trajectory(const std::string& s) throw(FileOpenError)
+		Trajectory(const std::string& s)
 			: cached_first(false), _filename(s), _current_frame(0)
 		{
 			setInputStream(s);
@@ -277,9 +278,20 @@ namespace loos {
 		}
 
 	protected:
-		void setInputStream(const std::string& fname) throw(FileOpenError)
+		void setInputStream(const std::string& fname)
 		{
 			_filename = fname;
+			// Check if the file is 0-sized
+			uintmax_t fileSize;
+			try {
+				fileSize = boost::filesystem::file_size(fname);
+			} catch (boost::filesystem::filesystem_error& e) {
+				throw(FileOpenError(fname, std::string("Error computing file size: ") + e.what()));
+			}
+			if (fileSize == 0) {
+				throw(FileReadError(fname, std::string("File is empty")));
+			}
+			
 			ifs = pStream(new std::fstream(fname.c_str(), std::ios_base::in | std::ios_base::binary));
 			if (!ifs->good())
 				throw(FileOpenError(fname));

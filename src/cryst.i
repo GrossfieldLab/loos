@@ -20,6 +20,7 @@
 */
 
 
+%include <std_string.i>
 
 
 %header %{
@@ -34,7 +35,7 @@ namespace loos {
 
 
     %extend UnitCell {
-         char* __str__() {
+     std::string __repr__() {
              std::ostringstream oss;
              oss << *$self;
              size_t n = oss.str().size();

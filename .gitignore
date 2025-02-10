@@ -47,6 +47,7 @@ GTAGS
 .vscode
 .vscode/*
 **.vscode
+.vs/
 
 # cruft from sublime text
 *.sublime*
@@ -70,19 +71,6 @@ GTAGS
 # some c++ headers used by atom
 .stdafx.c++.pch
 
-# ignore the contents of directories with binaries in them
-# Note that writing this statement in this way will not ignore the
-# directory itself, allowing git to index the contents of these,
-# then determine which of them to ignore. That way, "don't ignore"
-# patterns are honored within them.
-src/*
-Tools/*
-utils/*
-# when there is depth, deeper directories must also be included explicitly
-!Packages/*/
-Packages/*/*
-!Packages/*/*/
-Packages/*/*/*/
 
 # don't ignore source files anywhere
 !**.cpp
@@ -96,17 +84,15 @@ Packages/*/*/*/
 # don't ignore swig headers anywhere
 !**.i
 
-# don't ignore sconscript or sconstruct files anywhere
-!**SConscript
-!**SConstruct
-
 # Built (from flex, bison, and swig)
 *.cc
-revision.cpp
 loos.py
 loos/__init__.py
 setup.sh
 setup.csh
 custom.py
+
+build/
+venv/
 
 # put custom ignores below here

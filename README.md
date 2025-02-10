@@ -22,6 +22,13 @@ details.
 
 Additional documentation is available on the [GitHub wiki](https://github.com/GrossfieldLab/loos/wiki), including [slides from a talk introducing LOOS](http://membrane.urmc.rochester.edu/sites/default/files/loos.pdf) and brief articles focused on [how to use LOOS](https://github.com/GrossfieldLab/loos/wiki/Tutorials-for-Users) and how to [develop with LOOS](https://github.com/GrossfieldLab/loos/wiki/Tutorials-for-Developers).
 
+## Referencing loos
+
+If you use LOOS in published work, please cite these two papers:
+
+- Romo, T.D., Grossfield, A. "LOOS: An extensible platform for the structural analysis of simulations." 31st Annual International Conference of the IEEE EMBS (2009): 2332-2335
+
+- Romo, T. D., Leioatts, N. and Grossfield, A., "Lightweight Object Oriented Structure Analysis: Tools for building tools to analyze molecular dynamics simulations", J. Comput. Chem. (2014): 2305-2318
 
 
 ## Using LOOS
@@ -33,13 +40,80 @@ but they should not be confused with the actual LOOS releases.  Those
 can be found using semantic versioning (e.g. release-2.3.1,
 release-2.3.0, ...)
 
-We don't release all that often, but we maintain the master branch in a correct
+We don't release all that often, but we maintain the main branch in a correct
 and usable state.  All development is done in other branches, and merged once we
 believe it's correct.
 
 
 For help with installing LOOS, please see the [INSTALL.md](INSTALL.md) file.  For
 more details about what has changed in LOOS, see the [ChangeLog](ChangeLog) file.
+
+## Layout of this repository
+
+The structure of this repository changed substantively for the 4.0 release. LOOS is 
+simultaneously a C++ library for analyzing molecular dynamics simulations, a python 
+wrapper for that library, and a suite of tools in C++ and python. The main directory 
+contains a src/ containing the code for the C++ library, Tools/ containing applications
+written in C++, and Packages/, which contains several sets of tools with extra code 
+that don't really fit inside the library. These include Packages/Voronoi, which performs
+voronoi analysis on membrane systems, Packages/Clustering, which does clustering of 
+macromolecules (although there are other clustering tools found elsewhere in LOOS), 
+Packages/Convergence, which focuses on estimating uncertainty and statistical error, 
+Packages/ElasticNetworks, which implements a variety of elastic network analysis, 
+Packages/HydrogenBonds, which does hydrogen bond analysis, Packages/PyLOOS, which contains 
+tools written in Python, and Packages/User, is a location for users to easily 
+add new C++ programs. Code for implementing the python bindings (including library
+code associated with packages) is found in src/loos. Finally, the top-level share/ directory
+contains several data files associated with particular tools (e.g. suite definitions for the
+`rna_suites` tool. 
+
+Users looking for simple example programs on which they can base new code can start with 
+Packages/User (for C++ tools) and Packages/PyLOOS (for Python tools). If you are considering 
+writing a new tool, we suggest starting with the python. Obviously, writing python is easier,
+and generally speaking the performance hit for python vs. C++ isn't prohibitive. You can find
+resources for developing with LOOS on the [GitHub wiki](https://github.com/GrossfieldLab/loos/wiki),
+particularly the [Tutorials for Developers](https://github.com/GrossfieldLab/loos/wiki/Tutorials-for-Developers).
+
+### Release 4.1.0
+
+This release includes a number of fixes related to issues listed on github.  Added
+support for PDBx, mmCIF, and MDTraj-HDF5 formats.
+
+### Release 4.0.4
+
+This release includes a number of fixes that address recent issues listed on github.  Molecular
+order parameter function was also added to `AtomicGroup`.
+
+### Release 4.0.3
+
+LOOS 4.0 is now officially "in production" and can be installable either via conda-forge or
+by building from source.  The first few versions had minor issues either related to
+the new build system (cmake) or the conda-forge packaging.  The current release is 4.0.3
+and we recommend that everyone update to this as soon as possible.
+
+If you have been using LOOS prior to 4.0, particulary with the conda build system, then the
+safest way to upgrade is to recreate your conda environment and install the new conda-forge
+package.  If you chose to build from source, but had previously installed LOOS into your conda
+environment, then we still recommend that you delete and recreate your environment, _then_ build
+and install the latest LOOS.
+
+If you have installed a previous version of LOOS from conda-forge, then you can update to
+the latest with,
+
+```
+conda activate loos
+conda update loos
+```
+
+
+
+### Release pre-4.0.0
+
+This release involves a complete switch from using SCons for building LOOS to CMake.
+In general, you should find the build process simpler and configuration easier.
+
+This is a pre-release version, so it should be considered experimental and not used
+for production.  Features may change without notice.
 
 ### Release 3.3.0
 

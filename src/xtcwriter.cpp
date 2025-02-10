@@ -34,7 +34,7 @@ namespace loos
   // http://www.gromacs.org/Developer_Zone/Programming_Guide/XTC_Library
 
   /******************************************************************
-		   GNU LESSER GENERAL PUBLIC LICENSE
+                   GNU LESSER GENERAL PUBLIC LICENSE
                        Version 3, 29 June 2007
 
  Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>
@@ -253,16 +253,16 @@ Library.
     num_of_bytes = 1;
     bytes[0] = 1;
     num_of_bits = 0;
-    for (i=0; i < num_of_ints; i++) {	
+    for (i=0; i < num_of_ints; i++) {   
       tmp = 0;
       for (bytecnt = 0; bytecnt < num_of_bytes; bytecnt++) {
-	tmp = bytes[bytecnt] * sizes[i] + tmp;
-	bytes[bytecnt] = tmp & 0xff;
-	tmp >>= 8;
+        tmp = bytes[bytecnt] * sizes[i] + tmp;
+        bytes[bytecnt] = tmp & 0xff;
+        tmp >>= 8;
       }
       while (tmp != 0) {
-	bytes[bytecnt++] = tmp & 0xff;
-	tmp >>= 8;
+        bytes[bytecnt++] = tmp & 0xff;
+        tmp >>= 8;
       }
       num_of_bytes = bytecnt;
     }
@@ -304,8 +304,8 @@ Library.
       lastbyte = (lastbyte << num_of_bits) | num;
       lastbits += num_of_bits;
       if (lastbits >= 8) {
-	lastbits -= 8;
-	cbuf[cnt++] = lastbyte >> lastbits;
+        lastbits -= 8;
+        cbuf[cnt++] = lastbyte >> lastbits;
       }
     }
     buf[0] = cnt;
@@ -332,7 +332,7 @@ Library.
    */
  
   void XTCWriter::encodeints(int buf[], const int num_of_ints, const int num_of_bits,
-			     const unsigned int sizes[], const unsigned int nums[]) const
+                             const unsigned int sizes[], const unsigned int nums[]) const
   {
 
     int i;
@@ -347,34 +347,34 @@ Library.
 
     for (i = 1; i < num_of_ints; i++) {
       if (nums[i] >= sizes[i]) {
-	std::ostringstream oss;
-	oss << boost::format("Major breakdown in XTCWriter::encodeints() - num %u doesn't match size %u")
-	  % nums[i]
-	  % sizes[i];
-	throw(LOOSError(oss.str()));
+        std::ostringstream oss;
+        oss << boost::format("Major breakdown in XTCWriter::encodeints() - num %u doesn't match size %u")
+          % nums[i]
+          % sizes[i];
+        throw(LOOSError(oss.str()));
       }
       /* use one step multiply */    
       tmp = nums[i];
       for (bytecnt = 0; bytecnt < num_of_bytes; bytecnt++) {
-	tmp = bytes[bytecnt] * sizes[i] + tmp;
-	bytes[bytecnt] = tmp & 0xff;
-	tmp >>= 8;
+        tmp = bytes[bytecnt] * sizes[i] + tmp;
+        bytes[bytecnt] = tmp & 0xff;
+        tmp >>= 8;
       }
       while (tmp != 0) {
-	bytes[bytecnt++] = tmp & 0xff;
-	tmp >>= 8;
+        bytes[bytecnt++] = tmp & 0xff;
+        tmp >>= 8;
       }
       num_of_bytes = bytecnt;
     }
     if (num_of_bits >= num_of_bytes * 8) {
       for (i = 0; i < num_of_bytes; i++) {
-	encodebits(buf, 8, bytes[i]);
+        encodebits(buf, 8, bytes[i]);
       }
       encodebits(buf, num_of_bits - num_of_bytes * 8, 0);
     } 
     else {
       for (i = 0; i < num_of_bytes-1; i++){
-	encodebits(buf, 8, bytes[i]);
+        encodebits(buf, 8, bytes[i]);
       }
       encodebits(buf, num_of_bits- (num_of_bytes -1) * 8, bytes[i]);
     }
@@ -431,13 +431,13 @@ Library.
     {
       /* find nearest integer */
       if (*lfp >= 0.0)
-	lf = *lfp * precision + 0.5;
+        lf = *lfp * precision + 0.5;
       else
-	lf = *lfp * precision - 0.5;
+        lf = *lfp * precision - 0.5;
       if (fabs(lf) > INT_MAX-2) 
       {
-	/* scaling would cause overflow */
-	throw(LOOSError("Internal overflow compressing coordinates"));
+        /* scaling would cause overflow */
+        throw(LOOSError("Internal overflow compressing coordinates...check input model coordinates (#1)"));
       }
       lint1 = lf;
       if (lint1 < minint[0]) minint[0] = lint1;
@@ -445,13 +445,13 @@ Library.
       *lip++ = lint1;
       lfp++;
       if (*lfp >= 0.0)
-	lf = *lfp * precision + 0.5;
+        lf = *lfp * precision + 0.5;
       else
-	lf = *lfp * precision - 0.5;
+        lf = *lfp * precision - 0.5;
       if (fabs(lf) > INT_MAX-2)
       {
-	/* scaling would cause overflow */
-	throw(LOOSError("Internal overflow compressing coordinates"));
+        /* scaling would cause overflow */
+        throw(LOOSError("Internal overflow compressing coordinates...check input model coordinates (#2)"));
       }
       lint2 = lf;
       if (lint2 < minint[1]) minint[1] = lint2;
@@ -459,14 +459,14 @@ Library.
       *lip++ = lint2;
       lfp++;
       if (*lfp >= 0.0)
-	lf = *lfp * precision + 0.5;
+        lf = *lfp * precision + 0.5;
       else
-	lf = *lfp * precision - 0.5;
+        lf = *lfp * precision - 0.5;
 
       // *** TDR - This is not actually used
       // if (fabs(lf) > INT_MAX-2) 
       // {
-      // 	errval=0;      
+      //        errval=0;      
       // }
       lint3 = lf;
       if (lint3 < minint[2]) minint[2] = lint3;
@@ -475,7 +475,7 @@ Library.
       lfp++;
       diff = abs(oldlint1-lint1)+abs(oldlint2-lint2)+abs(oldlint3-lint3);
       if (diff < mindiff && lfp > ptr + 3)
-	mindiff = diff;
+        mindiff = diff;
       oldlint1 = lint1;
       oldlint2 = lint2;
       oldlint3 = lint3;
@@ -484,12 +484,12 @@ Library.
     xdr.write(maxint, 3);
   
     if ((float)maxint[0] - (float)minint[0] >= INT_MAX-2 ||
-	(float)maxint[1] - (float)minint[1] >= INT_MAX-2 ||
-	(float)maxint[2] - (float)minint[2] >= INT_MAX-2) {
-      /* turning value in unsigned by subtracting minint
+        (float)maxint[1] - (float)minint[1] >= INT_MAX-2 ||
+        (float)maxint[2] - (float)minint[2] >= INT_MAX-2) {
+      /* turning value to unsigned by subtracting minint
        * would cause overflow
        */
-      throw(LOOSError("Internal overflow compressing internal coordinates"));
+      throw(LOOSError("Internal overflow compressing internal coordinates...check input model coordinates (#3)"));
     }
     sizeint[0] = maxint[0] - minint[0]+1;
     sizeint[1] = maxint[1] - minint[1]+1;
@@ -530,49 +530,49 @@ Library.
       is_small = 0;
       thiscoord = (int *)(luip) + i * 3;
       if (smallidx < maxidx && i >= 1 &&
-	  abs(thiscoord[0] - prevcoord[0]) < larger &&
-	  abs(thiscoord[1] - prevcoord[1]) < larger &&
-	  abs(thiscoord[2] - prevcoord[2]) < larger) {
-	is_smaller = 1;
+          abs(thiscoord[0] - prevcoord[0]) < larger &&
+          abs(thiscoord[1] - prevcoord[1]) < larger &&
+          abs(thiscoord[2] - prevcoord[2]) < larger) {
+        is_smaller = 1;
       } 
       else if (smallidx > minidx) 
       {
-	is_smaller = -1;
+        is_smaller = -1;
       }
       else
       {
-	is_smaller = 0;
+        is_smaller = 0;
       }
       if (i + 1 < size) 
       {
-	if (abs(thiscoord[0] - thiscoord[3]) < smallnum &&
-	    abs(thiscoord[1] - thiscoord[4]) < smallnum &&
-	    abs(thiscoord[2] - thiscoord[5]) < smallnum) 
-	{
-	  /* interchange first with second atom for better
-	   * compression of water molecules
-	   */
-	  tmp = thiscoord[0]; thiscoord[0] = thiscoord[3];
-	  thiscoord[3] = tmp;
-	  tmp = thiscoord[1]; thiscoord[1] = thiscoord[4];
-	  thiscoord[4] = tmp;
-	  tmp = thiscoord[2]; thiscoord[2] = thiscoord[5];
-	  thiscoord[5] = tmp;
-	  is_small = 1;
-	} 
+        if (abs(thiscoord[0] - thiscoord[3]) < smallnum &&
+            abs(thiscoord[1] - thiscoord[4]) < smallnum &&
+            abs(thiscoord[2] - thiscoord[5]) < smallnum) 
+        {
+          /* interchange first with second atom for better
+           * compression of water molecules
+           */
+          tmp = thiscoord[0]; thiscoord[0] = thiscoord[3];
+          thiscoord[3] = tmp;
+          tmp = thiscoord[1]; thiscoord[1] = thiscoord[4];
+          thiscoord[4] = tmp;
+          tmp = thiscoord[2]; thiscoord[2] = thiscoord[5];
+          thiscoord[5] = tmp;
+          is_small = 1;
+        } 
       }
       tmpcoord[0] = thiscoord[0] - minint[0];
       tmpcoord[1] = thiscoord[1] - minint[1];
       tmpcoord[2] = thiscoord[2] - minint[2];
       if (bitsize == 0) 
       {
-	encodebits(buf2, bitsizeint[0], tmpcoord[0]);
-	encodebits(buf2, bitsizeint[1], tmpcoord[1]);
-	encodebits(buf2, bitsizeint[2], tmpcoord[2]);
+        encodebits(buf2, bitsizeint[0], tmpcoord[0]);
+        encodebits(buf2, bitsizeint[1], tmpcoord[1]);
+        encodebits(buf2, bitsizeint[2], tmpcoord[2]);
       } 
       else
       {
-	encodeints(buf2, 3, bitsize, sizeint, tmpcoord);
+        encodeints(buf2, 3, bitsize, sizeint, tmpcoord);
       }
       prevcoord[0] = thiscoord[0];
       prevcoord[1] = thiscoord[1];
@@ -582,67 +582,67 @@ Library.
 
       run = 0;
       if (is_small == 0 && is_smaller == -1)
-	is_smaller = 0;
+        is_smaller = 0;
       while (is_small && run < 8*3)
       {
-	tmpsum=0;
-	for(j=0;j<3;j++) 
-	{
-	  tmp=thiscoord[j] - prevcoord[j];
-	  tmpsum+=tmp*tmp;
-	}
-	if (is_smaller == -1 && tmpsum >= smaller * smaller)
-	{
-	  is_smaller = 0;
-	}
+        tmpsum=0;
+        for(j=0;j<3;j++) 
+        {
+          tmp=thiscoord[j] - prevcoord[j];
+          tmpsum+=tmp*tmp;
+        }
+        if (is_smaller == -1 && tmpsum >= smaller * smaller)
+        {
+          is_smaller = 0;
+        }
       
-	tmpcoord[run++] = thiscoord[0] - prevcoord[0] + smallnum;
-	tmpcoord[run++] = thiscoord[1] - prevcoord[1] + smallnum;
-	tmpcoord[run++] = thiscoord[2] - prevcoord[2] + smallnum;
+        tmpcoord[run++] = thiscoord[0] - prevcoord[0] + smallnum;
+        tmpcoord[run++] = thiscoord[1] - prevcoord[1] + smallnum;
+        tmpcoord[run++] = thiscoord[2] - prevcoord[2] + smallnum;
       
-	prevcoord[0] = thiscoord[0];
-	prevcoord[1] = thiscoord[1];
-	prevcoord[2] = thiscoord[2];
+        prevcoord[0] = thiscoord[0];
+        prevcoord[1] = thiscoord[1];
+        prevcoord[2] = thiscoord[2];
       
-	i++;
-	thiscoord = thiscoord + 3;
-	is_small = 0;
-	if (i < size &&
-	    abs(thiscoord[0] - prevcoord[0]) < smallnum &&
-	    abs(thiscoord[1] - prevcoord[1]) < smallnum &&
-	    abs(thiscoord[2] - prevcoord[2]) < smallnum)
-	{
-	  is_small = 1;
-	}
+        i++;
+        thiscoord = thiscoord + 3;
+        is_small = 0;
+        if (i < size &&
+            abs(thiscoord[0] - prevcoord[0]) < smallnum &&
+            abs(thiscoord[1] - prevcoord[1]) < smallnum &&
+            abs(thiscoord[2] - prevcoord[2]) < smallnum)
+        {
+          is_small = 1;
+        }
       }
       if (run != prevrun || is_smaller != 0) 
       {
-	prevrun = run;
-	encodebits(buf2, 1, 1); /* flag the change in run-length */
-	encodebits(buf2, 5, run+is_smaller+1);
+        prevrun = run;
+        encodebits(buf2, 1, 1); /* flag the change in run-length */
+        encodebits(buf2, 5, run+is_smaller+1);
       } 
       else 
       {
-	encodebits(buf2, 1, 0); /* flag the fact that runlength did not change */
+        encodebits(buf2, 1, 0); /* flag the fact that runlength did not change */
       }
       for (k=0; k < run; k+=3) 
       {
-	encodeints(buf2, 3, smallidx, sizesmall, &tmpcoord[k]);	
+        encodeints(buf2, 3, smallidx, sizesmall, &tmpcoord[k]); 
       }
       if (is_smaller != 0) 
       {
-	smallidx += is_smaller;
-	if (is_smaller < 0) 
-	{
-	  smallnum = smaller;
-	  smaller = magicints[smallidx-1] / 2;
-	} 
-	else 
-	{
-	  smaller = smallnum;
-	  smallnum = magicints[smallidx] / 2;
-	}
-	sizesmall[0] = sizesmall[1] = sizesmall[2] = magicints[smallidx];
+        smallidx += is_smaller;
+        if (is_smaller < 0) 
+        {
+          smallnum = smaller;
+          smaller = magicints[smallidx-1] / 2;
+        } 
+        else 
+        {
+          smaller = smallnum;
+          smallnum = magicints[smallidx] / 2;
+        }
+        sizesmall[0] = sizesmall[1] = sizesmall[2] = magicints[smallidx];
       }   
     }
     if (buf2[1] != 0) buf2[0]++;
@@ -662,9 +662,9 @@ Library.
     size_t size3 = size * 3;
     if (size3 > buf1size) {
       if (buf1)
-	delete[] buf1;
+        delete[] buf1;
       if (buf2)
-	delete[] buf2;
+        delete[] buf2;
 
       buf1 = new int[size3];
       size_t size3plus = size3 * 1.2;

@@ -70,7 +70,9 @@
 #include <pdb.hpp>
 #include <psf.hpp>
 #include <amber.hpp>
+#include <mdtraj.hpp>
 #include <tinkerxyz.hpp>
+#include <mmcif.hpp>
 
 #include <Trajectory.hpp>
 #include <dcd.hpp>
@@ -82,10 +84,7 @@
 #include <xtcwriter.hpp>
 
 #include <amber_traj.hpp>
-
-#if defined(HAS_NETCDF)
 #include <amber_netcdf.hpp>
-#endif
 
 #include <amber_rst.hpp>
 #include <ccpdb.hpp>
@@ -94,6 +93,7 @@
 #include <xtc.hpp>
 #include <gro.hpp>
 #include <trr.hpp>
+#include <mdtrajtraj.hpp>
 
 
 

@@ -233,10 +233,12 @@ int main(int argc, char *argv[]) {
 
   // set up system for looping. Load coords from frame 0 into scope.
   AtomicGroup model = tropts->model;
-  if (model.hasBonds()) {
+  AtomicGroup scope = selectAtoms(model, sopts->selection);
+  bool all_bonds_in_scope = scope.allHaveProperty(Atom::bits::bondsbit);
+  if (all_bonds_in_scope) {
   } else if (topts->bondlength > 0)
-    if (model.hasCoords())
-      model.findBonds(topts->bondlength);
+    if (scope.hasCoords())
+      scope.findBonds(topts->bondlength);
     else {
       throw(LOOSError(
         "Model does not have coordinates with which to infer connectivity.\n"
@@ -244,9 +246,8 @@ int main(int argc, char *argv[]) {
     }
   else
     throw(LOOSError(
-        "Model does not appear to have chemical connectivity, and "
+        "Model selection does not appear to have chemical connectivity, and "
         "infer-connectivity has not been set to a positive value.\n"));
-  AtomicGroup scope = selectAtoms(model, sopts->selection);
   pTraj traj = tropts->trajectory;
   traj->updateGroupCoords(model);
   // should be a vector of two-atom AGs, each a pair of atoms in a bond
@@ -260,11 +261,17 @@ int main(int argc, char *argv[]) {
     // if thrown, don't even write invocation to stdout
     if (!topts->quiet)
       cout << "# " << header << "\n";
+    
+    float dist2 = 0;
     for (auto frame_index : tropts->frameList()) {
       traj->readFrame(frame_index);
       traj->updateGroupCoords(scope);
       for (auto b : bond_list) {
-        if (b[0]->coords().distance2(b[1]->coords()) > max_bond2) {
+        dist2 = b[0]->coords().distance2(b[1]->coords());
+        if (dist2 > max_bond2) {
+          if (!topts->quiet)
+            cout << "Issue in frame " << frame_index << "; bond between atomIDs " << b[0]->id() << " and " << b[1]->id() << 
+            " is " << sqrtf(dist2) << " Angstroms. Exiting..." << endl;
           return EXIT_FAILURE;
         }
       }

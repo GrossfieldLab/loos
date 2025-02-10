@@ -20,6 +20,7 @@
 */
 
 
+%include <std_string.i>
 
 %header %{
 #include <XForm.hpp>
@@ -42,7 +43,8 @@ namespace loos {
 
 %extend loos::XForm {
 
-  char* __str__() {
+
+  std::string __repr__() {
     static char buf[1024];
 
     GMatrix M = $self->current();
@@ -54,24 +56,7 @@ namespace loos {
 	oss << M(j, i) << (i < 3 ? ", " : " ], ");
     }
     oss << "]";
-    strncpy(buf, oss.str().c_str(), sizeof(buf));
-    return(buf);
-  }
-
-  char* __repr__() {
-    static char buf[1024];
-
-    GMatrix M = $self->current();
-    std::ostringstream oss;
-    oss << "[ ";
-    for (uint j=0; j<4; ++j) {
-      oss << "[";
-      for (uint i=0; i<4; ++i)
-	oss << M(j, i) << (i < 3 ? ", " : " ], ");
-    }
-    oss << "]";
-    strncpy(buf, oss.str().c_str(), sizeof(buf));
-    return(buf);
+    return(oss.str());
   }
 
 

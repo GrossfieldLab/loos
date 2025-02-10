@@ -19,10 +19,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #if !defined(LOOS_GRO_HPP)
 #define LOOS_GRO_HPP
-
 
 #include <iostream>
 #include <string>
@@ -33,41 +31,40 @@
 #include <loos_defs.hpp>
 #include <AtomicGroup.hpp>
 
-namespace loos {
+namespace loos
+{
 
   //! Implements a GROMACS model file (.gro)
-  class Gromacs : public AtomicGroup {
+  class Gromacs : public AtomicGroup
+  {
   public:
+    Gromacs() {}
 
-    Gromacs() { }
-
-    explicit Gromacs(const std::string& fname) : _filename(fname), _max_index(0), _has_velocities(false) {
+    explicit Gromacs(const std::string &fname) : _filename(fname), _max_index(0), _has_velocities(false)
+    {
       std::ifstream ifs(fname.c_str());
       if (!ifs)
         throw(FileOpenError(fname));
       read(ifs);
     }
 
-    explicit Gromacs(std::istream& ifs) : _filename("stream"), _max_index(0), _has_velocities(false) { read(ifs); }
+    explicit Gromacs(std::istream &ifs) : _filename("stream"), _max_index(0), _has_velocities(false) { read(ifs); }
 
-    static pAtomicGroup create(const std::string& fname) {
-      return(pAtomicGroup(new Gromacs(fname)));
+    static pAtomicGroup create(const std::string &fname)
+    {
+      return (pAtomicGroup(new Gromacs(fname)));
     }
 
+    bool hasVelocities() const { return (_has_velocities); }
 
-    bool hasVelocities() const { return(_has_velocities); }
+    std::string asString() const;
+    //! Output as a GRO
+    friend std::ostream &operator<<(std::ostream &, const Gromacs &);
 
-#if !defined(SWIG)
-        //! Output as a GRO
-        friend std::ostream& operator<<(std::ostream&, const Gromacs&);
-#endif
-
-    std::string title(void) const { return(title_); }
-
-
+    std::string title(void) const { return (title_); }
 
     //! Class method for creating a GRO from an AtomicGroup
-    static Gromacs fromAtomicGroup(const AtomicGroup&);
+    static Gromacs fromAtomicGroup(const AtomicGroup &);
 
   private:
     std::string _filename;
@@ -76,20 +73,15 @@ namespace loos {
     bool _has_velocities;
 
   private:
-
-    void read(std::istream& ifs);
+    void read(std::istream &ifs);
 
     // Convert an Atom to a string representation in PDB format...
     std::string atomAsString(const pAtom p) const;
 
     //! Create GRO from an AtomicGroup (upcast)
-    Gromacs(const AtomicGroup& grp) : AtomicGroup(grp) { }
-
+    Gromacs(const AtomicGroup &grp) : AtomicGroup(grp) {}
   };
 
-
-
 }
-
 
 #endif

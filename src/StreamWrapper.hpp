@@ -19,9 +19,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-
-
 #if !defined(LOOS_STREAMWRAPPER_HPP)
 #define LOOS_STREAMWRAPPER_HPP
 
@@ -33,8 +30,8 @@
 #include <boost/utility.hpp>
 #include <exceptions.hpp>
 
-
-namespace loos {
+namespace loos
+{
 
   //! Simple wrapper class for caching stream pointers
   /** This class was written primarily for use with the DCD classes
@@ -50,18 +47,18 @@ namespace loos {
    *  initialized to point to that stream and when the wrapper object is
    *  destroyed, the stream is left alone.
    */
-  class StreamWrapper : public boost::noncopyable {
+  class StreamWrapper : public boost::noncopyable
+  {
   public:
-    StreamWrapper() : new_stream(false), stream(0) { }
+    StreamWrapper() : new_stream(false), stream(0) {}
 
     //! Sets the internal stream pointer to fs
-    explicit StreamWrapper(std::istream& fs) : new_stream(false), stream(&fs) { }
+    explicit StreamWrapper(std::istream &fs) : new_stream(false), stream(&fs) {}
 
     //! Opens a new stream with file named 's'
-    StreamWrapper(const std::string& s,
+    StreamWrapper(const std::string &s,
                   const std::ios_base::openmode mode = std::ios_base::in | std::ios_base::binary)
-      throw(FileOpenError)
-      : new_stream(true)
+        : new_stream(true)
     {
       stream = new std::fstream(s.c_str(), mode);
       if (!stream->good())
@@ -69,9 +66,8 @@ namespace loos {
     }
 
     //! Sets the internal stream to point to a newly opened filed...
-    void setStream(const std::string& s,
+    void setStream(const std::string &s,
                    const std::ios_base::openmode mode = std::ios_base::in | std::ios_base::binary)
-      throw(FileOpenError)
     {
       if (new_stream)
         delete stream;
@@ -83,7 +79,8 @@ namespace loos {
     }
 
     //! Sets the internal stream to the passed fstream.
-    void setStream(std::istream& fs) {
+    void setStream(std::istream &fs)
+    {
       if (new_stream)
         delete stream;
       new_stream = false;
@@ -91,23 +88,26 @@ namespace loos {
     }
 
     //! Returns the internal istream pointer
-    std::istream* operator()(void) throw(LOOSError) {
+    std::istream *operator()(void)
+    {
       if (stream == 0)
         throw(LOOSError("Attempting to access an unset stream"));
-      return(stream);
+      return (stream);
     }
 
     //! Returns true if the internal stream pointer is unset
-    bool isUnset(void) const { return(stream == 0); }
+    bool isUnset(void) const { return (stream == 0); }
 
-    ~StreamWrapper() { if (new_stream) delete stream; }
-
+    ~StreamWrapper()
+    {
+      if (new_stream)
+        delete stream;
+    }
 
   private:
     bool new_stream;
-    std::istream* stream;
+    std::istream *stream;
   };
-
 
 }
 

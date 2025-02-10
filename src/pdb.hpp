@@ -138,10 +138,10 @@ namespace loos {
         const UnitCell& unitCell(void);
         void unitCell(const UnitCell&);
 
-#if !defined(SWIG)
         //! Output as a PDB
         friend std::ostream& operator<<(std::ostream&, const PDB&);
-#endif
+
+        std::string asString() const;
 
         //! Read in PDB from an ifstream
         void read(std::istream& is);

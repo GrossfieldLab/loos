@@ -20,11 +20,14 @@
 */
 
 
+%include <std_string.i>
+
 %rename(cpp_splitByMolecule)       loos::AtomicGroup::splitByMolecule;
 %rename(cpp_splitByResidue)        loos::AtomicGroup::splitByResidue;
 %rename(cpp_splitByUniqueSegid)    loos::AtomicGroup::splitByUniqueSegid;
 %rename(cpp_getBondsAGs)           loos::AtomicGroup::getBondsAGs;
 %rename(cpp_splitByName)           loos::AtomicGroup::splitByName;
+
 
 
 %header %{
@@ -66,9 +69,9 @@
    public:
    AtomicGroupPythonIterator(AtomicGroup* p) : _ag(p), _idx(0) { }
 
-     pAtom __next__() throw (loos::StopIteration) {
+     pAtom __next__()  {
        if (_idx >= _ag->size())
-	 throw(loos::StopIteration());
+	 throw(StopIteration());
        return((*_ag)[_idx++]);
      }
 
@@ -82,6 +85,7 @@
 
 %}
 
+%catches(loos::StopIteration) loos::AtomicGroupPythonIterator::__next__();
 
 // Translate C++ exception into Python's
 %typemap(throws) loos::StopIteration %{
@@ -107,7 +111,7 @@ namespace loos {
   class AtomicGroupPythonIterator {
   public:
     AtomicGroupPythonIterator(loos::AtomicGroup*);
-    loos::pAtom __next__() throw (loos::StopIteration);
+    loos::pAtom __next__();
   };
 }
 
@@ -139,21 +143,8 @@ namespace loos {
     }
 
     // Will this leak?
-    char* __str__() {
-      std::ostringstream oss;
-      oss << *$self;
-      size_t n = oss.str().size();
-      char* buf = new char[n+1];
-      strncpy(buf, oss.str().c_str(), n+1);
-      return(buf);
-      }
-    char* __repr__() {
-      std::ostringstream oss;
-      oss << *$self;
-      size_t n = oss.str().size();
-      char* buf = new char[n+1];
-      strncpy(buf, oss.str().c_str(), n+1);
-      return(buf);
+    std::string __repr__() const {
+      return $self->asString();
     }
 
     loos::AtomicGroup __copy__() {

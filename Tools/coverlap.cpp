@@ -74,7 +74,7 @@ void fullHelpMessage() {
   "\n"
   "In simplest terms this is a cumulative dot product between two\n"
   "eigenvectors that is weighted relatively by each associated eigenvalue.\n"
-  "The nominclature of the input is broken down as:\n"
+  "The nomenclature of the input is broken down as:\n"
   "\tls - left side eigenvalue file (filename_s.asc if made with loos)\n"
   "\tlU - left side eigenvector file (filename_U.asc if made with loos)\n"
   "\trs - right side eigenvalue file (filename_s.asc if made with loos)\n"

@@ -19,6 +19,8 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+%include <std_string.i>
+
 
 %header %{
 #include <gro.hpp>
@@ -30,15 +32,10 @@
 namespace loos {
 
     %extend Gromacs {
-        char* __str__() {
-            std::ostringstream oss;
-            oss << *$self;
-            size_t n = oss.str().size();
-            char* buf = new char[n+1];
-            strncpy(buf, oss.str().c_str(), n+1);
-            return(buf);
-        }
-    }
+     std::string __repr__() {
+       return($self->asString());
+     }
+   }
     
     
 }

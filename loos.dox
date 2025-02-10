@@ -4,12 +4,12 @@
 \mainpage Lightweight Object-Oriented Structure library (LOOS)
 
 
-Copyright &copy; 2008-2020, Tod D. Romo, Alan Grossfield\n
+Copyright &copy; 2008-2024, Tod D. Romo, Alan Grossfield\n
 Department of Biochemistry and Biophysics\n
 School of Medicine & Dentistry, University of Rochester\n
 
 
-\image html gplv3.png
+\image html https://www.gnu.org/graphics/gplv3-with-text-84x42.png
 
 <hr>
 
@@ -30,9 +30,7 @@ School of Medicine & Dentistry, University of Rochester\n
       - \subpage faq "FAQ"
           - \ref faq_pyloos "FAQ for PyLOOS"
       - Posters and presentations on LOOS
-      - <a href="http://membrane.urmc.rochester.edu/sites/default/files/posters_bps_2019/loos-2020.pdf">2020 Biophysical Society Poster</a>
-      - <a href="http://membrane.urmc.rochester.edu/sites/default/files/posters_bps_2019/loos-2019.pdf">2019 Biophysical Society Poster</a>
-      - <a href="http://membrane.urmc.rochester.edu/sites/default/files/posters_bps_2016/bps2016_tromo.pdf">2016 Biophysical Society Poster</a>
+      - <a href="http://membrane.urmc.rochester.edu/sites/default/files/posters_bps_2024/loos-2024.pdf">2020 Biophysical Society Poster</a>
 
 \section intro Introduction
 
@@ -113,7 +111,7 @@ Either mail us directly (loos.maintainer [AT] gmail.com) or raise an issue on Gi
 
 
 <I>LOOS (Lightweight Object-Oriented Structure library)</I>\n
-Copyright &copy; 2008-2020, Tod D. Romo, Alan Grossfield\n
+Copyright &copy; 2008-2024, Tod D. Romo, Alan Grossfield\n
 Department of Biochemistry and Biophysics\n
 School of Medicine & Dentistry, University of Rochester\n
 
@@ -129,7 +127,7 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-\image html grossfield_logo.jpg
+\image html https://raw.github.com/GrossfieldLab/loos/main/images/grossfield_logo.jpg
 
 
 */

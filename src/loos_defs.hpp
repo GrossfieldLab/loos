@@ -132,9 +132,7 @@ namespace loos {
   class Trajectory;
   class DCD;
   class AmberTraj;
-#if defined(HAS_NETCDF)
   class AmberNetcdf;
-#endif
   class CCPDB;
   class TinkerArc;
   class PDBTraj;
@@ -146,9 +144,7 @@ namespace loos {
   typedef boost::shared_ptr<Trajectory> pTraj;
   typedef boost::shared_ptr<DCD> pDCD;
   typedef boost::shared_ptr<AmberTraj> pAmberTraj;
-#if defined(HAS_NETCDF)
   typedef boost::shared_ptr<AmberNetcdf> pAmberNetcdf;
-#endif
   typedef boost::shared_ptr<CCPDB> pCCPDB;
   typedef boost::shared_ptr<TinkerArc> pTinkerArc;
   typedef boost::shared_ptr<PDBTraj> pPDBTraj;
@@ -165,6 +161,8 @@ namespace loos {
   class TinkerXYZ;
   class Gromacs;
   class CHARMM;
+  class MDTraj;
+  class MMCIF;
 
   typedef boost::shared_ptr<AtomicGroup> pAtomicGroup;
   typedef boost::shared_ptr<PDB> pPDB;
@@ -174,6 +172,7 @@ namespace loos {
   typedef boost::shared_ptr<TinkerXYZ> pTinkerXYZ;
   typedef boost::shared_ptr<Gromacs> pGromacs;
   typedef boost::shared_ptr<CHARMM> pCHARMM;
+  typedef boost::shared_ptr<MMCIF> pMMCIF;
 
 
   // Misc

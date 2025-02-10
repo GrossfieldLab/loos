@@ -71,7 +71,7 @@ public:
       ("fix-imaging", po::value<bool>(&reimage_by_molecule)->default_value(false), "Reimage the system so molecules aren't broken across image boundaries")
       ("sort", po::value<bool>(&sort_flag)->default_value(false), "Sort (numerically) the input DCD files.")
       ("scanf", po::value<string>(&scanf_spec)->default_value(""), "Sort using a scanf-style format string")
-      ("regex", po::value<string>(&regex_spec)->default_value("(\\d+)\\D*$"), "Sort using a regular expression")
+      ("regex", po::value<string>(&regex_spec)->default_value(""), "Sort using a regular expression")
       ("postcenter", po::value<string>(&postcenter_selection)->default_value(""), "Perform a final recentering using this selection")
       ("postcenter-xy", po::value<string>(&postcenter_xy_selection)->default_value(""), "Perform a final xy recentering")
       ("postcenter-z", po::value<string>(&postcenter_z_selection)->default_value(""), "Perform a final z recentering")

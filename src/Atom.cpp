@@ -228,10 +228,18 @@ namespace loos {
       os << "</ATOM>";
     } else
       os << "/>";
+
     return(os);
   }
 
 
+  std::string Atom::asString() const {
+    std::ostringstream oss;
+
+    oss << *this;
+    return oss.str();
+  }
+  
   bool AtomEquals::operator()(const pAtom& a, const pAtom& b) const {
     return(a->name() == b->name()
            && a->id() == b->id()

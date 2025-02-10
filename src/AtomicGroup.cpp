@@ -540,6 +540,9 @@ namespace loos {
   std::vector<AtomicGroup> AtomicGroup::splitByResidue(void) const {
     std::vector<AtomicGroup> residues;
 
+    if (size() == 0) {
+      return(residues);
+    }
     int curr_resid = atoms[0]->resid();
     std::string curr_segid = atoms[0]->segid();
 
@@ -1031,6 +1034,19 @@ namespace loos {
     return(n);
   }
 
+  double AtomicGroup::deduceMassFromAtomicNumber() {
+    uint n = 0;
+    for (AtomicGroup::iterator i = begin(); i != end(); ++i)
+      if ((*i)->checkProperty(Atom::anumbit)) {
+        double mass = loos::deduceMassFromAtomicNumber((*i)->atomic_number());
+        if (mass) {
+          (*i)->mass(mass);
+          ++n;
+        }
+      }
+    return(n);
+  }
+
 
   void AtomicGroup::copyCoordinatesWithIndex(const std::vector<GCoord> &coords) {
     if (! atoms.empty())
@@ -1109,6 +1125,12 @@ namespace loos {
     copyMappedCoordinatesFrom(g, map);
   }
 
+  std::string AtomicGroup::asString() const {
+    std::ostringstream oss;
+    oss << *this;
+    return oss.str();
+  }
+  
 
   // XMLish output...
   std::ostream& operator<<(std::ostream& os, const AtomicGroup& grp) {

@@ -469,7 +469,7 @@ for (int i =first_carbon; i<=last_carbon; i++)
     {
     char carbon_name[4];
     string sel_string = selection;
-    sprintf(carbon_name, "%d", i);
+    snprintf(carbon_name, 4, "%d", i);
     string name;
     if (three_res_lipid)
         {

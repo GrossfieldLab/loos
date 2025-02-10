@@ -37,18 +37,18 @@
 #include <dcd.hpp>
 #include <amber_traj.hpp>
 
-#if defined(HAS_NETCDF)
 #include <amber_netcdf.hpp>
-#endif
-
 #include <amber_rst.hpp>
 #include <ccpdb.hpp>
 #include <charmm.hpp>
+#include <mdtraj.hpp>
+#include <mdtrajtraj.hpp>
 #include <tinkerxyz.hpp>
 #include <tinker_arc.hpp>
 #include <gro.hpp>
 #include <xtc.hpp>
 #include <trr.hpp>
+#include <mmcif.hpp>
 
 
 #include <trajwriter.hpp>
@@ -72,6 +72,8 @@ namespace loos {
       { "psf", "CHARMM/NAMD PSF", &PSF::create },
       { "gro", "Gromacs", &Gromacs::create },
       { "xyz", "Tinker", &TinkerXYZ::create },
+      { "cif", "PDBx/mmcif", &MMCIF::create },
+      { "h5", "MDTraj HDF5", &MDTraj::create },
       { "", "", 0}
     };
   }
@@ -129,15 +131,10 @@ namespace loos {
     };
 
     TrajectoryNameBindingType trajectory_name_bindings[] = {
-#if defined(HAS_NETCDF)
       { "crd", "Amber Traj (NetCDF/Amber)", &AmberNetcdf::create},
       { "mdcrd", "Amber Traj (NetCDF/Amber)", &AmberNetcdf::create},
       { "nc", "Amber Traj (NetCDF)", &AmberNetcdf::create},
       { "netcdf", "Amber Traj (NetCDF)", &AmberNetcdf::create},
-#else
-      { "crd", "Amber Traj", &AmberTraj::create},
-      { "mdcrd", "Amber Traj", &AmberTraj::create},
-#endif
       { "inpcrd", "Amber Restart", &AmberRst::create},
       { "rst", "Amber Restart", &AmberRst::create},
       { "rst7", "Amber Restart", &AmberRst::create},
@@ -146,6 +143,7 @@ namespace loos {
       { "trr", "Gromacs TRR", &TRR::create},
       { "xtc", "Gromacs XTC", &XTC::create},
       { "arc", "Tinker ARC", &TinkerArc::create},
+      { "h5", "MDTraj HDF5", &MDTrajTraj::create},
       { "", "", 0}
     };
 

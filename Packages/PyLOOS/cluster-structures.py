@@ -153,7 +153,7 @@ print('# %8s %16s %8s %8s %8s' %
 
 minima = numpy.full_like(numpy.arange(args.num_means),
                          1.e10,
-                         dtype=numpy.float)
+                         dtype=float)
 minima_indices = numpy.zeros([args.num_means], dtype=numpy.int)
 
 for i in range(len(idx)):

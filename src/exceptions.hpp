@@ -48,6 +48,11 @@ namespace loos {
       ss << a << std::endl << arg;
       _msg = ss.str();
     }
+    explicit LOOSError(const std::string& fname, const Atom& a, const std::string& arg) {
+        std::stringstream ss;
+        ss << "In file: " + fname << std::endl << a << std::endl << arg;
+        _msg = ss.str();
+    }
 
     virtual ~LOOSError() throw() {};
     virtual const char* what(void) const throw() { return(_msg.c_str()); }
@@ -220,8 +225,7 @@ namespace loos {
 
   };
 
-
-
+  
   //! Errors while writing to files
   class FileWriteError : public FileError {
   public:
@@ -230,6 +234,58 @@ namespace loos {
     FileWriteError(const std::string& fname, const std::string& msg) : FileError("writing to", fname, '\n' + msg) {}
   };
   
+
+  //! Errors related to trajectory reading and writing
+  /**
+   * Most trajectory exceptions derive from this class.
+   */
+  class TrajectoryError : public LOOSError {
+  protected:
+      std::string _operation;
+      std::string _filename;
+      int _errcode;
+
+  public:
+      TrajectoryError(const std::string& op) : LOOSError("Error while " + op), _operation(op) {}
+
+      TrajectoryError(const std::string& op, const std::string& fname)
+          : LOOSError("Error while " + op + ", " + fname),
+          _operation(op), _filename(fname)
+      {}
+
+      TrajectoryError(const std::string& op,
+          const std::string& fname,
+          const std::string& msg)
+          : LOOSError("Error while " + op + ", " + fname + "\n" + msg),
+          _operation(op),
+          _filename(fname)
+      {}
+
+      TrajectoryError(const std::string& op,
+          const std::string& fname,
+          const std::string& msg,
+          const int err)
+          : LOOSError("Error while " + op + ", " + fname + "\n" + msg),
+          _operation(op),
+          _filename(fname),
+          _errcode(err)
+      {}
+
+      
+      //! What operation was involved (e.g. reading, writing. etc)
+      std::string operation() const throw() { return(_operation); }
+
+      //! File that had the problem (or "stream" if not a file)
+      std::string filename() const throw() { return(_filename); }
+
+      //! The error code that may have been generated
+      int errorCode() const { return(_errcode); }
+
+      //! Sets the error code
+      void errorCode(const int i) { _errcode = i; }
+
+      ~TrajectoryError() throw() {}
+  };
 
 
 

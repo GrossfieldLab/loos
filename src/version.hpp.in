@@ -1,0 +1,16 @@
+#if !defined(LOOS_VERSION_HPP)
+
+#include <string>
+
+#define LOOS_VERSION_HPP
+
+#define LOOS_VERSION "@CMAKE_PROJECT_VERSION@"
+#define LOOS_VERSION_MAJOR "@CMAKE_PROJECT_VERSION_MAJOR@"
+#define LOOS_VERSION_MINOR "@CMAKE_PROJECT_VERSION_MINOR@"
+
+namespace loos
+{
+    extern const std::string version_string;
+}
+
+#endif

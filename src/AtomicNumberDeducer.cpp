@@ -21,6 +21,18 @@ namespace loos {
       return(0);
     }
 
+    double AtomicNumberDeducer::deduceMass(const unsigned int number) {
+      static internal::AtomicNumberDeducer deducer;
+      std::vector<MassNumber>::iterator i;
+      for (i = deducer.element_table.begin(); i != deducer.element_table.end(); ++i)
+        if (i->second == number)
+          break;
+      if (i != element_table.end()) {
+        return(i->first);
+      }
+      return(0);
+    }
+
     std::string AtomicNumberDeducer::deduceName(const double mass,
                                                 const double tolerance) {
 
@@ -249,4 +261,8 @@ namespace loos {
       return deducer.deduceName(mass, tolerance);
   }
 
+  double deduceMassFromAtomicNumber(const unsigned int number) {
+    static internal::AtomicNumberDeducer deducer;
+    return(deducer.deduceMass(number));
+  }
 };

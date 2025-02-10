@@ -19,10 +19,6 @@
   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
-
-
-
 #if !defined(LOOS_ATOMICGROUP_HPP)
 #define LOOS_ATOMICGROUP_HPP
 
@@ -37,9 +33,7 @@
 
 #include <boost/unordered_set.hpp>
 
-
 #include <loos_defs.hpp>
-
 
 #include <Atom.hpp>
 #include <XForm.hpp>
@@ -51,45 +45,47 @@
 
 #include <exceptions.hpp>
 
-
-namespace loos {
-
+namespace loos
+{
 
   //! Virtual base-class for selecting atoms from a group
 
-  struct AtomSelector {
+  struct AtomSelector
+  {
     //! Predicate function for selecting atoms.  If true, then the passed
     //! Atom is selected for an operation (or addition to a new group).
     //! If false, then the passed Atom is skipped.
-    virtual bool operator()(const pAtom& atom) const =0;
-    virtual ~AtomSelector() { }
+    virtual bool operator()(const pAtom &atom) const = 0;
+    virtual ~AtomSelector() {}
   };
 
-  //! hash pairs in an unordered way, that is 
+  //! hash pairs in an unordered way, that is
   //! hash(pair(a,b)) == hash(pair(b,a))
-  template<typename T>
-  struct unordered_pair_hash {
-    std::size_t operator () (std::pair<T, T> const &pair) const {
+  template <typename T>
+  struct unordered_pair_hash
+  {
+    std::size_t operator()(std::pair<T, T> const &pair) const
+    {
       // order the elements in the pair
       auto min_max = std::minmax(pair.first, pair.second);
       // return either
-      return static_cast<size_t>(min_max.second) << sizeof(T)*CHAR_BIT | min_max.first;
+      return static_cast<size_t>(min_max.second) << sizeof(T) * CHAR_BIT | min_max.first;
     }
   };
 
-//! test equality of unordered pair. typename T must have == operator.
-  template<typename T>
-  struct unordered_pair_eq {
-    bool operator() (std::pair<T, T> const &p1, 
-                     std::pair<T, T> const&p2) const {
+  //! test equality of unordered pair. typename T must have == operator.
+  template <typename T>
+  struct unordered_pair_eq
+  {
+    bool operator()(std::pair<T, T> const &p1,
+                    std::pair<T, T> const &p2) const
+    {
       return p1 == p2 || (p1.first == p2.second && p1.second == p2.first);
     }
   };
 
-
   class AtomicGroup;
   typedef boost::shared_ptr<AtomicGroup> pAtomicGroup;
-
 
   //! Class for handling groups of Atoms (pAtoms, actually)
   /** This class contains a collection of shared pointers to Atoms
@@ -108,27 +104,29 @@ namespace loos {
    * periodic boxes...
    */
 
-
-  class AtomicGroup {
+  class AtomicGroup
+  {
   public:
-    typedef std::vector<pAtom>::iterator       iterator;
+    typedef std::vector<pAtom>::iterator iterator;
     typedef std::vector<pAtom>::const_iterator const_iterator;
-    typedef pAtom                              value_type;
+    typedef pAtom value_type;
 
     // Threshold for catching effectively zero singular values in
     // the superposition code...
     static const double superposition_zero_singular_value;
 
   public:
-    AtomicGroup() : _sorted(false) { }
+    AtomicGroup() : _sorted(false) {}
 
     //! Creates a new AtomicGroup with \a n un-initialized atoms.
     /** The atoms will all have ascending atomid's beginning with 1, but
      *  otherwise no other properties will be set.
      */
-    AtomicGroup(const int n) : _sorted(true) {
+    AtomicGroup(const int n) : _sorted(true)
+    {
       assert(n >= 1 && "Invalid size in AtomicGroup(n)");
-      for (int i=1; i<=n; i++) {
+      for (int i = 1; i <= n; i++)
+      {
         pAtom pa(new Atom);
         pa->id(i);
         atoms.push_back(pa);
@@ -136,14 +134,13 @@ namespace loos {
     }
 
     //! Copy constructor (atoms and box shared)
-    AtomicGroup(const AtomicGroup& g) :
-      _sorted(g._sorted),
-      atoms(g.atoms),
-      box(g.box)
-      { }
+    AtomicGroup(const AtomicGroup &g) : _sorted(g._sorted),
+                                        atoms(g.atoms),
+                                        box(g.box)
+    {
+    }
 
-
-    virtual ~AtomicGroup() { }
+    virtual ~AtomicGroup() {}
 
     //! Creates a deep copy of this group
     /** This creates a non-polymorphic deep copy of an AtomicGroup.  The
@@ -160,54 +157,62 @@ namespace loos {
      *  this means, then you almost certainly want to be using the
      *  copy() method instead.
      */
-    virtual AtomicGroup* clone(void) const;
+    virtual AtomicGroup *clone(void) const;
 
-
-    uint length(void) const { return(atoms.size()); }
-    uint size(void) const { return(atoms.size()); }
-    bool empty(void) const { return(atoms.empty()); }
+    uint length(void) const { return (atoms.size()); }
+    uint size(void) const { return (atoms.size()); }
+    bool empty(void) const { return (atoms.empty()); }
 
     //! Get the ith atom from this group.
     pAtom getAtom(const int i) const;
 
 #if !defined(SWIG)
     //! Same as getAtom(i)
-    pAtom& operator[](const int i);
-    const pAtom& operator[](const int i) const;
+    pAtom &operator[](const int i);
+    const pAtom &operator[](const int i) const;
 #endif
 
     //! Append the atom onto the group
-    AtomicGroup& append(pAtom pa) { atoms.push_back(pa); _sorted = false; return(*this); }
+    AtomicGroup &append(pAtom pa)
+    {
+      atoms.push_back(pa);
+      _sorted = false;
+      return (*this);
+    }
     //! Append a vector of atoms
-    AtomicGroup& append(std::vector<pAtom> pas);
+    AtomicGroup &append(std::vector<pAtom> pas);
     //! Append an entire AtomicGroup onto this one (concatenation)
-    AtomicGroup& append(const AtomicGroup& grp);
+    AtomicGroup &append(const AtomicGroup &grp);
 
     //! Delete a single atom
-    AtomicGroup& remove(pAtom pa) { deleteAtom(pa); return(*this); }
+    AtomicGroup &remove(pAtom pa)
+    {
+      deleteAtom(pa);
+      return (*this);
+    }
     //! Deletes a set of atoms
-    AtomicGroup& remove(std::vector<pAtom> pas);
+    AtomicGroup &remove(std::vector<pAtom> pas);
     //! Deletes all atoms in the passed grp that are also in the current group.
-    AtomicGroup& remove(const AtomicGroup& grp);
+    AtomicGroup &remove(const AtomicGroup &grp);
 
     // Concatenation of groups and/or atoms
-    AtomicGroup& operator+=(const AtomicGroup& rhs);
-    AtomicGroup& operator+=(const pAtom& rhs);
-    AtomicGroup operator+(const AtomicGroup& rhs);
-    AtomicGroup operator+(const pAtom& rhs);
+    AtomicGroup &operator+=(const AtomicGroup &rhs);
+    AtomicGroup &operator+=(const pAtom &rhs);
+    AtomicGroup operator+(const AtomicGroup &rhs);
+    AtomicGroup operator+(const pAtom &rhs);
 
     //! Equality test for two groups
     /**The test for equality is based on whether or not the contained
      *atom pointers are the same.  This operator will also force both
      *sides of the equation to be sorted.
      */
-    bool operator==(AtomicGroup& rhs);
+    bool operator==(AtomicGroup &rhs);
 
     //! Inequality test for two groups
-    bool operator!=(AtomicGroup& rhs) {
-      return(!(operator==(rhs)));
+    bool operator!=(AtomicGroup &rhs)
+    {
+      return (!(operator==(rhs)));
     }
-
 
 #if !defined(SWIG)
 
@@ -215,16 +220,15 @@ namespace loos {
     /**Similar to the non-const version, but it will sort <I>copies</I>
      *of the atom lists if they are not already sorted...
      */
-    bool operator==(const AtomicGroup& rhs) const;
+    bool operator==(const AtomicGroup &rhs) const;
 
     //! Inequality test for two groups
-    bool operator!=(const AtomicGroup& rhs) const {
-      return(!(operator==(rhs)));
+    bool operator!=(const AtomicGroup &rhs) const
+    {
+      return (!(operator==(rhs)));
     }
 
 #endif // !defined(SWIG)
-
-
 
     //! subset() and excise() args are patterned after perl's substr...
     /** If offset is negative, then it's relative to the end of the
@@ -235,7 +239,6 @@ namespace loos {
 
     //! excise returns the excised atoms as a group...
     AtomicGroup excise(const int offset, const int len = 0);
-
 
     //! Determines if a pAtom is contained in this group using the EqualsOp atom-equality policy
     /**
@@ -253,7 +256,7 @@ namespace loos {
      *
      * Or as another example, comparing only residue numbers...
      * \code
-     * struct ResidEquals : public std::binary_function<pAtom, pAtom, bool> {
+     * struct ResidEquals {
      *   bool operator()(const pAtom& a, const pAtom& b) { return(a.resid() == b.resid()); }
      * };
      *
@@ -261,79 +264,83 @@ namespace loos {
      * \endcode
      */
 
-    template<class EqualsOp> bool contains(const pAtom& p, const EqualsOp& op) const {
-      const_iterator ci = std::find_if(begin(), end(), bind2nd(op, p));
-      return(ci != end());
+    template <class EqualsOp>
+    bool contains(const pAtom &p, const EqualsOp &op) const
+    {
+      const_iterator ci = std::find_if(begin(), end(), std::bind(op, std::placeholders::_1, p));
+      return (ci != end());
     }
 
     //! Determines if a pAtom is contained in this group using the AtomEquals policy (ie the default comparison policy)
-    bool contains(const pAtom& p) const { return(contains(p, AtomEquals())); }
-
+    bool contains(const pAtom &p) const { return (contains(p, AtomEquals())); }
 
     //! Determines if the passed group is a subset of the current group using the EqualsOp atom-equality policy
-    template<class EqualsOp> bool contains(const AtomicGroup& g, const EqualsOp& op) const {
+    template <class EqualsOp>
+    bool contains(const AtomicGroup &g, const EqualsOp &op) const
+    {
       for (const_iterator cj = g.begin(); cj != g.end(); ++cj)
-        if (std::find_if(begin(), end(), bind2nd(op, *cj)) == end())
-          return(false);
-      return(true);
+        if (std::find_if(begin(), end(), std::bind(op, std::placeholders::_1, *cj)) == end())
+          return (false);
+      return (true);
     }
 
     //! Determines if a group is a subset of the current group using the default AtomEquals policy
-    bool contains(const AtomicGroup& g) const { return(contains(g, AtomEquals())); }
+    bool contains(const AtomicGroup &g) const { return (contains(g, AtomEquals())); }
 
+    //! Determines if a group contains any atom
+    template <class EqualsOp>
+    bool containsAny(const AtomicGroup &g, const EqualsOp &op) const
+    {
+      for (const_iterator cj = g.begin(); cj != g.end(); ++cj)
+        if (std::find_if(begin(), end(), std::bind(op, std::placeholders::_1, *cj)) != end())
+          return (true);
+      return (false);
+    }
 
-      //! Determines if a group contains any atom
-      template<class EqualsOp> bool containsAny(const AtomicGroup& g, const EqualsOp& op) const
-          {
-              for (const_iterator cj = g.begin(); cj != g.end(); ++cj)
-                  if (std::find_if(begin(), end(), bind2nd(op, *cj)) != end())
-                      return(true);
-              return(false);
-          }
-
-
-      //! Determines if a group contains any atom using the default AtomEquals policy
-      bool containsAny(const AtomicGroup& g) const { return(containsAny(g, AtomEquals())); }
+    //! Determines if a group contains any atom using the default AtomEquals policy
+    bool containsAny(const AtomicGroup &g) const { return (containsAny(g, AtomEquals())); }
 
     //! Computes the intersection of two groups using the EqualsOp atom-equality policy
     /**
      * See AtomicGroup::contains(const pAtom&, const EqualsOp&) for more details
      */
-    template<class EqualsOp> AtomicGroup intersect(const AtomicGroup& g, const EqualsOp& op) {
+    template <class EqualsOp>
+    AtomicGroup intersect(const AtomicGroup &g, const EqualsOp &op)
+    {
       AtomicGroup result;
 
-      for (const_iterator cj = begin(); cj != end(); ++ cj)
-        if (std::find_if(g.begin(), g.end(), bind2nd(op, *cj)) != g.end())
+      for (const_iterator cj = begin(); cj != end(); ++cj)
+        if (std::find_if(g.begin(), g.end(), std::bind(op, std::placeholders::_1, *cj)) != g.end())
           result.addAtom(*cj);
 
       result.box = box;
-      return(result);
+      return (result);
     }
 
     //! Intersection of two groups
-    AtomicGroup intersect(const AtomicGroup& g) { return(intersect(g, AtomEquals())); }
+    AtomicGroup intersect(const AtomicGroup &g) { return (intersect(g, AtomEquals())); }
 
     //! Union of two groups using the specified atom-equality policy
     /**
      * Note that the periodic box of the current group is unchanged by this operation
      */
-    template<class EqualsOp> AtomicGroup merge(const AtomicGroup& g, const EqualsOp& op) {
+    template <class EqualsOp>
+    AtomicGroup merge(const AtomicGroup &g, const EqualsOp &op)
+    {
       AtomicGroup result = copy();
 
       for (const_iterator ci = g.begin(); ci != g.end(); ++ci)
-        if (std::find_if(begin(), end(), bind2nd(op, *ci)) == end())
+        if (std::find_if(begin(), end(), std::bind(op, std::placeholders::_1, *ci)) == end())
           result.addAtom(*ci);
 
-      return(result);
+      return (result);
     }
 
-
     //! Union of two groups using the default AtomEquals atom-equality policy
-    AtomicGroup merge(const AtomicGroup& g) { return(merge(g, AtomEquals())); }
-
+    AtomicGroup merge(const AtomicGroup &g) { return (merge(g, AtomEquals())); }
 
     //! Return a group consisting of atoms for which sel predicate returns true...
-    AtomicGroup select(const AtomSelector& sel) const;
+    AtomicGroup select(const AtomSelector &sel) const;
 
     //! Returns a vector of AtomicGroups split from the current group based on segid
     /**
@@ -343,16 +350,18 @@ namespace loos {
     std::vector<AtomicGroup> splitByUniqueSegid(void) const;
 
     //! Returns a vector of AtomicGroups split based on bond connectivity
-    std::vector<AtomicGroup> splitByMolecule(void) const {
+    std::vector<AtomicGroup> splitByMolecule(void) const
+    {
       AtomicGroup sortable = *this;
-      return(sortable.sortingSplitByMolecule());
+      return (sortable.sortingSplitByMolecule());
     }
 
     //! Takes selection string as argument to be applied to each group after splitting.
     //! Returns a vector of AtomicGroups split based on bond connectivity;
-    std::vector<AtomicGroup> splitByMolecule(const std::string& selection) const {
+    std::vector<AtomicGroup> splitByMolecule(const std::string &selection) const
+    {
       AtomicGroup sortable = *this;
-      return(sortable.sortingSplitByMolecule(selection));
+      return (sortable.sortingSplitByMolecule(selection));
     }
 
     //! Returns a vector of AtomicGroups, each comprising a single residue
@@ -360,7 +369,6 @@ namespace loos {
 
     //! Returns a vector of AtomicGroups, each containing atoms with the same name
     std::map<std::string, AtomicGroup> splitByName(void) const;
-
 
     //! Replace a group with the center of masses of contained molecules
     /**
@@ -373,7 +381,6 @@ namespace loos {
 
     //! Replace a group with the cente of masses of contained residues (see centrifyByMolecule())
     AtomicGroup centrifyByResidue() const;
-
 
     //! Find a contained atom by its atomid
     /**
@@ -395,10 +402,10 @@ namespace loos {
     //! containing residue
     AtomicGroup getResidue(pAtom res);
 
-#if !defined(SWIG)
     //! Output the group in pseudo-XML format...
-    friend std::ostream& operator<<(std::ostream& os, const AtomicGroup& grp);
-#endif
+    friend std::ostream &operator<<(std::ostream &os, const AtomicGroup &grp);
+
+    std::string asString() const;
 
     // Some misc support routines...
 
@@ -412,10 +419,10 @@ namespace loos {
     int numberOfSegids(void) const;
 
     //! True if all atoms in the group have the passed property(ies)
-    bool allHaveProperty(const Atom::bits& property) const;
+    bool allHaveProperty(const Atom::bits &property) const;
 
     //! True if any atom in the group have the passed property(ies)
-    bool anyHaveProperty(const Atom::bits& property) const;
+    bool anyHaveProperty(const Atom::bits &property) const;
 
     // These are now deprecated in favor of the above functions...
     //! Does any atom in the group have bond information???
@@ -436,6 +443,9 @@ namespace loos {
     //! Deduce atomic number from mass (if present), returning number of atoms assigned
     uint deduceAtomicNumberFromMass(const double tol = 0.1);
 
+    //! Deduce mass from atomic number (if present), returning the number of atoms assigned
+    double deduceMassFromAtomicNumber();
+
     //! Is the array of atoms already sorted???
     /**
      * While we make some effort to ensure that alterations to the AtomicGroup
@@ -443,30 +453,31 @@ namespace loos {
      * explicitly sort if you want to make sure that the group is in
      * fact sorted.
      */
-    bool sorted(void) const { return(_sorted); }
+    bool sorted(void) const { return (_sorted); }
 
     //! Sort based on atomid
     void sort(void);
 
     //! Test whether or not periodic boundary conditions are set
-    bool isPeriodic(void) const { return(box.isPeriodic()); }
+    bool isPeriodic(void) const { return (box.isPeriodic()); }
 
     //! Fetch the periodic boundary conditions.
-    GCoord periodicBox(void) const { return(box.box()); }
+    GCoord periodicBox(void) const { return (box.box()); }
 
     //! Set the periodic boundary conditions.
-    void periodicBox(const GCoord& c) { box.box(c); }
+    void periodicBox(const GCoord &c) { box.box(c); }
 
     //! Set the periodic boundary conditions
-    void periodicBox(const greal x, const greal y, const greal z) {
-      box.box(GCoord(x,y,z));
+    void periodicBox(const greal x, const greal y, const greal z)
+    {
+      box.box(GCoord(x, y, z));
     }
 
     //! compute OCF for all atom-pairs in AG of distance offset from one another
     const greal ocf(uint offset);
 
     //! Provide access to the underlying shared periodic box...
-    loos::SharedPeriodicBox sharedPeriodicBox() const { return(box); }
+    loos::SharedPeriodicBox sharedPeriodicBox() const { return (box); }
 
     //! Remove periodicity
     void removePeriodicBox() { box = SharedPeriodicBox(); }
@@ -484,26 +495,28 @@ namespace loos {
     void mergeImage();
 
     //! Find atoms in the current group that are within \a dist angstroms of any atom in \a grp
-    AtomicGroup within(const double dist, AtomicGroup& grp) const {
+    AtomicGroup within(const double dist, AtomicGroup &grp) const
+    {
       Distance2WithoutPeriodicity op;
-      return(within_private(dist, grp, op));
+      return (within_private(dist, grp, op));
     }
 
     //! Find atoms in \a grp that are within \a dist angstroms of atoms in the current group, considering periodicity
-    AtomicGroup within(const double dist, AtomicGroup& grp, const GCoord& box) const {
+    AtomicGroup within(const double dist, AtomicGroup &grp, const GCoord &box) const
+    {
       Distance2WithPeriodicity op(box);
-      return(within_private(dist, grp, op));
+      return (within_private(dist, grp, op));
     }
-
 
     //! Returns true if any atom of current group is within \a dist angstroms of \a grp
     /**
      * \a min is the minimum number of pair-wise contacts required to be considered
      * in contact
      */
-    bool contactWith(const double dist, const AtomicGroup& grp, const uint min=1) const {
+    bool contactWith(const double dist, const AtomicGroup &grp, const uint min = 1) const
+    {
       Distance2WithoutPeriodicity op;
-      return(contactwith_private(dist, grp, min, op));
+      return (contactwith_private(dist, grp, min, op));
     }
 
     //! Returns true if any atom of current group is within \a dist angstroms of \a grp
@@ -511,12 +524,13 @@ namespace loos {
      * \a min is the minimum number of pair-wise contacts required to be considered
      * in contact
      */
-    bool contactWith(const double dist, const AtomicGroup& grp, const GCoord& box, const uint min=1) const {
+    bool contactWith(const double dist, const AtomicGroup &grp, const GCoord &box, const uint min = 1) const
+    {
       Distance2WithPeriodicity op(box);
-      return(contactwith_private(dist, grp, min, op));
+      return (contactwith_private(dist, grp, min, op));
     }
-    
-    //! return a list of atom ID pairs that correspond to all unique bonds.          
+
+    //! return a list of atom ID pairs that correspond to all unique bonds.
     std::vector<std::pair<int, int>> getBondsIDs() const;
 
     //! return a list of atom index pairs corresponding to all unique bonds.
@@ -525,16 +539,14 @@ namespace loos {
     //! Distance-based search for bonds
     /** Searches for bonds within an AtomicGroup based on distance.
      *  does NOT clear the existing bond list prior to building new
-	 *  bonds.  The default distance cutoff is 1.65.  If a box (GCoord)
-	 *  is passed, then periodicity is taken into consideration.
+     *  bonds.  The default distance cutoff is 1.65.  If a box (GCoord)
+     *  is passed, then periodicity is taken into consideration.
      */
-	// Larger distances cause problems with hydrogens...
-	void findBonds(const double dist, const GCoord& box) { findBondsImpl(dist, Distance2WithPeriodicity(box)); }
-	void findBonds(const double dist) { findBondsImpl(dist, Distance2WithoutPeriodicity()); }
-	void findBonds(const GCoord& box) { findBondsImpl(1.65, Distance2WithPeriodicity(box)); }
-	void findBonds() { findBondsImpl(1.65, Distance2WithoutPeriodicity()); }
-
-
+    // Larger distances cause problems with hydrogens...
+    void findBonds(const double dist, const GCoord &box) { findBondsImpl(dist, Distance2WithPeriodicity(box)); }
+    void findBonds(const double dist) { findBondsImpl(dist, Distance2WithoutPeriodicity()); }
+    void findBonds(const GCoord &box) { findBondsImpl(1.65, Distance2WithPeriodicity(box)); }
+    void findBonds() { findBondsImpl(1.65, Distance2WithoutPeriodicity()); }
 
     //! Apply a functor or a function to each atom in the group.
     /** apply() let's you apply a functor or a function pointer to each
@@ -556,10 +568,12 @@ namespace loos {
      GCoord centroid = f.center();
      \endcode
     */
-    template<class T> T apply(T func) {
+    template <class T>
+    T apply(T func)
+    {
       for (iterator i = atoms.begin(); i != atoms.end(); ++i)
         func(*i);
-      return(func);
+      return (func);
     }
 
     // *** Helper classes...
@@ -581,26 +595,32 @@ namespace loos {
      *  you're iterating over.  In fact, don't do it, unless you are
      *  sure you know what you're doing.
      */
-    class Iterator {
+    class Iterator
+    {
     public:
-      explicit Iterator(const AtomicGroup& grp) : iter(grp.atoms.begin()), final(grp.atoms.end()) { }
-      pAtom operator()(void) {
+      explicit Iterator(const AtomicGroup &grp) : iter(grp.atoms.begin()), final(grp.atoms.end()) {}
+      pAtom operator()(void)
+      {
         if (iter >= final)
-          return(pAtom());
-        return(*iter++);
+          return (pAtom());
+        return (*iter++);
       }
+
     private:
       std::vector<pAtom>::const_iterator iter, final;
     };
 
     // STL-iterator access
     // Should these reset sort status?
-    iterator begin(void) { return(atoms.begin()); }
-    iterator end(void) { return(atoms.end()); }
+    iterator begin(void) { return (atoms.begin()); }
+    iterator end(void) { return (atoms.end()); }
 
 #if !defined(SWIG)
-    const_iterator begin(void) const { return(atoms.begin()); }
-    const_iterator end(void) const { return(atoms.end()); }
+    const_iterator begin(void) const
+    {
+      return (atoms.begin());
+    }
+    const_iterator end(void) const { return (atoms.end()); }
 #endif
 
     // Statistical routines...
@@ -625,7 +645,7 @@ namespace loos {
      *  If optional argument is true, uses coordinates of atom 0 instead of centroid.
      *  Argument is false by default.
      */
-    greal radius(const bool use_atom_as_reference=false) const;
+    greal radius(const bool use_atom_as_reference = false) const;
 
     //! Center of mass of the group (in group coordinates)
     GCoord centerOfMass(void) const;
@@ -648,19 +668,19 @@ namespace loos {
                centroids
      *         stacking = (n1*n2)^2 *[(n1 + n2)/2 * dx]/|dx| * 1/1 + (dx/threshold)^6
      */
-     greal stacking(const AtomicGroup&, const GCoord& box, const double threshold) const;
+    greal stacking(const AtomicGroup &, const GCoord &box, const double threshold) const;
 
     //! Compute the RMSD between two groups
     /** Assumes a 1:1 correspondence between ith atoms.
      *  Does NOT transform the coordinates in any way.
      */
-    greal rmsd(const AtomicGroup&);
+    greal rmsd(const AtomicGroup &);
 
     //! Compute kinetic energy of group
     /**
-      * Assumes mass and velocity have been set.
-      * Output units are kcal/mol
-      */
+     * Assumes mass and velocity have been set.
+     * Output units are kcal/mol
+     */
     greal kineticEnergy();
 
     // Geometric transformations...
@@ -669,7 +689,7 @@ namespace loos {
     /**
      * Does not alter the group's coordinates...
      */
-    std::vector<GCoord> getTransformedCoords(const XForm&) const;
+    std::vector<GCoord> getTransformedCoords(const XForm &) const;
 
     //! Compute difference vectors between two AtomicGroups
     /**
@@ -678,16 +698,16 @@ namespace loos {
     std::vector<GCoord> differenceVectors(const AtomicGroup &other);
 
     //! Translate an atomic group by vector v
-    void translate(const GCoord & v);
+    void translate(const GCoord &v);
 
     //! Rotate group's coordinates (right-handed, about centroid)
-    void rotate(const GCoord& axis, const greal angle_in_degrees);
+    void rotate(const GCoord &axis, const greal angle_in_degrees);
 
     //! Apply the given transform to the group's coordinates...
-    void applyTransform(const XForm&);
+    void applyTransform(const XForm &);
 
     //! Copy coordinates from a vector of GCoords using the atom index as an index into the vector.
-    void copyCoordinatesWithIndex(const std::vector<GCoord>& coords);
+    void copyCoordinatesWithIndex(const std::vector<GCoord> &coords);
 
     //! Copy velocities from a vector of GCoords using the atom index as an index into the vector.
     /**
@@ -704,8 +724,7 @@ namespace loos {
      * }
      * \endcode
      */
-    void copyVelocitiesWithIndex(const std::vector<GCoord>& velocities);
-
+    void copyVelocitiesWithIndex(const std::vector<GCoord> &velocities);
 
     //! Copy coordinates from g into current group
     /**
@@ -722,7 +741,7 @@ namespace loos {
      * order relative to the current group for the copy to make
      * sense.
      */
-    void copyCoordinatesFrom(const AtomicGroup& g, const uint offset = 0, const uint length = 0);
+    void copyCoordinatesFrom(const AtomicGroup &g, const uint offset = 0, const uint length = 0);
 
     //! Map the order of atoms in AtomicGroup g into the current group
     /**
@@ -732,7 +751,7 @@ namespace loos {
      * a residue.  The map is an index into the AtomicGroup g that
      * puts g into the same order as the current group.
      */
-    std::vector<uint> atomOrderMapFrom(const AtomicGroup& g);
+    std::vector<uint> atomOrderMapFrom(const AtomicGroup &g);
 
     //! Given a mapping of atom order, copy the coordinates into the current group
     /**
@@ -742,7 +761,7 @@ namespace loos {
      * If you know that the atoms are in the same order in both
      * groups, then AtomicGroup::copyCoordinatesFrom() will be faster...
      */
-    void copyMappedCoordinatesFrom(const AtomicGroup& g, const std::vector<uint>& order);
+    void copyMappedCoordinatesFrom(const AtomicGroup &g, const std::vector<uint> &order);
 
     //! Copy the coordinates from the group mapping the atom order
     /**
@@ -751,7 +770,7 @@ namespace loos {
      * If you know that the atoms are in the same order in both
      * groups, then AtomicGroup::copyCoordinatesFrom() will be faster...
      */
-    void copyMappedCoordinatesFrom(const AtomicGroup& g);
+    void copyMappedCoordinatesFrom(const AtomicGroup &g);
 
     //! Each atom is moved in a random direction by a vector of the passed size
     void perturbCoords(const greal);
@@ -784,6 +803,23 @@ namespace loos {
      */
     std::vector<GCoord> principalAxes(void) const;
 
+    //! Computes order parameter based on principalAxes
+    /**
+     * Computes the molecular order parameter by taking 2nd and 3rd
+     * principal axes and transforming using a 2nd order Legendre
+     * polynomial. This produces a whole-chain quantity with values 
+     * comparable to deuterium order parameters.
+     * 
+     * If the AtomicGroup is not planar, this returns the average of 
+     * the order parameter using the 2nd and 3rd axes. If the molecule is 
+     * planar, indicated by a near-zero 3rd moment, it simply returns the 2nd 
+     * moment's order parameter.
+     * 
+     * This implementation assumes you've already done any needed 
+     * transformations to the coordinates (eg reimaging by molecule)
+    */
+    double principalAxesOrder(void) const;
+
     //! Computes the moments of inertia for a group
     /**
      * Calculates the principal moments and principal axes (from the
@@ -805,7 +841,7 @@ namespace loos {
      * The threshold for a zero-eigenvalue (really, a zero singular value)
      * is set in AtomicGroup::superposition_zero_singular_value
      */
-    GMatrix superposition(const AtomicGroup&);
+    GMatrix superposition(const AtomicGroup &);
 
     //! Superimposes the current group onto the passed group.
     /**
@@ -813,7 +849,7 @@ namespace loos {
      * superimpose the current group onto the passed one, then applies the
      * transformation to the current group's coordinates.
      */
-    GMatrix alignOnto(const AtomicGroup&);
+    GMatrix alignOnto(const AtomicGroup &);
 
     //! Orient the principal axis of this group along the supplied vector
     /**
@@ -826,7 +862,7 @@ namespace loos {
      * This function is meant for Numpy/swig use in setting the model's
      * coordinates.  The passed array is row-major.
      */
-    void setCoords(double* seq, int m, int n);
+    void setCoords(double *seq, int m, int n);
 
     // Return a newly allocated array containing the current group's coordinates
     /**
@@ -834,7 +870,7 @@ namespace loos {
      * model's coordinates into a newly allocated array (using malloc).
      * The caller is expected to manage the memory.
      */
-    void getCoords(double** outseq, int* m, int* n);
+    void getCoords(double **outseq, int *m, int *n);
 
     std::vector<double> coordsAsVector() const;
 
@@ -845,8 +881,7 @@ namespace loos {
      * Quantity first defined in  Grossfield, A., et al,
      * Proc. Nat. Acad. Sci. USA, 2006, 103, 4888-4893
      */
-    double packingScore(const AtomicGroup& other, const GCoord &box, bool norm) const;
-
+    double packingScore(const AtomicGroup &other, const GCoord &box, bool norm) const;
 
     //* Logistic contact function between this group and another
     /**
@@ -855,8 +890,8 @@ namespace loos {
         function
         S = 1/(1 + dist/radius)**sigma
      */
-    double logisticContact(const AtomicGroup& group, double radius,
-                           int sigma, const GCoord& box) const;
+    double logisticContact(const AtomicGroup &group, double radius,
+                           int sigma, const GCoord &box) const;
 
     //* Similar to logisticContact() but the distance between reference
     //  group centroid and another group centroid is 2D Euclidean distance
@@ -868,8 +903,8 @@ namespace loos {
         function
         S = 1/(1 + dist/radius)**sigma
      */
-    double logisticContact2D(const AtomicGroup& group, double radius,
-                           int sigma, const GCoord& box) const;
+    double logisticContact2D(const AtomicGroup &group, double radius,
+                             int sigma, const GCoord &box) const;
 
     //* Hard contact function between this group and another
     /**
@@ -878,8 +913,8 @@ namespace loos {
         function
         S = 1; iff dist <= radius; else 0
      */
-    double hardContact(const AtomicGroup& group, double radius,
-                           const GCoord& box) const;
+    double hardContact(const AtomicGroup &group, double radius,
+                       const GCoord &box) const;
 
     //* Similar to hardContact() but the distance between reference
     //  group centroid and another group centroid is 2D Euclidean distance
@@ -891,8 +926,8 @@ namespace loos {
         function
         S = 1; iff dist <= radius; else 0
      */
-    double hardContact2D(const AtomicGroup& group, double radius,
-                           const GCoord& box) const;
+    double hardContact2D(const AtomicGroup &group, double radius,
+                         const GCoord &box) const;
 
     //* Compute x-ray scattering intensity from this group
     /**
@@ -911,55 +946,61 @@ namespace loos {
                                    loos::FormFactorSet &formFactors);
 
   private:
-
-	// These are functors for calculating distance between two coords
+    // These are functors for calculating distance between two coords
     // without and with periodicity.  These can be passed to functions
     // that need to support both ways of calculating distances, such
     // was within_private() below...
-    struct Distance2WithoutPeriodicity {
-      double operator()(const GCoord& a, const GCoord& b) const {
-        return(a.distance2(b));
+    struct Distance2WithoutPeriodicity
+    {
+      double operator()(const GCoord &a, const GCoord &b) const
+      {
+        return (a.distance2(b));
       }
     };
 
-    struct Distance2WithPeriodicity {
-      Distance2WithPeriodicity(const GCoord& box) : _box(box) { }
+    struct Distance2WithPeriodicity
+    {
+      Distance2WithPeriodicity(const GCoord &box) : _box(box) {}
 
-      double operator()(const GCoord& a, const GCoord& b) const {
-        return(a.distance2(b, _box));
+      double operator()(const GCoord &a, const GCoord &b) const
+      {
+        return (a.distance2(b, _box));
       }
 
       GCoord _box;
     };
-
 
     // This function is to to remove code duplication in
     // logisticContacts() and logisticContacts2D().
     // Handle even and odd powers separately -- even can
     // avoid the sqrt
     // Sigh, this doesnt' seem to make it much faster...
-    double logisticFunc(const GCoord& cent, const GCoord& other, double radius, int sigma, const GCoord& box) const{
-        double prod;
-        if (sigma % 2 == 0) {
-            double distance2 = cent.distance2(other, box);
-            double ratio = distance2/(radius*radius);
-            prod = ratio;
-            for (int j=0; j<(sigma/2)-1; ++j) {
-                prod *= ratio;
-            }
+    double logisticFunc(const GCoord &cent, const GCoord &other, double radius, int sigma, const GCoord &box) const
+    {
+      double prod;
+      if (sigma % 2 == 0)
+      {
+        double distance2 = cent.distance2(other, box);
+        double ratio = distance2 / (radius * radius);
+        prod = ratio;
+        for (int j = 0; j < (sigma / 2) - 1; ++j)
+        {
+          prod *= ratio;
         }
-        else {
-            double distance = cent.distance(other, box);
-            double ratio = distance/radius;
-            prod = ratio;
-            for (int j=0; j < sigma-1; ++j) {
-                prod *= ratio;
-            }
+      }
+      else
+      {
+        double distance = cent.distance(other, box);
+        double ratio = distance / radius;
+        prod = ratio;
+        for (int j = 0; j < sigma - 1; ++j)
+        {
+          prod *= ratio;
         }
-        double sum = 1./(1. + prod);
-        return(sum);
+      }
+      double sum = 1. / (1. + prod);
+      return (sum);
     }
-
 
     // Find all atoms in the current group that are within dist
     // angstroms of any atom in the passed group.  The distance
@@ -968,7 +1009,8 @@ namespace loos {
     // coordinates.
 
     template <typename DistanceCalc>
-    AtomicGroup within_private(const double dist, AtomicGroup& grp, const DistanceCalc& distance_functor) const {
+    AtomicGroup within_private(const double dist, AtomicGroup &grp, const DistanceCalc &distance_functor) const
+    {
 
       AtomicGroup res;
       res.box = box;
@@ -976,10 +1018,13 @@ namespace loos {
       double dist2 = dist * dist;
       std::vector<uint> indices;
 
-      for (uint j=0; j<size(); j++) {
+      for (uint j = 0; j < size(); j++)
+      {
         GCoord c = atoms[j]->coords();
-        for (uint i=0; i<grp.size(); i++) {
-          if (distance_functor(c, grp.atoms[i]->coords()) <= dist2) {
+        for (uint i = 0; i < grp.size(); i++)
+        {
+          if (distance_functor(c, grp.atoms[i]->coords()) <= dist2)
+          {
             indices.push_back(j);
             break;
           }
@@ -987,60 +1032,61 @@ namespace loos {
       }
 
       if (indices.size() == 0)
-        return(res);
+        return (res);
 
       for (std::vector<uint>::const_iterator ci = indices.begin(); ci != indices.end(); ++ci)
         res.addAtom(atoms[*ci]);
 
-      return(res);
+      return (res);
     }
 
-
-    template<typename DistanceCalc>
-    bool contactwith_private(const double dist, const AtomicGroup& grp, const uint min_contacts, const DistanceCalc& distance_function) const {
+    template <typename DistanceCalc>
+    bool contactwith_private(const double dist, const AtomicGroup &grp, const uint min_contacts, const DistanceCalc &distance_function) const
+    {
       double dist2 = dist * dist;
       uint ncontacts = 0;
 
-      for (uint j = 0; j<size(); ++j) {
+      for (uint j = 0; j < size(); ++j)
+      {
         GCoord c = atoms[j]->coords();
-	    for (uint i = 0; i<grp.size(); ++i)
-            if (distance_function(c, grp.atoms[i]->coords()) <= dist2)
-	          if (++ncontacts >= min_contacts)
-	             return(true);
+        for (uint i = 0; i < grp.size(); ++i)
+          if (distance_function(c, grp.atoms[i]->coords()) <= dist2)
+            if (++ncontacts >= min_contacts)
+              return (true);
       }
-      return(false);
+      return (false);
     }
 
+    //! Internal implementation of find bonds.
+    /**
+     * Takes a functor for calculating distances.  This can be PBC aware or not
+     */
+    template <typename DistanceCalc>
+    void findBondsImpl(const double dist, const DistanceCalc &distance_function)
+    {
+      iterator ij;
+      double dist2 = dist * dist;
+      double current_dist2;
 
-	  //! Internal implementation of find bonds.
-	  /**
-	   * Takes a functor for calculating distances.  This can be PBC aware or not
-	   */
-	  template<typename DistanceCalc>
-	  void findBondsImpl(const double dist, const DistanceCalc& distance_function) {
-		  iterator ij;
-		  double dist2 = dist * dist;
-		  double current_dist2;
+      for (ij = begin(); ij != end() - 1; ++ij)
+      {
+        iterator ii;
+        GCoord u = (*ij)->coords();
 
-		  for (ij = begin(); ij != end() - 1; ++ij) {
-			  iterator ii;
-			  GCoord u = (*ij)->coords();
-
-			  for (ii = ij + 1; ii != end(); ++ii) {
-				  current_dist2 = distance_function(u, (*ii)->coords());
-				  if (current_dist2 < dist2) {
-					  (*ij)->addBond(*ii);
-					  (*ii)->addBond(*ij);
-				  }
-			  }
-		  }
-	  }
-
-
-
+        for (ii = ij + 1; ii != end(); ++ii)
+        {
+          current_dist2 = distance_function(u, (*ii)->coords());
+          if (current_dist2 < dist2)
+          {
+            (*ij)->addBond(*ii);
+            (*ii)->addBond(*ij);
+          }
+        }
+      }
+    }
 
     std::vector<AtomicGroup> sortingSplitByMolecule();
-    std::vector<AtomicGroup> sortingSplitByMolecule(const std::string& selection);
+    std::vector<AtomicGroup> sortingSplitByMolecule(const std::string &selection);
 
     // *** Internal routines ***  See the .cpp file for details...
     void sorted(bool b) { _sorted = b; }
@@ -1050,50 +1096,51 @@ namespace loos {
 
     int rangeCheck(int) const;
 
-    void addAtom(pAtom pa) { atoms.push_back(pa); _sorted = false; }
+    void addAtom(pAtom pa)
+    {
+      atoms.push_back(pa);
+      _sorted = false;
+    }
     void deleteAtom(pAtom pa);
 
     boost::tuple<iterator, iterator> calcSubsetIterators(const int offset, const int len = 0);
 
-    void copyCoordinatesById(AtomicGroup& g);
+    void copyCoordinatesById(AtomicGroup &g);
 
     // Some helper classes for using the STL
-    struct CmpById {
-      bool operator()(const pAtom& a, const pAtom& b) {
-        return(a->id() < b->id());
+    struct CmpById
+    {
+      bool operator()(const pAtom &a, const pAtom &b)
+      {
+        return (a->id() < b->id());
       }
     };
 
-    struct BindId {
-      BindId(const int i) : id(i) { }
-      bool operator()(const pAtom& a) { return(a->id() == id); }
+    struct BindId
+    {
+      BindId(const int i) : id(i) {}
+      bool operator()(const pAtom &a) { return (a->id() == id); }
       int id;
     };
 
     typedef boost::unordered_set<int> HashInt;
 
-    void walkBonds(AtomicGroup& mygroup, HashInt& seen, AtomicGroup& working, pAtom& moi);
-
+    void walkBonds(AtomicGroup &mygroup, HashInt &seen, AtomicGroup &working, pAtom &moi);
 
     double *coordsAsArray(void) const;
-    double *transformedCoordsAsArray(const XForm&) const;
+    double *transformedCoordsAsArray(const XForm &) const;
 
     bool _sorted;
 
-
   protected:
-
     void setGroupConnectivity();
-
 
     std::vector<pAtom> atoms;
     loos::SharedPeriodicBox box;
-
   };
 
-  AtomicGroup operator+(const pAtom& lhs, const pAtom& rhs);
-  AtomicGroup operator+(const pAtom& lhs, const AtomicGroup& rhs);
-
+  AtomicGroup operator+(const pAtom &lhs, const pAtom &rhs);
+  AtomicGroup operator+(const pAtom &lhs, const AtomicGroup &rhs);
 
 }
 

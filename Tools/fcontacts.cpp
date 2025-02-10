@@ -174,7 +174,7 @@ public:
 
 // Check for atom equality only through atomid...
 
-struct IdEquals : public binary_function<pAtom, pAtom, bool> 
+struct IdEquals
 {
     bool operator()(const pAtom& a, const pAtom& b) const 
         {
