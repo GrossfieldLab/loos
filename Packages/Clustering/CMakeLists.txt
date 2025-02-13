@@ -8,4 +8,4 @@ target_link_libraries(cluster-kgs loos Eigen3::Eigen)
 install(TARGETS cluster-kgs)
 
 ### Handle scripts
-install(PROGRAMS cluster_pops.py frame-picker.py DESTINATION bin)
+install(PROGRAMS cluster_pops.py frame-picker.py rmsds-align.py DESTINATION bin)
