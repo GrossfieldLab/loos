@@ -227,12 +227,7 @@ rmsd_selection_1 = loos.selectAtoms(model, args.rmsd)
 rmsd_selection_2 = loos.selectAtoms(model2, args.rmsd2)
 
 # Print input
-print("# Align1 - ", args.align)
-print("# Align2 - ", args.align2)
-print("# RMSD1 - ", args.rmsd)
-print("# RMSD2 - ", args.rmsd2)
-print("# Traj-range1 - ", args.range1)
-print("# Traj-range2 - ", args.range2)
+print("#", header)
 
 
 for frame in traj:
