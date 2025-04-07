@@ -156,18 +156,18 @@ foreach my $atom (@$rstruct) {
   defined($$atom{SEGID}) || die;
 
   my $line = sprintf("%-6s%5s %4s %4s%1s%4s    %8.3f%8.3f%8.3f%6.2f%6.2f      %4s\n",
-		     'ATOM',
-		     $$atom{ATOMID} >= 100000 ? &toHybrid36($$atom{ATOMID}, 5) : $$atom{ATOMID},
-		     $$atom{ATOMNAME},
-		     $$atom{RESNAME},
-		     ' ',
-		     $$atom{RESID} >= 10000 ? &toHybrid36($$atom{RESID}, 4) : $$atom{RESID},
-		     $$atom{X},
-		     $$atom{Y},
-		     $$atom{Z},
-		     1.0,
-		     1.0,
-		     &sanitizeSegid($$atom{SEGID}));
+                     'ATOM',
+                     $$atom{ATOMID} >= 100000 ? &toHybrid36($$atom{ATOMID}, 5) : $$atom{ATOMID},
+                     $$atom{ATOMNAME},
+                     $$atom{RESNAME},
+                     ' ',
+                     $$atom{RESID} >= 10000 ? &toHybrid36($$atom{RESID}, 4) : $$atom{RESID},
+                     $$atom{X},
+                     $$atom{Y},
+                     $$atom{Z},
+                     1.0,
+                     1.0,
+                     &sanitizeSegid($$atom{SEGID}));
   print $pdb $line;
   ++$natoms;
 
@@ -226,13 +226,13 @@ foreach my $atom (@$rstruct) {
   printf $psf "%-10s %-8s %-8s %-8s %-8s %-4s %-14.6g%-14.6g%8d\n",
     $$atom{ATOMID},
       &sanitizeSegid($$atom{SEGID}),
-	$$atom{RESID},
-	  $$atom{RESNAME},
-	    $$atom{ATOMNAME},
-	      $$atom{ATOMTYPE},
-		$$atom{CHARGE},
-		  $mass,
-		    0;
+        $$atom{RESID},
+          $$atom{RESNAME},
+            $$atom{ATOMNAME},
+              $$atom{ATOMTYPE},
+                $$atom{CHARGE},
+                  $mass,
+                    0;
 
 }
 
@@ -276,29 +276,29 @@ sub processTopology {
     if ($state == 0) {
 
       if (/^topology:/) {
-	$state = 1
+        $state = 1
       }
 
     } elsif ($state == 1) {
 
       if (/moltype\s+= (\d+) \"(.+)\"/) {
-	if (defined($curmol)) {
-	  push(@molecules, $curmol);
-	  $curmol = {};
-	}
+        if (defined($curmol)) {
+          push(@molecules, $curmol);
+          $curmol = {};
+        }
 
-	$curmol->{NAME} = $2;
-	$curmol->{TYPE} = $1;
-	print STDERR "Found segment '$2' [type=$1] (", $#molecules+1, ")\n";
+        $curmol->{NAME} = $2;
+        $curmol->{TYPE} = $1;
+        print STDERR "Found segment '$2' [type=$1] (", $#molecules+1, ")\n";
       } elsif (/molecules\s+= (\d+)/) {
-	$curmol->{NMOLS} = $1;
-	print STDERR "\tMolecules: $1\n";
+        $curmol->{NMOLS} = $1;
+        print STDERR "\tMolecules: $1\n";
       } elsif (/atoms_mol\s+= (\d+)/) {
-	$curmol->{NATOMS} = $1;
-	print STDERR "\tAtoms: $1\n";
+        $curmol->{NATOMS} = $1;
+        print STDERR "\tAtoms: $1\n";
       } elsif (/ffparams:/) {
-	push(@molecules, $curmol);
-	last;
+        push(@molecules, $curmol);
+        last;
       }
 
     }
@@ -449,7 +449,7 @@ sub processMolecules {
 
     } elsif ($state == 5) {
       if (/\(CONSTR\)\s+(\d+)\s+(\d+)/) {
-	  my $rpair = [$1, $2];
+          my $rpair = [$1, $2];
         push(@$rcons, $rpair);
       } elsif ($use_vsites && /Virtual site (\d)(out)?:/) {
         if ( $1 != 2 && $1 != 3 ) {
@@ -466,7 +466,7 @@ sub processMolecules {
       } elsif (/groupnr\[/) {
         last;
       } elsif (/Constr. No Conn./) {
-        #	$state = 6;
+        #        $state = 6;
       }
 
       ### Disabled for now...
@@ -522,19 +522,19 @@ sub processBox {
   while (<>) {
     if (/^box\s+\((\d+)x(\d+)\):/) {
       if ($1 ne '3' || $2 ne '3') {
-	warn 'Warning- only box size handled is 3x3.  Current box will be ignored.';
+        warn 'Warning- only box size handled is 3x3.  Current box will be ignored.';
       } else {
-	for (my $i = 0; $i < 3; ++$i) {
-	  $_ = <>;
-	  chomp;
-	  if (/box\[\s*(\d+)]=\{(.+)\}/) {
-	    my $idx = $1;
-	    ($idx >= 0 && $idx <= 2) || die "Error- bad index ($idx) for periodic box vector";
-	    my @ary = split(/,/, $2);
-	    $box[$idx] = \@ary;
-	  }
-	}
-	last;
+        for (my $i = 0; $i < 3; ++$i) {
+          $_ = <>;
+          chomp;
+          if (/box\[\s*(\d+)]=\{(.+)\}/) {
+            my $idx = $1;
+            ($idx >= 0 && $idx <= 2) || die "Error- bad index ($idx) for periodic box vector";
+            my @ary = split(/,/, $2);
+            $box[$idx] = \@ary;
+          }
+        }
+        last;
       }
     }
   }
@@ -591,8 +591,8 @@ sub buildStructure {
     }
 
     if (!exists($segment->{NATOMS})) {
-	$segment->{NATOMS} = $#{$mol->{ATOMS}} + 1;
-	warn "Warning: Missing atom count in topology so inferring number of atoms ($segment->{NATOMS}) in segment $name";
+        $segment->{NATOMS} = $#{$mol->{ATOMS}} + 1;
+        warn "Warning: Missing atom count in topology so inferring number of atoms ($segment->{NATOMS}) in segment $name";
     }
 
     my $residues = $mol->{RESIDUES};
@@ -776,17 +776,17 @@ sub inferWater {
 
   for (my $i=0; $i<$#$rstruct-2; ++$i) {
     if ($$rstruct[$i]->{ATOMNAME} eq 'OW' &&
-	$$rstruct[$i+1]->{ATOMNAME} eq 'HW1' &&
-	$$rstruct[$i+2]->{ATOMNAME} eq 'HW2') {
+        $$rstruct[$i+1]->{ATOMNAME} eq 'HW1' &&
+        $$rstruct[$i+2]->{ATOMNAME} eq 'HW2') {
 
       my $ow = $$rstruct[$i]->{ATOMID};
       my $hw1 = $$rstruct[$i+1]->{ATOMID};
       my $hw2 = $$rstruct[$i+2]->{ATOMID};
 
       if (!exists($$rconn{$ow})) {
-	$$rconn{$ow} = [$hw1, $hw2];
+        $$rconn{$ow} = [$hw1, $hw2];
       } else {
-	push(@{$$rconn{$ow}}, ($hw1, $hw2));
+        push(@{$$rconn{$ow}}, ($hw1, $hw2));
       }
 
     }
@@ -834,14 +834,14 @@ sub sanitizeSegid {
 
       my $flag;
       do {
-	$flag = 0;
-	for (my $i=0; $i<=$#arg; ++$i) {
-	  if ($arg[$i] eq $l) {
-	    splice(@arg, $i, 1);
-	    $flag = 1;
-	    last;
-	  }
-	}
+        $flag = 0;
+        for (my $i=0; $i<=$#arg; ++$i) {
+          if ($arg[$i] eq $l) {
+            splice(@arg, $i, 1);
+            $flag = 1;
+            last;
+          }
+        }
       } while ($flag && $#arg > 1);
     }
 
@@ -859,8 +859,8 @@ sub sanitizeSegid {
     for ($i = 0; $i <= 9; ++$i) {
       my $s = $seg . $i;
       if (!exists($seen_segids{$s})) {
-	$seg = $s;
-	last;
+        $seg = $s;
+        last;
       }
     }
     if ($i >= 10) {
