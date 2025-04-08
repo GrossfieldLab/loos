@@ -142,8 +142,11 @@ int main(int argc, char *argv[]) {
   pdb.remarks().add(hdr);
 
   if (topts->clear_element) {
-    for (auto& atom : pdb)
-      atom->PDBelement(string(""));
+    pAtom pa;
+    PDB::Iterator iter(pdb);
+    while ( (pa = iter()) ) {
+      pa->PDBelement(string(" "));
+    }
   }
   cout << pdb;
 }

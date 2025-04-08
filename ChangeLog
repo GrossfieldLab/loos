@@ -1,3 +1,9 @@
+2025-02-13 Alan Grossfield <alan>
+	* merged in new tool rmsds-align, from Anees 
+	 
+2025-02-05 Alan Grossfield <alan>
+    * Release 4.2.0 (bumped setup.cfg)
+
 2023-12-28 Alan Grossfield <alan>
 	* mmcif/pdbx support
 
