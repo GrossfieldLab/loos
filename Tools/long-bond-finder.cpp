@@ -216,7 +216,8 @@ public:
 // @endcond
 // ----------------------------------------------------------------
 
-int main(int argc, char *argv[]) {
+int main(int argc, char *argv[])
+{
 
   string header = invocationHeader(argc, argv);
   opts::BasicOptions *bopts = new opts::BasicOptions(msg);
@@ -235,14 +236,15 @@ int main(int argc, char *argv[]) {
   AtomicGroup model = tropts->model;
   AtomicGroup scope = selectAtoms(model, sopts->selection);
   bool all_bonds_in_scope = scope.allHaveProperty(Atom::bits::bondsbit);
-  if (all_bonds_in_scope) {
-  } else if (topts->bondlength > 0)
+  if (all_bonds_in_scope)
+    scope.pruneBonds();
+  else if (topts->bondlength > 0)
     if (scope.hasCoords())
       scope.findBonds(topts->bondlength);
-    else {
+    else
+    {
       throw(LOOSError(
-        "Model does not have coordinates with which to infer connectivity.\n"
-      ));
+          "Model does not have coordinates with which to infer connectivity.\n"));
     }
   else
     throw(LOOSError(
@@ -257,41 +259,49 @@ int main(int argc, char *argv[]) {
 
   // Operating in scanning mode;
   // don't report anything except the presence of an unacceptable bond
-  if (topts->timeseries.empty()) {
+  if (topts->timeseries.empty())
+  {
     // if thrown, don't even write invocation to stdout
     if (!topts->quiet)
       cout << "# " << header << "\n";
-    
+
     float dist2 = 0;
-    for (auto frame_index : tropts->frameList()) {
+    for (auto frame_index : tropts->frameList())
+    {
       traj->readFrame(frame_index);
       traj->updateGroupCoords(scope);
-      for (auto b : bond_list) {
+      for (auto b : bond_list)
+      {
         dist2 = b[0]->coords().distance2(b[1]->coords());
-        if (dist2 > max_bond2) {
+        if (dist2 > max_bond2)
+        {
           if (!topts->quiet)
-            cout << "Issue in frame " << frame_index << "; bond between atomIDs " << b[0]->id() << " and " << b[1]->id() << 
-            " is " << sqrtf(dist2) << " Angstroms. Exiting..." << endl;
+            cout << "Issue in frame " << frame_index << "; bond between atomIDs " << b[0]->id() << " and " << b[1]->id() << " is " << sqrtf(dist2) << " Angstroms. Exiting..." << endl;
           return EXIT_FAILURE;
         }
       }
     }
-  } else { 
+  }
+  else
+  {
     // Operating in timeseries mode;
     // write a timeseries to file name provided by user
     ofstream tsf(topts->timeseries);
     bool found_viol = false;
     tsf << "# " << header << "\n"
         << "# frame atomID1 atomID2 bondlength\n";
-    for (auto frame_index : tropts->frameList()) {
+    for (auto frame_index : tropts->frameList())
+    {
       traj->readFrame(frame_index);
       traj->updateGroupCoords(scope);
       float dist2 = 0;
-      for (auto b : bond_list) {
+      for (auto b : bond_list)
+      {
         dist2 = b[0]->coords().distance2(b[1]->coords());
-        if (dist2 > max_bond2) {
+        if (dist2 > max_bond2)
+        {
           found_viol = true;
-          tsf << frame_index << " " << b[0]->id() << " " << b[1]->id() 
+          tsf << frame_index << " " << b[0]->id() << " " << b[1]->id()
               << " " << sqrtf(dist2) << "\n";
         }
       }
