@@ -236,20 +236,20 @@ int main(int argc, char *argv[])
   AtomicGroup model = tropts->model;
   AtomicGroup scope = selectAtoms(model, sopts->selection);
   bool all_bonds_in_scope = scope.allHaveProperty(Atom::bits::bondsbit);
-  if (all_bonds_in_scope)
+  if (all_bonds_in_scope) {
     scope.pruneBonds();
-  else if (topts->bondlength > 0)
+  } else if (topts->bondlength > 0)
     if (scope.hasCoords())
       scope.findBonds(topts->bondlength);
-    else
-    {
+    else {
       throw(LOOSError(
           "Model does not have coordinates with which to infer connectivity.\n"));
     }
-  else
+  else {
     throw(LOOSError(
         "Model selection does not appear to have chemical connectivity, and "
         "infer-connectivity has not been set to a positive value.\n"));
+  }
   pTraj traj = tropts->trajectory;
   traj->updateGroupCoords(model);
   // should be a vector of two-atom AGs, each a pair of atoms in a bond
