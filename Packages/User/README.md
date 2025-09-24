@@ -3,10 +3,15 @@
 This directory contains some tool-templates designed to make writing
 new tools with LOOS easier.  Pick the tool-template that is closest to
 what you need, then copy it into a new file and look for the regions
-marked "***EDIT***".  Finally, add your tool into the list of "apps"
-in the SConscript file.  You can now build your tool alongside LOOS.
-In the top-level LOOS directory, type "scons user".  This will build
-the LOOS library and everything in the user packages directory.
+marked "***EDIT***".  Finally, add your tool to CMakeLists.txt in this 
+directory, in the field labelled LOOS_USER_TOOLS.
+You can now build and install your tool alongside LOOS by cd'ing into the 
+build directory and saying
+ 
+```
+cmake --build .
+cmake --install .
+```
 
 Templates:
    
