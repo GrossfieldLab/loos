@@ -23,7 +23,7 @@
 
 # USAGE:   ./conda_build.sh -e loos -j 8 -i
 #          This will create a conda env called loos (or install in it if it
-#          exists). It will run scons with 8 jobs, and will do an install into
+#          exists). It will run cmake with 8 jobs, and will do an install into
 #          the conda env when it's done.
 #          ./conda_build -h
 #          will show all options.
@@ -74,12 +74,14 @@ done
 platform=`uname`
 
 echo "Setting channel priority to strict"
+# Mamba doesn't support env, so have to use conda for that
 conda config --set channel_priority strict
 
 packages="python=3 swig cmake numpy scipy scikit-learn boost openblas
 libnetcdf lapack compilers eigen hdf5 gemmi"
 
-env_found=$(conda env list | egrep -v '^#' | egrep "^${envname}[ ]" )
+# Mamba doesn't support env, so have to use conda for that
+env_found=$(conda env list | egrep -v '^#' | egrep "^${envname} " )
 # Build up the conda installation command line
 if [[ ${env_found} ]] ; then
     echo "Installing into existing environment $envname"
