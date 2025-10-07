@@ -28,7 +28,8 @@
 namespace loos {
 
   namespace {
-    const double default_unit_cell_angle = 90.0;   // This should make VMD happy...
+    //const double default_unit_cell_angle = 90.0;   // This should make VMD happy...
+    const double default_unit_cell_angle = 109.4712190;   // Horrible hack to fake trunc oct
   };
 
 
