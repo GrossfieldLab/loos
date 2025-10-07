@@ -3097,72 +3097,25 @@ namespace loos {
 \subsection faq_loos_building Building LOOS (and building with LOOS)
 <DL>
 
+  <DT> What's the easiest way to build LOOS from source?
+  <DD> By far, the easiest way to build LOOS is to use the script included
+  in the top level of the git repository, conda_build.sh. The default way to
+  run it is
 
-<DT> SCons is not finding the right compiler/swig/doxygen
-<DD> For LOOS, SCons will use your shell's $PATH veriable to look
-for tools.  You will need to make sure the missing tool is in your
-path.  Some care may be necessary in the order directories appear
-in your path to make sure you are finding the intended version of
-the tool.  You can explicitly specify a C++ compiler to use
-with the CXX variable (either in your environment or from a
-custom.py file).  This will take precedence over your path.
+```
+   ./conda_build.sh -e loos -j 8 -i
+```
+  This will create a conda environment named "loos" with LOOS, install all of 
+  the packages necessary to build and install loos, then compile it and install.
+  The -j option specifies the number of parallel jobs to use when compiling. See INSTALL.md
+  for more details and options. 
 
-<DT> SCons is not finding my installation of Boost.
-<DD> If you need to point SCons to a non-standard location of Boost,
-use the BOOST variable on the command-line or within your custom.py
-file.  If you need to override either the include directory or the
-library directory, use the BOOST_INCLUDE and BOOST_LIBPATH variables
-respectively.
-
-<DT> SCons cannot find a Boost library.
-<DD> SCons will try to determine the correct naming variant for your
-Boost install.  It will start by looking for "libboost_foo-mt.suff",
-followed by "libboost_foo.suff" where suff is either "dylib"
-(MacOS/Darwin), "so" (Linux), and "dll.a" (Cygwin).  Failing that, it
-will look for any file matching "libboost_foo-*-mt.suff" followed by
-the non-threaded version.  Of the list of filenames found, SCons will
-take the shortest one.<p>
-If necessary, override the libraries linked to for Boost by setting
-the BOOST_LIBS variable to a space-separated list of libraries.  Note
-that you will need to include all of the ones required by LOOS, at a
-minimum,
-\verbatim
-BOOST_LIBS="boost_regex boost_program_options boost_system boost_thread"
-\endverbatim
-Note that the libraries will be linked in with the same order they
-appear in the BOOST_LIBS variable.
-
-<DT> I'm getting undefined reference or other link errors that appear
-  to be related to Boost
-<DD> This can happen if you have multiple versions of Boost
-  installed.  SCons may use include files from one version, but link
-  with the libraries from another.  Check the path to BOOST and the
-  name of the libraries linked against.
-
-<DT> I get a build error that says expected threaded libraries or
-  non-threaded libraries, but some library is the opposite?
-<DD> This is probably a failure of SCons to figure out the appropriate
-  library name.  Use the BOOST_LIBS variable (described above) to
-  manually set the libraries used.
-
-<DT> I get an error that says I must have some kind of blas installed
-<DD> This means that SCons could find neither the versions of blas
-  included with Atlas nor the typical system blas.  You will need to
-  make sure one or the other is installed.  Double check your
-  ATLAS_LIBPATH.  In a worst case, you may need to explicitly list the
-  libraries to use by setting the ATLAS_LIBS variable.
-
-<DT> I get an error that says SCons could not figure out how to build
-<DD> As part of the build, SCons will try to compile and link a test
-  program to see whether ATLAS/LAPACK works and if there are any
-  additional libraries needed.  For some reason, this step failed.
-  Double-check your Atlas/lapack installation.  You may want to try
-  building a small test program with Atlas, and use that to set
-  ATLAS_LIBS or CCFLAGS appropriately.
-
-<DT> How do I compile my own, separate tool with debugging?
-<DD> If you copied the example SConstruct/SConscript, then change the
-     LOOS_CCFLAGS environment variable before building your tool(s).
+  <DT> How do I build LOOS?
+  <DD> Modern (supported) versions of LOOS use CMake to build. See 
+  INSTALL.md in the top level of the git repo for detailed instructions. We recommend 
+  building inside a conda environment, but in principle you could install the various required
+  dependencies manually. A good starting point would be the list of conda packages in INSTALL.md.
+  
 
 </DL>
 
