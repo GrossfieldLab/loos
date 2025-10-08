@@ -396,6 +396,7 @@ Library.
     int tmp, tmpsum, *thiscoord,  prevcoord[3];
     unsigned int tmpcoord[30];
     unsigned int bitsize;
+    constexpr float INT_MAX_MINUS_2 = static_cast<float>(INT_MAX - 2);
 
     uint size3 = size * 3;
   
@@ -434,7 +435,7 @@ Library.
         lf = *lfp * precision + 0.5;
       else
         lf = *lfp * precision - 0.5;
-      if (fabs(lf) > INT_MAX-2) 
+      if (fabs(lf) > INT_MAX_MINUS_2)
       {
         /* scaling would cause overflow */
         throw(LOOSError("Internal overflow compressing coordinates...check input model coordinates (#1)"));
@@ -448,7 +449,7 @@ Library.
         lf = *lfp * precision + 0.5;
       else
         lf = *lfp * precision - 0.5;
-      if (fabs(lf) > INT_MAX-2)
+      if (fabs(lf) > INT_MAX_MINUS_2)
       {
         /* scaling would cause overflow */
         throw(LOOSError("Internal overflow compressing coordinates...check input model coordinates (#2)"));
@@ -483,9 +484,9 @@ Library.
     xdr.write(minint, 3);
     xdr.write(maxint, 3);
   
-    if ((float)maxint[0] - (float)minint[0] >= INT_MAX-2 ||
-        (float)maxint[1] - (float)minint[1] >= INT_MAX-2 ||
-        (float)maxint[2] - (float)minint[2] >= INT_MAX-2) {
+    if ((float)maxint[0] - (float)minint[0] >= INT_MAX_MINUS_2 ||
+        (float)maxint[1] - (float)minint[1] >= INT_MAX_MINUS_2 ||
+        (float)maxint[2] - (float)minint[2] >= INT_MAX_MINUS_2) {
       /* turning value to unsigned by subtracting minint
        * would cause overflow
        */
