@@ -7,6 +7,11 @@
 %{
 #define SWIG_FILE_WITH_INIT
 #define SWIG_PYTHON_CAST_MODE
+
+#ifdef __APPLE__
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
+#endif
 %}
 
 %include <std_string.i>
@@ -95,3 +100,9 @@ namespace loos {
 %include "RnaSuite.i"
 %include "FormFactor.i"
 %include "FormFactorSet.i"
+
+%{
+#ifdef __APPLE__
+#pragma clang diagnostic pop
+#endif
+%}
