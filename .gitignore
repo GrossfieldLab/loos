@@ -94,5 +94,6 @@ custom.py
 
 build/
 venv/
+install/
 
 # put custom ignores below here
