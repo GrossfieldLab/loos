@@ -174,8 +174,8 @@ namespace loos {
 
 		template<typename T>
 		void readBlock(std::vector<double>& v, const uint n, const std::string& msg) {
-			T buf[n];
-			uint i = xdr_file.read(buf, n);
+			std::vector<T> buf(n);
+			uint i = xdr_file.read(buf.data(), n);
 			if (i != n)
 				throw(FileReadError(_filename, "Unable to read " + msg));
 
