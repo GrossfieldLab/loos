@@ -43,7 +43,8 @@ namespace loos {
       char joba='G';
       char jobu = 'U', jobv = 'V';
       int mv = 0;
-      f77int m = 3, lda = 3, ldv = 3, lwork=100, info;
+      constexpr f77int lwork = 100;
+      f77int m = 3, lda = 3, ldv = 3, info;
       double work[lwork];
       f77int nn = 3;
       vecDouble S(3);
