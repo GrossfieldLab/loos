@@ -189,12 +189,12 @@ if(SWIG_FOUND AND BUILD_PYLOOS)
 
   add_dependencies(loos_python pyloos)
 
-  if(MACOSX)
+  if(APPLE)
     set_target_properties(pyloos PROPERTIES SUFFIX ".so")
   endif()
 
   target_link_libraries(pyloos Python3::Python Python3::NumPy loos)
-  if(${MACOSX})
+  if(APPLE)
     target_link_options(pyloos PRIVATE -flat_namespace -undefined suppress)
   endif()
 

@@ -38,14 +38,6 @@ using namespace loos;
 namespace opts = loos::OptionsFramework;
 namespace po = loos::OptionsFramework::po;
 
-#if defined(__linux__)
-extern "C" {
-  void dgesvd_(char*, char*, int*, int*, double*, int*, double*, double*, int*, double*, int*, double*, int*, int*);
-  void sgesvd_(char*, char*, int*, int*, float*, int*, float*, float*, int*, float*, int*, float*, int*, int*);
-}
-#endif
-
-
 typedef double svdreal;
 #define SVDFUNC  dgesvd_
 

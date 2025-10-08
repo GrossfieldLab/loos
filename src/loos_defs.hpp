@@ -87,10 +87,11 @@ typedef int f77int;
 // MacOS 10.9 requires this to appear before Accelerate
 #include <boost/random.hpp>
 
+#define ACCELERATE_NEW_LAPACK
 #include <Accelerate/Accelerate.h>
 
 
-typedef __CLPK_integer f77int;
+typedef int f77int;
 
 #else
 
