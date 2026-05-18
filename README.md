@@ -101,16 +101,25 @@ cmake --build build/ -j$(nproc)
 
 Use `--target loos` to relink just `libloos` without touching the tools.
 
-Rebuild the PyLOOS bindings (after edits to `src/loos.i` or wrapped C++):
+Rebuild the PyLOOS bindings (after edits to `src/loos.i`, wrapped C++, or the
+pure-Python sources under `loos/src/loos/`):
 
 ```bash
-cmake --build build/ --target pyloos -j$(nproc)
-pip install -e loos/
+cmake --build build/ --target loos_python -j$(nproc)
 ```
 
-The `cmake` step regenerates `_pyloos.so`. The editable install points pip at
-the `loos/` subtree's `pyproject.toml` so subsequent edits to the pure-Python
-sources under `loos/src/loos/` take effect with no reinstall.
+The `loos_python` target depends on `pyloos`, so this regenerates `_pyloos.so`
+and `loos.py` via SWIG and then re-stages the Python package into
+`build/src/pyloos/`. The source tree's `loos/` directory is *not* directly
+importable — it lacks the SWIG outputs — so the editable install must point at
+the staged build copy:
+
+```bash
+pip install -e build/src/pyloos/
+```
+
+Run this once. After that, the `cmake --build` command above is enough to pick
+up subsequent edits; no reinstall needed.
 
 ### Release 4.1.0
 
