@@ -74,6 +74,44 @@ and generally speaking the performance hit for python vs. C++ isn't prohibitive.
 resources for developing with LOOS on the [GitHub wiki](https://github.com/GrossfieldLab/loos/wiki),
 particularly the [Tutorials for Developers](https://github.com/GrossfieldLab/loos/wiki/Tutorials-for-Developers).
 
+## Build commands for developers
+
+Assuming you've already set up your environment following the install process,
+you can rebuild into the same env by doing the following:
+
+The build is driven by CMake; commands below assume an out-of-tree `build/`
+directory (see [INSTALL.md](INSTALL.md)). Substitute your build path if
+different.
+
+Rebuild a single tool (after edits under `Tools/` or `Packages/`):
+
+```bash
+cmake --build build/ --target <tool-name>
+```
+
+Only that executable relinks; `libloos` is left alone unless it was already
+stale.
+
+Rebuild the core library and everything that links against it (after edits
+under `src/`):
+
+```bash
+cmake --build build/ -j$(nproc)
+```
+
+Use `--target loos` to relink just `libloos` without touching the tools.
+
+Rebuild the PyLOOS bindings (after edits to `src/loos.i` or wrapped C++):
+
+```bash
+cmake --build build/ --target pyloos -j$(nproc)
+pip install -e loos/
+```
+
+The `cmake` step regenerates `_pyloos.so`. The editable install points pip at
+the `loos/` subtree's `pyproject.toml` so subsequent edits to the pure-Python
+sources under `loos/src/loos/` take effect with no reinstall.
+
 ### Release 4.1.0
 
 This release includes a number of fixes related to issues listed on github.  Added
