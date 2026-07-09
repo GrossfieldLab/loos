@@ -108,7 +108,8 @@ source $CONDA_BASE/etc/profile.d/conda.sh
 conda activate $envname
 
 if [[ -d build ]] ; then
-    echo "Warning- using existing build directory"
+    echo "Warning- using existing build directory; clearing CMakeCache.txt to force a fresh configure against $CONDA_PREFIX"
+    rm -f build/CMakeCache.txt
 else
     mkdir build
 fi
@@ -118,7 +119,11 @@ echo "*** Configuring LOOS ***"
 cmake -DCMAKE_INSTALL_PREFIX=${CONDA_PREFIX} ..
 
 echo "*** Building LOOS ***"
-cmake --build . -j${numprocs}
+set -o pipefail
+if ! cmake --build . -j${numprocs} 2>&1 | tee build.log ; then
+    echo "*** LOOS build failed; full output in build/build.log ***"
+    exit 1
+fi
 
 if [[ ${do_install} ]]; then
     echo  "*** Installing LOOS ***"
